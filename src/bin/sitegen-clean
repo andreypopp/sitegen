@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+import program from 'commander';
+import rimraf  from 'rimraf';
+
+program
+  .version(pkg.version)
+  .usage('sitegen-build [options] <site>')
+  .description('Serve site')
+  .option('-o, --output <directory>', 'Output directory', 'output')
+  .parse(process.argv);
+
+let cwd = process.cwd();
+let site = path.join(cwd, program.args[0] || '.');
+let output = path.join(site, program.output);
+
+rimraf.sync(output);
