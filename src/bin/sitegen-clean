@@ -8,7 +8,7 @@ import pkg     from '../../package.json';
 program
   .version(pkg.version)
   .usage('sitegen-build [options] <site>')
-  .description('Serve site')
+  .description('Remove site output directory')
   .option('-o, --output <directory>', 'output directory', 'output')
   .parse(process.argv);
 
