@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
+import path    from 'path';
 import program from 'commander';
 import rimraf  from 'rimraf';
+import pkg     from '../../package.json';
 
 program
   .version(pkg.version)

@@ -8,4 +8,5 @@ commander
   .description(pkg.description)
   .command('serve', 'serve site')
   .command('build', 'build site')
+  .command('clean', 'remove site output directory')
   .parse(process.argv);
