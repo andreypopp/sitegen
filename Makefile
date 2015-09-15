@@ -34,7 +34,7 @@ publish: build
 	@npm publish --access public
 
 clean:
-	@rm -rf ./lib
+	@rm -rf ./lib ./bin
 
 lib/%: src/%
 	@echo "Building $<"
@@ -42,7 +42,8 @@ lib/%: src/%
 	@$(BIN)/babel $(BABEL_OPTIONS) -o $@ $<
 
 bin/%: src/bin/%
-	@echo "Building $<"
+	@echo "Building command wrapper $<"
 	@mkdir -p $(@D)
 	@echo '#!/usr/bin/env node' > $@
-	@echo 'require("../${@:src/bin/%=lib/bin/%}");' >> $@
+	@echo 'require("../${<:src/bin/%=lib/bin/%}");' >> $@
+	@chmod +x $@
