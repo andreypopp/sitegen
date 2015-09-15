@@ -21,7 +21,14 @@ export default class RenderStaticPlugin {
             compilation.assets[assetNameFromRoute(route)] = createAssetFromContents(markup)
           }, done)));
 
-      renderAll.then(() => done(), (err) => throw err);
+      renderAll.then(
+        () => {
+          done()
+        },
+        (err) => {
+          throw err
+        }
+      );
     });
   }
 
