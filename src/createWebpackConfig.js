@@ -20,7 +20,7 @@ export default function createWebpackConfig(options = {}) {
       timings: false,
     },
     output: {
-      publicPath: '/',
+      publicPath: options.publicPath || '/',
       library: 'SitegenSite',
       libraryTarget: 'commonjs2',
       path: options.output,
@@ -30,7 +30,7 @@ export default function createWebpackConfig(options = {}) {
     plugins: plugins,
     resolve: {
       alias: {
-        Sitegen: require.resolve('./'),
+        sitegen: require.resolve('./'),
         site: options.lib,
       },
     },

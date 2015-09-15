@@ -14,17 +14,18 @@ import createWebpackConfig    from '../createWebpackConfig';
 
 program
   .version(pkg.version)
+  .usage('sitegen-serve [options] <site>')
   .description('Serve site')
-  .option('-L, --lib <directory>', 'Specify site library directory', 'lib')
-  .option('-s, --site <directory>', 'Specify site directory', '.')
+  .option('-L, --lib <directory>', 'site library directory (default: $site/lib)', 'lib')
   .parse(process.argv);
 
 let cwd = process.cwd();
+let site = path.join(cwd, program.args[0] || '.');
 
 let config = createWebpackConfig({
-  entry: path.join(cwd, program.site),
-  lib: path.join(cwd, program.site, program.lib),
-  output: path.join(cwd, program.site, 'output'),
+  entry: require.resolve(site),
+  lib: path.join(site, program.lib),
+  output: path.join(site, 'output'),
   mode: 'serve',
   compilerName: 'sitegen'
 });
