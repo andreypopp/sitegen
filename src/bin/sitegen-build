@@ -10,8 +10,8 @@ program
   .version(pkg.version)
   .usage('sitegen-build [options] <site>')
   .description('Serve site')
-  .option('-L, --lib <directory>', 'Site library directory', 'lib')
-  .option('-o, --output <directory>', 'Output directory', 'output')
+  .option('-L, --lib <directory>', 'site library directory', 'lib')
+  .option('-o, --output <directory>', 'output directory', 'output')
   .parse(process.argv);
 
 let cwd = process.cwd();

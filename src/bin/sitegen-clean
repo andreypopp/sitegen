@@ -9,7 +9,7 @@ program
   .version(pkg.version)
   .usage('sitegen-build [options] <site>')
   .description('Serve site')
-  .option('-o, --output <directory>', 'Output directory', 'output')
+  .option('-o, --output <directory>', 'output directory', 'output')
   .parse(process.argv);
 
 let cwd = process.cwd();
