@@ -1,0 +1,52 @@
+#!/usr/bin/env node
+
+import program                from 'commander';
+import evaluate               from 'eval';
+import http                   from 'http';
+import path                   from 'path';
+import express                from 'express';
+import Webpack                from 'webpack';
+import WebpackMiddleware      from 'webpack-dev-middleware';
+import React                  from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import pkg                    from '../../package.json';
+import createWebpackConfig    from '../createWebpackConfig';
+
+program
+  .version(pkg.version)
+  .description('Serve site')
+  .option('-L, --lib <directory>', 'Specify site library directory', 'lib')
+  .option('-s, --site <directory>', 'Specify site directory', '.')
+  .parse(process.argv);
+
+let cwd = process.cwd();
+
+let config = createWebpackConfig({
+  entry: path.join(cwd, program.site),
+  lib: path.join(cwd, program.site, program.lib),
+  output: path.join(cwd, program.site, 'output'),
+  mode: 'serve',
+  compilerName: 'sitegen'
+});
+
+let compiler = Webpack(config);
+let middleware = WebpackMiddleware(compiler, {quiet: true});
+
+let app = express();
+
+app.use(middleware);
+app.use(render);
+app.listen(3000);
+
+function render(req, res, next) {
+  http.get('http://localhost:3000/_bootstrap.js', function(bootstrapRes) {
+    let source = '';
+    bootstrapRes.setEncoding('utf8');
+    bootstrapRes.on('data', chunk => source = source + chunk);
+    bootstrapRes.on('end', () => {
+      let page = evaluate(source, '<bootstrap>', {window: {}});
+      let markup = renderToStaticMarkup(<page.component />);
+      res.send(markup);
+    });
+  }).on('error', next);
+}

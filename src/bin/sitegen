@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+import commander from 'commander';
+import pkg       from '../../package.json';
+
+commander
+  .version(pkg.version)
+  .description(pkg.description)
+  .command('serve', 'serve site')
+  .command('build', 'build site')
+  .parse(process.argv);
