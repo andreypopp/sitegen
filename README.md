@@ -1,4 +1,4 @@
 Sitegen
 =======
 
-Sitegen is a static site generator.
+Generate websites by composing React components.
