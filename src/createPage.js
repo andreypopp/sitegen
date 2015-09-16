@@ -70,7 +70,8 @@ function requestToPath(context, request) {
     },
     getChildRoutes(location, cb) {
       requireModule(function(module) {
-        var childRoutes = module.childRoutes
+        let childRoutes = module.childRoutes || [];
+        childRoutes = childRoutes
           .map(route => ({...route, path: path + route.path.substring(1)}))
           .filter(route => route.path !== path);
         cb(null, childRoutes);
