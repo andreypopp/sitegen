@@ -12,12 +12,10 @@ export default function configureFromDirectory(site, options) {
   }
   let pkg = readJSON(pkgFilename);
   let sitegen = pkg.sitegen || {};
-  let entry;
-  if (sitegen.entry) {
-    entry = sitegen.entry;
-  } else if (sitegen.content) {
-    entry = require.resolve('./loaders/package') + '!' + pkgFilename;
+  if (typeof sitegen === 'string') {
+    sitegen = {main: sitegen};
   }
+  let entry = require.resolve('./loaders/site') + '!' + pkgFilename;
   let lib = path.join(site, options.lib || sitegen.lib || 'lib');
   let output = path.join(site, options.output || sitegen.output || 'output');
   return createWebpackConfig({...options, entry, site, lib, output});
