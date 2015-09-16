@@ -42,7 +42,8 @@ export default function createWebpackConfig(options = {}) {
     },
     module: {
       loaders: [
-        {test: /\.js$/, loader: 'babel-loader?stage=0'}
+        {test: /\.js$/, loader: 'babel-loader?stage=0'},
+        {test: /\.md$/, loader: 'sitegen-loader-markdown'},
       ]
     }
   };
