@@ -1,17 +1,29 @@
+import webpack            from 'webpack';
 import RenderStaticPlugin from './RenderStaticPlugin';
 import LogProgressPlugin  from './LogProgressPlugin';
 
+let skip = require.resolve('./loaders/skip');
+
+const defaultOptions = {
+  mode: 'serve',
+  dev: false,
+};
+
 export default function createWebpackConfig(options = {}) {
-  let mode = options.mode || 'web';
   let plugins = [
-    new LogProgressPlugin(options.compilerName)
+    new LogProgressPlugin(options.compilerName),
+    options.mode === 'build' && new RenderStaticPlugin(),
+    options.mode === 'serve' && options.dev && new webpack.optimize.OccurenceOrderPlugin(),
+    options.mode === 'serve' && options.dev && new webpack.HotModuleReplacementPlugin(),
+    options.mode === 'serve' && options.dev && new webpack.NoErrorsPlugin(),
   ];
-  if (mode === 'build') {
-    plugins.push(new RenderStaticPlugin());
-  }
+  let entry = [
+    options.mode === 'serve' && options.dev && skip + '!webpack-hot-middleware/client?reload=true',
+    options.entry
+  ];
   return {
-    entry: options.entry,
-    target: mode === 'build' ? 'node' : 'web',
+    entry: entry.filter(Boolean),
+    target: options.mode === 'build' ? 'node' : 'web',
     sitegen: options,
     stats: {
       children: false,
@@ -28,7 +40,7 @@ export default function createWebpackConfig(options = {}) {
       filename: '_bootstrap.js',
       chunkFilename: '[name].js',
     },
-    plugins: plugins,
+    plugins: plugins.filter(Boolean),
     resolve: {
       alias: {
         sitegen: require.resolve('./'),

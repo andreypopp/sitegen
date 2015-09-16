@@ -44,6 +44,7 @@
     "rimraf": "^2.4.3",
     "sitegen-loader-markdown": "^0.1.0",
     "webpack": "^1.12.1",
-    "webpack-dev-middleware": "^1.2.0"
+    "webpack-dev-middleware": "^1.2.0",
+    "webpack-hot-middleware": "^2.1.0"
   }
 }

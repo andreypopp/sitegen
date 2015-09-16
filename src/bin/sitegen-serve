@@ -6,7 +6,8 @@ import http                   from 'http';
 import path                   from 'path';
 import express                from 'express';
 import Webpack                from 'webpack';
-import WebpackMiddleware      from 'webpack-dev-middleware';
+import WebpackDevMiddleware   from 'webpack-dev-middleware';
+import WebpackHotMiddleware   from 'webpack-hot-middleware';
 import React                  from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import pkg                    from '../../package.json';
@@ -27,15 +28,18 @@ let config = configureFromDirectory(site, {
   lib: program.lib,
   output: program.output,
   mode: 'serve',
+  dev: true,
   compilerName: 'sitegen'
 });
 
 let compiler = Webpack(config);
-let middleware = WebpackMiddleware(compiler, {quiet: true});
+let devMiddleware = WebpackDevMiddleware(compiler, {quiet: true});
+let hotMiddleware = WebpackHotMiddleware(compiler, {log: false});
 
 let app = express();
 
-app.use(middleware);
+app.use(devMiddleware);
+app.use(hotMiddleware);
 app.use(render);
 app.listen(3000);
 
@@ -45,7 +49,7 @@ function render(req, res, next) {
     bootstrapRes.setEncoding('utf8');
     bootstrapRes.on('data', chunk => source = source + chunk);
     bootstrapRes.on('end', () => {
-      let routes = evaluate(source, '<bootstrap>', {window: {}});
+      let routes = evaluate(source, '<bootstrap>', {window: {fake: true}});
       let Component = routes.component || Site;
       let markup = renderToStaticMarkup(<Component />);
       res.send(markup);
