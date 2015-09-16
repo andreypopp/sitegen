@@ -25,6 +25,18 @@ export default function createWebpackConfig(options = {}) {
     entry: entry.filter(Boolean),
     target: options.mode === 'build' ? 'node' : 'web',
     sitegen: options,
+    babel: options.mode === 'serve' && options.dev && {
+      plugins: [
+        "react-transform"
+      ],
+      extra: {
+        "react-transform": [{
+          target: "react-transform-webpack-hmr",
+          imports: ["react"],
+          locals: ["module"]
+        }]
+      }
+    },
     stats: {
       children: false,
       assets: false,
@@ -55,7 +67,7 @@ export default function createWebpackConfig(options = {}) {
     module: {
       loaders: [
         {test: /\.js$/, loader: 'babel-loader?stage=0'},
-        {test: /\.md$/, loader: 'sitegen-loader-markdown'},
+        {test: /\.md$/, loader: 'babel-loader!sitegen-loader-markdown'},
       ]
     }
   };
