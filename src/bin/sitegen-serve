@@ -10,22 +10,22 @@ import WebpackMiddleware      from 'webpack-dev-middleware';
 import React                  from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import pkg                    from '../../package.json';
-import createWebpackConfig    from '../createWebpackConfig';
+import Site                   from '../Site';
+import configureFromDirectory from '../configureFromDirectory';
 
 program
   .version(pkg.version)
   .usage('sitegen-serve [options] <site>')
   .description('Serve site')
-  .option('-L, --lib <directory>', 'site library directory (default: $site/lib)', 'lib')
+  .option('-L, --lib <directory>', 'site library directory (default: $site/lib)')
   .parse(process.argv);
 
 let cwd = process.cwd();
 let site = path.join(cwd, program.args[0] || '.');
 
-let config = createWebpackConfig({
-  entry: require.resolve(site),
-  lib: path.join(site, program.lib),
-  output: path.join(site, 'output'),
+let config = configureFromDirectory(site, {
+  lib: program.lib,
+  output: program.output,
   mode: 'serve',
   compilerName: 'sitegen'
 });
@@ -45,8 +45,9 @@ function render(req, res, next) {
     bootstrapRes.setEncoding('utf8');
     bootstrapRes.on('data', chunk => source = source + chunk);
     bootstrapRes.on('end', () => {
-      let page = evaluate(source, '<bootstrap>', {window: {}});
-      let markup = renderToStaticMarkup(<page.component />);
+      let routes = evaluate(source, '<bootstrap>', {window: {}});
+      let Component = routes.component || Site;
+      let markup = renderToStaticMarkup(<Component />);
       res.send(markup);
     });
   }).on('error', next);

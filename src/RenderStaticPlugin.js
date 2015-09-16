@@ -4,6 +4,7 @@ import createLocation                         from 'history/lib/createLocation';
 import React                                  from 'react';
 import {match, RoutingContext}                from 'react-router';
 import {renderToString, renderToStaticMarkup} from 'react-dom/server';
+import Site                                   from './Site';
 
 export default class RenderStaticPlugin {
 
@@ -42,8 +43,9 @@ export default class RenderStaticPlugin {
         if (error) {
           reject(error);
         } else {
+          let Component = routes.component || Site;
           let innerMarkup = renderToString(<RoutingContext {...props} />);
-          let markup = renderToStaticMarkup(<routes.component>{innerMarkup}</routes.component>);
+          let markup = renderToStaticMarkup(<Component>{innerMarkup}</Component>);
           resolve(markup);
         }
       })

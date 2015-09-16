@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-import path    from 'path';
-import program from 'commander';
-import rimraf  from 'rimraf';
-import pkg     from '../../package.json';
+import path                   from 'path';
+import program                from 'commander';
+import rimraf                 from 'rimraf';
+import pkg                    from '../../package.json';
+import configureFromDirectory from '../configureFromDirectory';
 
 program
   .version(pkg.version)
@@ -16,4 +17,8 @@ let cwd = process.cwd();
 let site = path.join(cwd, program.args[0] || '.');
 let output = path.join(site, program.output);
 
-rimraf.sync(output);
+let config = configureFromDirectory(site, {
+  output: program.output
+});
+
+rimraf.sync(config.sitegen.output);

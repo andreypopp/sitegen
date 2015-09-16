@@ -4,31 +4,29 @@ import program              from 'commander';
 import path                 from 'path';
 import Webpack              from 'webpack';
 import pkg                  from '../../package.json';
-import createWebpackConfig  from '../createWebpackConfig';
+import configureFromDirectory from '../configureFromDirectory';
 
 program
   .version(pkg.version)
   .usage('sitegen-build [options] <site>')
   .description('Serve site')
-  .option('-L, --lib <directory>', 'site library directory', 'lib')
-  .option('-o, --output <directory>', 'output directory', 'output')
+  .option('-L, --lib <directory>', 'site library directory')
+  .option('-o, --output <directory>', 'output directory')
   .parse(process.argv);
 
 let cwd = process.cwd();
 let site = path.join(cwd, program.args[0] || '.');
 
-let renderAssets = Webpack(createWebpackConfig({
-  entry: require.resolve(site),
-  lib: path.join(site, program.lib),
-  output: path.join(site, 'output'),
+let renderAssets = Webpack(configureFromDirectory(site, {
+  lib: program.lib,
+  output: program.output,
   mode: 'serve',
   compilerName: 'sitegen-assets',
 }));
 
-let renderPages = Webpack(createWebpackConfig({
-  entry: require.resolve(site),
-  lib: path.join(site, program.lib),
-  output: path.join(site, 'output'),
+let renderPages = Webpack(configureFromDirectory(site, {
+  lib: program.lib,
+  output: program.output,
   mode: 'build',
   compilerName: 'sitegen-pages',
 }));

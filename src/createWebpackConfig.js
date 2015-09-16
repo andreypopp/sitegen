@@ -12,6 +12,7 @@ export default function createWebpackConfig(options = {}) {
   return {
     entry: options.entry,
     target: mode === 'build' ? 'node' : 'web',
+    sitegen: options,
     stats: {
       children: false,
       assets: false,
