@@ -17,19 +17,12 @@ export default class Site extends React.Component {
         </head>
         <body>
           <RenderRoot markup={children} />
-          <script dangerouslySetInnerHTML={{__html: this.constructor.prepare}} />
           <script src="/_bootstrap.js" />
-          <script dangerouslySetInnerHTML={{__html: this.constructor.finish}} />
+          <script>
+            SitegenSite.renderIntoDocument();
+          </script>
         </body>
       </html>
     );
   }
-
-  static prepare = scoped(`
-    window.module = {exports: {}};
-  `);
-
-  static finish = scoped(`
-    module.exports.renderIntoDocument();
-  `);
 }

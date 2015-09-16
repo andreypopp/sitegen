@@ -45,7 +45,7 @@ export default function createWebpackConfig(options = {}) {
     output: {
       publicPath: options.publicPath || '/',
       library: 'SitegenSite',
-      libraryTarget: 'commonjs2',
+      libraryTarget: options.mode === 'build' ? 'commonjs2' : 'var',
       path: options.output,
       filename: '_bootstrap.js',
       chunkFilename: '[name].js',
