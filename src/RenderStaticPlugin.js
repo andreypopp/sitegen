@@ -27,7 +27,7 @@ export default class RenderStaticPlugin {
           done()
         },
         (err) => {
-          throw err
+          done(err);
         }
       );
     });
