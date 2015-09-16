@@ -17,7 +17,12 @@ export default class LogProgressPlugin {
 
   _onDone(stats) {
     var time = stats.endTime - stats.startTime;
-    this._log('compilation finished (' + time + 'ms)');
+    if (stats.compilation.errors.length > 0) {
+      this._log('compilation failed');
+      stats.compilation.errors.forEach(error => console.log(error.message));
+    } else {
+      this._log('compilation finished (' + time + 'ms)');
+    }
   }
 
   _onCompile() {
