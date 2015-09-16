@@ -5,7 +5,6 @@ module.exports = function(source) {
   let sitegen = this._compiler.options.sitegen;
   this.cacheable && this.cacheable();
   let pkg = JSON.parse(source);
-  let content = path.relative(sitegen.site, pkg.sitegen.content);
   let component = pkg.sitegen.component ?
     `require('${pkg.sitegen.component}')` :
     'undefined';
@@ -14,7 +13,7 @@ module.exports = function(source) {
 
     module.exports = Sitegen.createPage({
       component: ${component}, 
-      context: require.context('page!./${content}', true, /.+/g)
+      context: require.context('page!./${pkg.sitegen.content}', true, /.+/g)
     });
   `;
   return source;
