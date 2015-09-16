@@ -2,8 +2,6 @@ import webpack            from 'webpack';
 import RenderStaticPlugin from './RenderStaticPlugin';
 import LogProgressPlugin  from './LogProgressPlugin';
 
-let skip = require.resolve('./loaders/skip');
-
 const defaultOptions = {
   mode: 'serve',
   dev: false,
@@ -18,7 +16,7 @@ export default function createWebpackConfig(options = {}) {
     options.mode === 'serve' && options.dev && new webpack.NoErrorsPlugin(),
   ];
   let entry = [
-    options.mode === 'serve' && options.dev && skip + '!webpack-hot-middleware/client?reload=true',
+    options.mode === 'serve' && options.dev && 'webpack-hot-middleware/client?reload=true',
     options.entry
   ];
   return {

@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
 import program                from 'commander';
-import evaluate               from 'eval';
-import http                   from 'http';
 import path                   from 'path';
 import express                from 'express';
 import Webpack                from 'webpack';
@@ -44,15 +42,6 @@ app.use(render);
 app.listen(3000);
 
 function render(req, res, next) {
-  http.get('http://localhost:3000/_bootstrap.js', function(bootstrapRes) {
-    let source = '';
-    bootstrapRes.setEncoding('utf8');
-    bootstrapRes.on('data', chunk => source = source + chunk);
-    bootstrapRes.on('end', () => {
-      let routes = evaluate(source, '<bootstrap>', {window: {fake: true}});
-      let Component = routes.component || Site;
-      let markup = renderToStaticMarkup(<Component />);
-      res.send(markup);
-    });
-  }).on('error', next);
+  let markup = renderToStaticMarkup(<Site />);
+  res.send(markup);
 }

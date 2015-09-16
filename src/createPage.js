@@ -1,9 +1,3 @@
-import React                    from 'react';
-import ReactDOM                 from 'react-dom';
-import {RoutingContext, match}  from 'react-router';
-import createBrowserHistory     from 'history/lib/createBrowserHistory';
-import RenderRoot               from './RenderRoot';
-
 export default function createPage(spec) {
   if (isRoute(spec)) {
     return spec;
@@ -13,22 +7,8 @@ export default function createPage(spec) {
   childRoutes.sort(sortChildRoutes);
 
   return {
-
     childRoutes,
-
     component,
-
-    renderIntoDocument(element = RenderRoot.getDOMNode()) {
-      let history = createBrowserHistory();
-      let unlisten = history.listen(location => 
-        match({routes: childRoutes, location}, (err, redirect, props) =>
-          ReactDOM.render(<RoutingContext {...props} history={history} />, element)));
-
-      return function unmount() {
-        unlisten();
-        ReactDOM.unmountComponentAtNode(element);
-      }
-    }
   };
 }
 

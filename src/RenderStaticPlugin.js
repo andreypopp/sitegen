@@ -43,9 +43,8 @@ export default class RenderStaticPlugin {
         if (error) {
           reject(error);
         } else {
-          let Component = routes.component || Site;
           let innerMarkup = renderToString(<RoutingContext {...props} />);
-          let markup = renderToStaticMarkup(<Component>{innerMarkup}</Component>);
+          let markup = renderToStaticMarkup(<Site>{innerMarkup}</Site>);
           resolve(markup);
         }
       })
