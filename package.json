@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "description": "Generate websites by composing React components",
   "main": "./lib/index.js",
+  "bin": {
+    "sitegen": "./bin/sitegen",
+    "sitegen-serve": "./bin/sitegen-serve",
+    "sitegen-build": "./bin/sitegen-build",
+    "sitegen-clean": "./bin/sitegen-clean"
+  },
   "scripts": {
     "test": "make test"
   },
