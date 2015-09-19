@@ -11,6 +11,7 @@ import {renderToStaticMarkup} from 'react-dom/server';
 import pkg                    from '../../package.json';
 import Site                   from '../Site';
 import configureFromDirectory from '../configureFromDirectory';
+import {JS_BUNDLE_NAME}       from '../createWebpackConfig';
 
 program
   .version(pkg.version)
@@ -42,6 +43,6 @@ app.use(render);
 app.listen(3000);
 
 function render(req, res, next) {
-  let markup = renderToStaticMarkup(<Site />);
+  let markup = renderToStaticMarkup(<Site jsBundlePath={'/' + JS_BUNDLE_NAME} />);
   res.send(markup);
 }

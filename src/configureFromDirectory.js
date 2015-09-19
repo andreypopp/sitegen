@@ -11,11 +11,15 @@ export default function configureFromDirectory(site, options) {
     error(`site ${site}/package.json does not exist`);
   }
   let pkg = readJSON(pkgFilename);
-  let sitegen = pkg.sitegen || {};
+  let sitegen = pkg.sitegen || {content: 'content'};
   if (typeof sitegen === 'string') {
-    sitegen = {main: sitegen};
+    sitegen = {content: sitegen};
   }
-  let entry = require.resolve('./loaders/site') + '!' + pkgFilename;
+
+  let entry = [require.resolve('./loaders/site') + '!' + pkgFilename];
+  if (sitegen.require) {
+    entry = [].concat(sitegen.require).concat(entry);
+  }
   let lib = path.join(site, options.lib || sitegen.lib || 'lib');
   let output = path.join(site, options.output || sitegen.output || 'output');
   return createWebpackConfig({...options, entry, site, lib, output});

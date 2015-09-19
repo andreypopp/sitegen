@@ -6,13 +6,13 @@ module.exports = function(source) {
   let pkg = JSON.parse(source);
   let sitegen = pkg.sitegen;
   if (typeof sitegen === 'string') {
-    sitegen = {main: sitegen};
+    sitegen = {content: sitegen};
   }
   source = `
     var Sitegen = require('sitegen');
 
     module.exports = Sitegen.createSite({
-      context: require.context('page!./${sitegen.main}', true, /.+/)
+      context: require.context('page!./${sitegen.content}', true, /.+/)
     });
   `;
   return source;

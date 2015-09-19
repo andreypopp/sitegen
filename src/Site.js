@@ -8,19 +8,21 @@ function scoped(source) {
 export default class Site extends React.Component {
 
   render() {
-    let {children, head} = this.props;
+    let {children, head, jsBundlePath, cssBundlePath} = this.props;
     return (
       <html>
         <head>
           <meta charSet="utf8" />
+          {cssBundlePath && <link rel="stylesheet" href={cssBundlePath} />}
           {head}
         </head>
         <body>
           <RenderRoot markup={children} />
-          <script src="/_bootstrap.js" />
-          <script>
-            SitegenSite.renderIntoDocument();
-          </script>
+          {jsBundlePath && <script src={jsBundlePath} />}
+          {jsBundlePath &&
+            <script>
+              SitegenSite.renderIntoDocument();
+            </script>}
         </body>
       </html>
     );

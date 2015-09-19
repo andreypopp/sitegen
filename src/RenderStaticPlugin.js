@@ -5,12 +5,13 @@ import React                                  from 'react';
 import {match, RoutingContext}                from 'react-router';
 import {renderToString, renderToStaticMarkup} from 'react-dom/server';
 import Site                                   from './Site';
+import {JS_BUNDLE_NAME, CSS_BUNDLE_NAME}      from './createWebpackConfig';
 
 export default class RenderStaticPlugin {
 
   apply(compiler) {
     compiler.plugin('emit', (compilation, done) => {
-      let source = compilation.assets['_bootstrap.js']._source.source();
+      let source = compilation.assets[JS_BUNDLE_NAME]._source.source();
       let routes = evaluate('module.exports = ' + source, '<bootstrap>', {console: console, process: process});
       let renderAll = Promise.resolve();
 
@@ -22,18 +23,8 @@ export default class RenderStaticPlugin {
             compilation.assets[assetNameFromRoute(route)] = createAssetFromContents(markup)
           }, done)));
 
-      renderAll.then(
-        () => {
-          done()
-        },
-        (err) => {
-          done(err);
-        }
-      );
+      renderAll.then(() => done(), (err) => done(err));
     });
-  }
-
-  generateAsset(routes, route) {
   }
 
   render(routes, route) {
@@ -44,7 +35,11 @@ export default class RenderStaticPlugin {
           reject(error);
         } else {
           let innerMarkup = renderToString(<RoutingContext {...props} />);
-          let markup = renderToStaticMarkup(<Site>{innerMarkup}</Site>);
+          let markup = renderToStaticMarkup(
+            <Site jsBundlePath={'/' + JS_BUNDLE_NAME} cssBundlePath={'/' + CSS_BUNDLE_NAME}>
+              {innerMarkup}
+            </Site>
+          );
           resolve(markup);
         }
       })
