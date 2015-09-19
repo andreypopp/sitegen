@@ -12,7 +12,7 @@ module.exports = function(source) {
     var Sitegen = require('sitegen');
 
     module.exports = Sitegen.createSite({
-      context: require.context('page!./${sitegen.main}', true, /.+/g)
+      context: require.context('page!./${sitegen.main}', true, /.+/)
     });
   `;
   return source;
