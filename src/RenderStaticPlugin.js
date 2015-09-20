@@ -7,30 +7,53 @@ import {renderToString, renderToStaticMarkup} from 'react-dom/server';
 import Site                                   from './Site';
 import {JS_BUNDLE_NAME, CSS_BUNDLE_NAME}      from './createWebpackConfig';
 
+function getChildRoutes(route, callback) {
+  if (route.childRoutes) {
+    callback(null, childRoutes);
+  } else if (route.getChildRoutes) {
+    route.getChildRoutes(null, callback);
+  } else {
+    callback(null, []);
+  }
+}
+
 export default class RenderStaticPlugin {
 
   apply(compiler) {
     compiler.plugin('emit', (compilation, done) => {
       let source = compilation.assets[JS_BUNDLE_NAME]._source.source();
-      let routes = evaluate('module.exports = ' + source, '<bootstrap>', {console: console, process: process});
+      let routes = evaluate('module.exports = ' + source, '<bootstrap>', {
+        console,
+        process,
+        setTimeout
+      });
       let renderAll = Promise.resolve();
 
       cleanAssets(compilation.assets);
 
-      routes.childRoutes.forEach(route =>
-        renderAll = renderAll.then(() =>
-          this.render(routes, route).then(markup => {
-            compilation.assets[assetNameFromRoute(route)] = createAssetFromContents(markup)
-          }, done)));
+      getChildRoutes(routes, (error, childRoutes) => {
+        if (error) {
+          return done(error);
+        }
+        try {
+          childRoutes.forEach(route =>
+            renderAll = renderAll.then(() =>
+              this.render(routes, route).then(markup => {
+                compilation.assets[assetNameFromRoute(route)] = createAssetFromContents(markup)
+              }, done)));
+        } catch (err) {
+          return done(err);
+        }
+        renderAll.then(() => done(), (err) => done(err));
+      });
 
-      renderAll.then(() => done(), (err) => done(err));
     });
   }
 
   render(routes, route) {
     return new Promise((resolve, reject) => {
       let location = createLocation(route.path);
-      match({routes: routes.childRoutes, location}, (error, redirectLocation, props) => {
+      match({routes, location}, (error, redirectLocation, props) => {
         if (error) {
           reject(error);
         } else {
