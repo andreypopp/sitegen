@@ -63,7 +63,6 @@ function Compose(Wrapper, Component) {
   if (Wrapper === undefined) {
     return Component;
   }
-  console.error(Wrapper, Component);
   return function Composed(props) {
     return (
       <Wrapper {...props}>
@@ -80,7 +79,6 @@ function createProxyRoute(path, module, component) {
     path,
 
     getIndexRoute(location, callback) {
-      console.log('ProxyRoute.getIndexRoute');
       loadModule(module, function(module) {
         if (module.indexRoute !== undefined) {
           callback(null, module.indexRoute);
@@ -93,7 +91,6 @@ function createProxyRoute(path, module, component) {
     },
 
     getComponent(location, callback) {
-      console.log('ProxyRoute.getComponent', path, component);
       loadModule(module, function(module) {
         if (module.component !== undefined) {
           callback(null, Compose(component, module.component));
@@ -112,7 +109,6 @@ function createProxyRoute(path, module, component) {
     },
 
     getChildRoutes(location, callback) {
-      console.log('ProxyRoute.getChildRoutes');
       loadModule(module, function(module) {
         if (module.childRoutes !== undefined) {
           callback(null, rewriteChildRoutes(path, module.childRoutes, component));
@@ -172,12 +168,10 @@ function createModuleRoute(path, module) {
     path,
 
     getComponent(location, callback) {
-      console.log('ModuleRoute.getComponent');
       getComponentWithProxy(path, module, location, callback);
     },
 
     getChildRoutes(location, callback) {
-      console.log('ModuleRoute.getChildRoutes');
       getChildRoutesWithProxy(path, module, location, callback);
     }
   };
