@@ -13,9 +13,12 @@ module.exports = function(source) {
 module.exports.pitch = function(remainingRequest) {
   this.cacheable && this.cacheable();
   let query = parseQuery(this.query);
-  let target = this._compiler.options.target;
-  if (target === 'web' && !query.wrap) {
+  let options = this.options.sitegen;
+  if (options.mode === 'serve' && !query.wrap) {
     let request = stringifyRequest(this, `!!bundle?name=[path][name]!${__filename}?wrap!${remainingRequest}`);
+    return `module.exports = require(${request});`;
+  } else if (options.mode === 'build' && !query.wrap) {
+    let request = stringifyRequest(this, `!!${__filename}?wrap!${remainingRequest}`);
     return `module.exports = require(${request});`;
   }
 }
