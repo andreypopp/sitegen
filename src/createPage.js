@@ -1,3 +1,4 @@
+import React     from 'react';
 import invariant from 'invariant';
 
 export default function createPage(spec) {
@@ -16,14 +17,24 @@ export default function createPage(spec) {
   if (page) {
     if (isContextModule(page)) {
       let contextModule = createContextRoute(path, page, component);
-      return createProxyRoute(path, contextModule, component);
+      return createProxyRoute(path, contextModule);
     } else {
       return createProxyRoute(path, page, component);
     }
   }
 
   if (childPages) {
-    childRoutes = childPagesToRoutes(childPages);
+    childRoutes = [];
+    for (let key in childPages) {
+      if (childPages.hasOwnProperty(key)) {
+        let module = childPages[key];
+        if (isContextModule(module)) {
+          childRoutes.push(createContextRoute(key, childPages[key]));
+        } else {
+          childRoutes.push(createModuleRoute(key, childPages[key]));
+        }
+      }
+    }
     childRoutes.sort(sortChildRoutes);
   }
 
@@ -40,21 +51,6 @@ export default function createPage(spec) {
   };
 }
 
-function childPagesToRoutes(childPages) {
-  let childRoutes = [];
-  for (let key in childPages) {
-    if (childPages.hasOwnProperty(key)) {
-      let module = childPages[key];
-      if (isContextModule(module)) {
-        childRoutes.push(createContextRoute(key, childPages[key]));
-      } else {
-        childRoutes.push(createModuleRoute(key, childPages[key]));
-      }
-    }
-  }
-  return childRoutes;
-}
-
 function loadModule(module, callback) {
   if (typeof module === 'function') {
     module(callback);
@@ -63,7 +59,21 @@ function loadModule(module, callback) {
   }
 }
 
-function createProxyRoute(path, module) {
+function Compose(Wrapper, Component) {
+  if (Wrapper === undefined) {
+    return Component;
+  }
+  console.error(Wrapper, Component);
+  return function Composed(props) {
+    return (
+      <Wrapper {...props}>
+        <Component {...props} />
+      </Wrapper>
+    );
+  };
+}
+
+function createProxyRoute(path, module, component) {
   return {
     type: 'ProxyRoute',
 
@@ -83,12 +93,18 @@ function createProxyRoute(path, module) {
     },
 
     getComponent(location, callback) {
-      console.log('ProxyRoute.getComponent');
+      console.log('ProxyRoute.getComponent', path, component);
       loadModule(module, function(module) {
         if (module.component !== undefined) {
-          callback(null, module.component);
+          callback(null, Compose(component, module.component));
         } else if (module.getComponent) {
-          module.getComponent(location, callback);
+          module.getComponent(location, function(error, routeComponent) {
+            if (error) {
+              callback(error);
+            } else {
+              callback(null, Compose(component, routeComponent));
+            }
+          });
         } else {
           callback(null, undefined);
         }
@@ -99,9 +115,15 @@ function createProxyRoute(path, module) {
       console.log('ProxyRoute.getChildRoutes');
       loadModule(module, function(module) {
         if (module.childRoutes !== undefined) {
-          callback(null, module.childRoutes);
+          callback(null, rewriteChildRoutes(path, module.childRoutes, component));
         } else if (module.getChildRoutes) {
-          module.getChildRoutes(location, callback);
+          module.getChildRoutes(location, function(error, childRoutes) {
+            if (error) {
+              callback(error);
+            } else {
+              callback(null, rewriteChildRoutes(path, childRoutes, component));
+            }
+          });
         } else {
           callback(null, []);
         }
@@ -124,6 +146,24 @@ function sortChildRoutes(a, b) {
   }
 }
 
+function rewriteChildRoutes(path = '/', childRoutes = [], component) {
+  return childRoutes
+    .map(route => ({
+      ...route, path: path + route.path.substring(1),
+      component: Compose(component, route.component),
+      getComponent(location, callback) {
+        route.getComponent(location, function(error, routeComponent) {
+          if (error) {
+            callback(error);
+          } else {
+            callback(null, Compose(component, routeComponent));
+          }
+        });
+      }
+    }))
+    .filter(route => route.path !== path);
+}
+
 function createModuleRoute(path, module) {
 
   return {
@@ -132,23 +172,47 @@ function createModuleRoute(path, module) {
     path,
 
     getComponent(location, callback) {
-      console.log('PageRoute.getComponent');
-      loadModule(module, function(module) {
-        callback(null, module.component);
-      });
+      console.log('ModuleRoute.getComponent');
+      getComponentWithProxy(path, module, location, callback);
     },
 
     getChildRoutes(location, callback) {
-      console.log('PageRoute.getChildRoutes');
-      loadModule(module, function(module) {
-        let childRoutes = module.childRoutes || [];
-        childRoutes = childRoutes
-          .map(route => ({...route, path: path + route.path.substring(1)}))
-          .filter(route => route.path !== path);
-        callback(null, childRoutes);
-      });
+      console.log('ModuleRoute.getChildRoutes');
+      getChildRoutesWithProxy(path, module, location, callback);
     }
   };
+}
+
+function getComponentWithProxy(path, module, location, callback) {
+  loadModule(module, function(module) {
+    if (module.type === 'ProxyRoute') {
+      module.getComponent(location, function(error, component) {
+        if (error) {
+          callback(error);
+        } else {
+          callback(null, Compose(module.component, component));
+        }
+      });
+    } else {
+      callback(null, module.component);
+    }
+  });
+}
+
+function getChildRoutesWithProxy(path, module, location, callback) {
+  loadModule(module, function(module) {
+    if (module.type === 'ProxyRoute') {
+      module.getChildRoutes(location, function(error, childRoutes) {
+        if (error) {
+          callback(error);
+        } else {
+          callback(null, rewriteChildRoutes('', childRoutes, module.component));
+        }
+      });
+    } else {
+      callback(null, rewriteChildRoutes(path, module.childRoutes));
+    }
+  });
 }
 
 function createContextRoute(path, context, component) {
@@ -167,6 +231,5 @@ function createContextRoute(path, context, component) {
     }
   });
   childRoutes.sort(sortChildRoutes);
-  console.log('createContextRoute', path, indexRoute, childRoutes);
-  return {type: 'ContextRoute', path, childRoutes, indexRoute};
+  return {type: 'ContextRoute', path, childRoutes, indexRoute, component};
 }
