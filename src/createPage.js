@@ -52,10 +52,10 @@ export default function createPage(spec) {
 }
 
 function loadModule(module, callback) {
-  if (typeof module === 'function') {
+  if (typeof module === 'function' && module.keys === undefined && module.resolve === undefined) {
     module(callback);
   } else {
-    callback(module);
+    setTimeout(callback.bind(null, module), 0);
   }
 }
 
@@ -215,7 +215,7 @@ function createContextRoute(path, context, component) {
   let indexRoute;
   keys.forEach(key => {
     let module = function loadContextModule(cb) {
-      context(key)(cb);
+      loadModule(context(key), cb);
     };
     let childPath = key.substring(1).replace(/\..+$/, '');
     if (childPath === '/index') {
