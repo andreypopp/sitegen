@@ -51,6 +51,7 @@
     "extract-text-webpack-plugin": "^0.8.2",
     "file-loader": "^0.8.4",
     "history": "^1.9.1",
+    "invariant": "^2.1.0",
     "react-transform-hmr": "^1.0.0",
     "rimraf": "^2.4.3",
     "sitegen-loader-markdown": "^0.1.1",

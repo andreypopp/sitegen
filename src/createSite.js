@@ -6,20 +6,21 @@ import RenderRoot               from './RenderRoot';
 import createPage               from './createPage';
 
 export default function createSite(spec) {
-  let page = createPage(spec);
-  return {
-    ...page,
+  let page = {...createPage(spec)};
 
-    renderIntoDocument(element = RenderRoot.getDOMNode()) {
-      let history = createBrowserHistory();
-      let unlisten = history.listen(location => 
-        match({routes: page.childRoutes, location}, (err, redirect, props) =>
-          ReactDOM.render(<RoutingContext {...props} history={history} />, element)));
+  page.renderIntoDocument = function(element = RenderRoot.getDOMNode()) {
+    let history = createBrowserHistory();
+    let unlisten = history.listen(location => 
+      match({routes: page, location}, (err, redirect, props) => {
+        console.log('renderProps', err, redirect, props);
+        ReactDOM.render(<RoutingContext {...props} history={history} />, element)
+      }));
 
-      return function unmount() {
-        unlisten();
-        ReactDOM.unmountComponentAtNode(element);
-      }
+    return function unmount() {
+      unlisten();
+      ReactDOM.unmountComponentAtNode(element);
     }
   };
+
+  return page;
 }

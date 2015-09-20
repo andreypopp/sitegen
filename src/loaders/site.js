@@ -1,19 +1,29 @@
-import path               from 'path';
-import {stringifyRequest} from 'loader-utils';
+import path                           from 'path';
+import {stringifyRequest, parseQuery} from 'loader-utils';
 
 module.exports = function(source) {
   this.cacheable && this.cacheable();
-  let pkg = JSON.parse(source);
-  let sitegen = pkg.sitegen;
-  if (typeof sitegen === 'string') {
-    sitegen = {content: sitegen};
+  let sitegen = parseQuery(this.query);
+  if (sitegen.contentIsDirectory) {
+    source = `
+      var site = Sitegen.createSite({
+        path: '/',
+        page: require.context('page!./${sitegen.content}', true, /.+/)
+      });
+    `;
+  } else {
+    source = `
+      var site = Sitegen.createSite({
+        path: '/',
+        page: require('page!./${sitegen.content}')
+      });
+    `;
   }
   source = `
     var Sitegen = require('sitegen');
-
-    module.exports = Sitegen.createSite({
-      context: require.context('page!./${sitegen.content}', true, /.+/)
-    });
+    ${source}
+    console.log('site', site);
+    module.exports = site;
   `;
   return source;
 }

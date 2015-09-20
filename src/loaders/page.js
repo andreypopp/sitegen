@@ -5,6 +5,7 @@ module.exports = function(source) {
   source = `
     ${source};
     module.exports = require('sitegen').createPage(module.exports);
+    console.log('page', module.exports);
   `;
   return source;
 }
