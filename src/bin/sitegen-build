@@ -1,32 +1,23 @@
 #!/usr/bin/env node
 
-import program              from 'commander';
-import path                 from 'path';
-import Webpack              from 'webpack';
-import pkg                  from '../../package.json';
+import Webpack                from 'webpack';
 import configureFromDirectory from '../configureFromDirectory';
+import {parse}                from '../CLIUtils';
 
-program
-  .version(pkg.version)
-  .usage('sitegen-build [options] <site>')
-  .description('Serve site')
-  .option('-L, --lib <directory>', 'site library directory')
-  .option('-o, --output <directory>', 'output directory')
-  .parse(process.argv);
-
-let cwd = process.cwd();
-let site = path.join(cwd, program.args[0] || '.');
+let {site, options} = parse(process.argv, {allowOutput: true});
 
 let renderAssets = Webpack(configureFromDirectory(site, {
-  lib: program.lib,
-  output: program.output,
+  lib: options.lib,
+  output: options.output,
+  require: options.require,
   mode: 'serve',
   compilerName: 'sitegen-assets',
 }));
 
 let renderPages = Webpack(configureFromDirectory(site, {
-  lib: program.lib,
-  output: program.output,
+  lib: options.lib,
+  output: options.output,
+  require: options.require,
   mode: 'build',
   compilerName: 'sitegen-pages',
 }));

@@ -8,14 +8,14 @@ function flattenArray(array) {
   return result;
 }
 
-function pathConcat(a, b) {
+export function pathConcat(a, b) {
   if (!a) {
     return b;
   }
   if (!b) {
     return a;
   }
-  return a + '/' + b;
+  return (a + '/' + b).replace(/\/+/g, '/');
 }
 
 export async function getIndexRoute(route) {

@@ -19,17 +19,28 @@ export default class RenderStaticPlugin {
 
       cleanAssets(compilation.assets);
 
-      flattenRoutes(routes).then(childRoutes =>
-        mapSequential(childRoutes, route => 
-          this.render(routes, route).then(markup =>
-            compilation.assets[assetNameFromRoute(route)] = createAssetFromContents(markup))).then(() => done()),
-        done);
+      function addToAssets(path, markup) {
+        compilation.assets[routePathToAssetPath(path)] = createAssetFromContents(markup);
+      }
+
+      flattenRoutes(routes)
+        .then(childRoutes => mapSequential(
+          childRoutes,
+          route => this.render(routes, route.path).then(markup => addToAssets(route.path, markup))
+        ))
+        .then(
+          () => {
+            done();
+          },
+          err => {
+            done(err);
+          });
     });
   }
 
-  render(routes, route) {
+  render(routes, path) {
     return new Promise((resolve, reject) => {
-      let location = createLocation(route.path);
+      let location = createLocation(path);
       match({routes, location}, (error, redirectLocation, props) => {
         if (error) {
           reject(error);
@@ -58,8 +69,8 @@ function createAssetFromContents(contents) {
   };
 }
 
-function assetNameFromRoute(route) {
-  let path = route.path.replace(/^\//, '').replace(/\/$/, '');
+function routePathToAssetPath(path) {
+  path = path.replace(/^\//, '').replace(/\/$/, '');
   return path + '/index.html';
 }
 

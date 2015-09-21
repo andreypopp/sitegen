@@ -1,21 +1,29 @@
 import path                           from 'path';
 import {stringifyRequest, parseQuery} from 'loader-utils';
 
+function normalizePath(path) {
+  if (path[0] === '/') {
+    return path;
+  } else {
+    return './' + path;
+  }
+}
+
 module.exports = function(source) {
   this.cacheable && this.cacheable();
-  let sitegen = parseQuery(this.query);
-  if (sitegen.contentIsDirectory) {
+  let options = parseQuery(this.query);
+  if (options.asContext) {
     source = `
       var site = Sitegen.createSite({
         path: '/',
-        page: require.context('page!./${sitegen.content}', true, /.+/)
+        page: require.context('page!${normalizePath(options.content)}', true, /.+/)
       });
     `;
   } else {
     source = `
       var site = Sitegen.createSite({
         path: '/',
-        page: require('page!./${sitegen.content}')
+        page: require('page!${normalizePath(options.content)}')
       });
     `;
   }

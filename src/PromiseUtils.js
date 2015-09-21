@@ -13,6 +13,8 @@ export function awaitCallback(func, ...args) {
 
 export function mapSequential(array, func) {
   let promise = Promise.resolve();
-  array.forEach(item => promise = promise.then(func(item)));
+  array.forEach(item => {
+    promise = promise.then(() => func(item))
+  });
   return promise;
 }
