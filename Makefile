@@ -1,6 +1,6 @@
 .DELETE_ON_ERROR:
 
-BABEL_OPTIONS = --stage 0
+BABEL_OPTIONS = --stage 0 --optional runtime
 BIN           = ./node_modules/.bin
 TESTS         = $(shell find src -path '*/__tests__/*.js')
 BIN-SRC				= $(wildcard src/bin/*)

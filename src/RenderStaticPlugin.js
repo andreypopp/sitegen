@@ -6,47 +6,24 @@ import {match, RoutingContext}                from 'react-router';
 import {renderToString, renderToStaticMarkup} from 'react-dom/server';
 import Site                                   from './Site';
 import {JS_BUNDLE_NAME, CSS_BUNDLE_NAME}      from './createWebpackConfig';
-
-function getChildRoutes(route, callback) {
-  if (route.childRoutes) {
-    callback(null, childRoutes);
-  } else if (route.getChildRoutes) {
-    route.getChildRoutes(null, callback);
-  } else {
-    callback(null, []);
-  }
-}
+import {flattenRoutes}                        from './RouteUtils';
+import {mapSequential}                        from './PromiseUtils';
 
 export default class RenderStaticPlugin {
 
   apply(compiler) {
     compiler.plugin('emit', (compilation, done) => {
       let source = compilation.assets[JS_BUNDLE_NAME]._source.source();
-      let routes = evaluate('module.exports = ' + source, '<bootstrap>', {
-        console,
-        process,
-        setTimeout
-      });
-      let renderAll = Promise.resolve();
+      let scope = {console, process, setTimeout};
+      let routes = evaluate('module.exports = ' + source, '<bootstrap>', scope);
 
       cleanAssets(compilation.assets);
 
-      getChildRoutes(routes, (error, childRoutes) => {
-        if (error) {
-          return done(error);
-        }
-        try {
-          childRoutes.forEach(route =>
-            renderAll = renderAll.then(() =>
-              this.render(routes, route).then(markup => {
-                compilation.assets[assetNameFromRoute(route)] = createAssetFromContents(markup)
-              }, done)));
-        } catch (err) {
-          return done(err);
-        }
-        renderAll.then(() => done(), (err) => done(err));
-      });
-
+      flattenRoutes(routes).then(childRoutes =>
+        mapSequential(childRoutes, route => 
+          this.render(routes, route).then(markup =>
+            compilation.assets[assetNameFromRoute(route)] = createAssetFromContents(markup))).then(() => done()),
+        done);
     });
   }
 

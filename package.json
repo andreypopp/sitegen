@@ -44,6 +44,7 @@
   "dependencies": {
     "babel-loader": "^5.3.2",
     "babel-plugin-react-transform": "^1.0.4",
+    "babel-runtime": "^5.8.24",
     "bundle-loader": "^0.5.4",
     "css-loader": "^0.18.0",
     "eval": "^0.1.1",
