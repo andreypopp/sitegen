@@ -26,7 +26,7 @@ test:
 ci:
 	@$(MOCHA) --watch -- $(TESTS)
 
-version-major version-minor version-patch: lint
+version-major version-minor version-patch:
 	@npm version $(@:version-%=%)
 
 publish: build
