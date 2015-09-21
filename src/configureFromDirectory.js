@@ -25,7 +25,7 @@ export default function configureFromDirectory(site, options) {
       ...options,
       entry: []
         .concat(options.require)
-        .concat(sitegen.require.map(relativize))
+        .concat(site.require && sitegen.require.map(relativize))
         .concat(makeSiteEntry(filename, sitegen))
         .filter(Boolean),
       lib: options.lib || relativize(sitegen.lib || 'lib'),
