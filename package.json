@@ -6,8 +6,7 @@
   "bin": {
     "sitegen": "./bin/sitegen",
     "sitegen-serve": "./bin/sitegen-serve",
-    "sitegen-build": "./bin/sitegen-build",
-    "sitegen-clean": "./bin/sitegen-clean"
+    "sitegen-build": "./bin/sitegen-build"
   },
   "scripts": {
     "test": "make test"
