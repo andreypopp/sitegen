@@ -22,7 +22,6 @@ module.exports = function(source) {
   source = `
     var Sitegen = require('sitegen');
     ${source}
-    console.log('site', site);
     module.exports = site;
   `;
   return source;

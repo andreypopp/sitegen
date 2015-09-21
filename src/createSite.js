@@ -12,7 +12,6 @@ export default function createSite(spec) {
     let history = createBrowserHistory();
     let unlisten = history.listen(location => 
       match({routes: page, location}, (err, redirect, props) => {
-        console.log('renderProps', err, redirect, props);
         ReactDOM.render(<RoutingContext {...props} history={history} />, element)
       }));
 
