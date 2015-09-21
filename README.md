@@ -1,7 +1,10 @@
 Sitegen
 =======
 
+[![Join the chat at https://gitter.im/andreypopp/sitegen](https://img.shields.io/badge/GITTER-join%20chat-green.svg)](https://gitter.im/andreypopp/sitegen?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Generate websites by composing React components.
+
 
 Getting started
 ---------------
