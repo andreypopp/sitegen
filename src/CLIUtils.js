@@ -6,7 +6,7 @@ export function listFormatter(items = []) {
   return function(item) {
     items.push(item);
     return items;
-  }
+  };
 }
 
 export function parse(argv, params = {allowOutput: false}) {

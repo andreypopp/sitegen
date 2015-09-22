@@ -1,5 +1,4 @@
 import evaluate                               from 'eval';
-import path                                   from 'path';
 import createLocation                         from 'history/lib/createLocation';
 import React                                  from 'react';
 import {match, RoutingContext}                from 'react-router';
@@ -26,7 +25,7 @@ export default class RenderStaticPlugin {
       flattenRoutes(routes)
         .then(childRoutes => mapSequential(
           childRoutes,
-          route => this.render(routes, route.path).then(markup => addToAssets(route.path, markup))
+          route => this.render(routes, route.path).then(addToAssets.bind(null, route.path))
         ))
         .then(
           () => {
@@ -53,7 +52,7 @@ export default class RenderStaticPlugin {
           );
           resolve(markup);
         }
-      })
+      });
     });
   }
 }

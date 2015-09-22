@@ -1,8 +1,12 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 
 export default class RenderRoot extends React.Component {
 
-  static id = "SitegenRoot";
+  static propTypes = {
+    markup: PropTypes.string
+  };
+
+  static id = 'SitegenRoot';
 
   static getDOMNode() {
     return document.getElementById(this.id);

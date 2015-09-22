@@ -26,20 +26,21 @@ export default function createPage(spec) {
   if (childPages) {
     childRoutes = [];
     for (let key in childPages) {
-      if (childPages.hasOwnProperty(key)) {
-        let module = childPages[key];
-        if (isContextModule(module)) {
-          childRoutes.push(createContextRoute(key, childPages[key]));
-        } else {
-          childRoutes.push(createModuleRoute(key, childPages[key]));
-        }
+      if (!childPages.hasOwnProperty(key)) {
+        continue;
+      }
+      let module = childPages[key];
+      if (isContextModule(module)) {
+        childRoutes.push(createContextRoute(key, childPages[key]));
+      } else {
+        childRoutes.push(createModuleRoute(key, childPages[key]));
       }
     }
     childRoutes.sort(sortChildRoutes);
   }
 
   if (!childRoutes) {
-    childRoutes = []
+    childRoutes = [];
   }
 
   return {

@@ -1,5 +1,4 @@
-import path                           from 'path';
-import {stringifyRequest, parseQuery} from 'loader-utils';
+import LoaderUtils from 'loader-utils';
 
 function normalizePath(path) {
   if (path[0] === '/') {
@@ -10,8 +9,10 @@ function normalizePath(path) {
 }
 
 module.exports = function(source) {
-  this.cacheable && this.cacheable();
-  let options = parseQuery(this.query);
+  if (this.cacheable) {
+    this.cacheable();
+  }
+  let options = LoaderUtils.parseQuery(this.query);
   if (options.asContext) {
     source = `
       var site = Sitegen.createSite({
@@ -33,4 +34,4 @@ module.exports = function(source) {
     module.exports = site;
   `;
   return source;
-}
+};

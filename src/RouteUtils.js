@@ -20,7 +20,7 @@ export function pathConcat(a, b) {
 
 export async function getIndexRoute(route) {
   if (route.indexRoute) {
-    return indexRoute;
+    return route.indexRoute;
   } else if (route.getIndexRoute) {
     return awaitCallback(route.getIndexRoute, null);
   } else {

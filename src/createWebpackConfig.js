@@ -3,11 +3,6 @@ import ExtractTextPlugin  from 'extract-text-webpack-plugin';
 import RenderStaticPlugin from './RenderStaticPlugin';
 import LogProgressPlugin  from './LogProgressPlugin';
 
-const defaultOptions = {
-  mode: 'serve',
-  dev: false,
-};
-
 export let JS_BUNDLE_NAME = '_bootstrap.js';
 export let CSS_BUNDLE_NAME = '_bootstrap.css';
 
@@ -29,13 +24,13 @@ export default function createWebpackConfig(options = {}) {
     sitegen: options,
     babel: options.mode === 'serve' && options.dev && {
       plugins: [
-        "react-transform"
+        'react-transform'
       ],
       extra: {
-        "react-transform": [{
-          target: "react-transform-hmr",
-          imports: ["react"],
-          locals: ["module"]
+        'react-transform': [{
+          target: 'react-transform-hmr',
+          imports: ['react'],
+          locals: ['module']
         }]
       }
     },

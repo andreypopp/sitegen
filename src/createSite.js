@@ -10,15 +10,14 @@ export default function createSite(spec) {
 
   page.renderIntoDocument = function(element = RenderRoot.getDOMNode()) {
     let history = createBrowserHistory();
-    let unlisten = history.listen(location => 
-      match({routes: page, location}, (err, redirect, props) => {
-        ReactDOM.render(<RoutingContext {...props} history={history} />, element)
-      }));
+    let unlisten = history.listen(location =>
+      match({routes: page, location}, (err, redirect, props) =>
+        ReactDOM.render(<RoutingContext {...props} history={history} />, element)));
 
     return function unmount() {
       unlisten();
       ReactDOM.unmountComponentAtNode(element);
-    }
+    };
   };
 
   return page;

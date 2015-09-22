@@ -1,5 +1,5 @@
 export default class LogProgressPlugin {
-  
+
   constructor(name = 'webpack') {
     this.name = name;
     this._notifyOnCompile = true;
@@ -12,14 +12,14 @@ export default class LogProgressPlugin {
   }
 
   _log(message) {
-    console.log(`${this.name}: ${message}`);
+    console.log(`${this.name}: ${message}`); // eslint-disable-line no-console
   }
 
   _onDone(stats) {
-    var time = stats.endTime - stats.startTime;
+    let time = stats.endTime - stats.startTime;
     if (stats.compilation.errors.length > 0) {
       this._log('compilation failed');
-      stats.compilation.errors.forEach(error => console.log(error.message));
+      stats.compilation.errors.forEach(error => this._log(error.message));
     } else {
       this._log('compilation finished (' + time + 'ms)');
     }

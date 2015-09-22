@@ -1,11 +1,14 @@
-import React from 'react';
-import RenderRoot from './RenderRoot';
-
-function scoped(source) {
-  return `(function() { ${source} })();`;
-}
+import React, {PropTypes} from 'react';
+import RenderRoot         from './RenderRoot';
 
 export default class Site extends React.Component {
+
+  static propTypes = {
+    children: PropTypes.node,
+    head: PropTypes.node,
+    jsBundlePath: PropTypes.string,
+    cssBundlePath: PropTypes.string,
+  };
 
   render() {
     let {children, head, jsBundlePath, cssBundlePath} = this.props;
