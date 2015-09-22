@@ -17,16 +17,15 @@ module.exports.pitch = function(remainingRequest) {
   }
   let query = LoaderUtils.parseQuery(this.query);
   let options = this.options.sitegen;
-  if (options.mode === 'serve' && !query.wrap) {
+
+  if (query.wrap) {
+    return;
+  }
+
+  if (options.mode === 'serve' && !options.dev) {
     let request = LoaderUtils.stringifyRequest(
       this,
       `!!bundle?name=[path][name]!${__filename}?wrap!${remainingRequest}`
-    );
-    return `module.exports = require(${request});`;
-  } else if (options.mode === 'build' && !query.wrap) {
-    let request = LoaderUtils.stringifyRequest(
-      this,
-      `!!${__filename}?wrap!${remainingRequest}`
     );
     return `module.exports = require(${request});`;
   }
