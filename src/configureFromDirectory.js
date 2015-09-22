@@ -45,7 +45,6 @@ export default function configureFromDirectory(site, options) {
   } else {
     error(`${site} is not an npm package, nor a file`);
   }
-  console.log(options);
   return createWebpackConfig(options);
 }
 
