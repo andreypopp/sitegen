@@ -14,7 +14,7 @@ export function isInitialized() {
   return _REGISTRY !== null;
 }
 
-export function initialize(routes) {
+export function routesToRegistry(routes) {
   let registry = {};
   for (let i = 0; i < routes.length; i++) {
     let route = routes[i];
@@ -22,9 +22,13 @@ export function initialize(routes) {
       registry[route.key] = route.path;
     }
   }
+  return registry;
+}
+
+export function initialize(routes) {
   invariant(
     _REGISTRY === null,
     'LinkRegistry already initialized'
   );
-  _REGISTRY = registry;
+  _REGISTRY = routesToRegistry(routes);
 }

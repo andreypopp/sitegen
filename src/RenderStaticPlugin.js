@@ -5,7 +5,7 @@ import {match, RoutingContext}                from 'react-router';
 import {renderToString, renderToStaticMarkup} from 'react-dom/server';
 import Site                                   from './Site';
 import {JS_BUNDLE_NAME, CSS_BUNDLE_NAME}      from './createWebpackConfig';
-import {collectRoutes}                        from './RouteUtils';
+import * as RouteUtils                        from './RouteUtils';
 import {mapSequential}                        from './PromiseUtils';
 import * as LinkRegistry                      from './LinkRegistry';
 
@@ -14,10 +14,14 @@ export default class RenderStaticPlugin {
   apply(compiler) {
     compiler.plugin('emit', (compilation, done) => {
       let source = compilation.assets[JS_BUNDLE_NAME]._source.source();
+      let window = {
+        SitegenLinkRegistry: {}
+      };
       let scope = {
         console,
         process,
         setTimeout,
+        window
       };
       let routes = evaluate('module.exports = ' + source, '<bootstrap>', scope);
 
@@ -27,13 +31,23 @@ export default class RenderStaticPlugin {
         compilation.assets[routePathToAssetPath(path)] = createAssetFromContents(markup);
       }
 
-      let collectedRoutes = collectRoutes(routes);
+      function populateLinkRegistry(registry) {
+        for (let key in registry) {
+          if (registry.hasOwnProperty(key)) {
+            window.SitegenLinkRegistry[key] = registry[key];
+          }
+        }
+      }
 
-      collectRoutes
+      let collectedRoutes = RouteUtils.collectRoutes(routes);
+
+      collectedRoutes
         .then(childRoutes => {
-          LinkRegistry.initialize(childRoutes);
+          let linkRegistry = LinkRegistry.routesToRegistry(childRoutes);
+          populateLinkRegistry(linkRegistry);
           return mapSequential(childRoutes, route =>
-            this.renderPath(routes, route.path).then(addToAssets.bind(null, route.path)));
+            this.renderPath(routes, linkRegistry, route.path)
+              .then(addToAssets.bind(null, route.path)));
         })
         .then(
           () => {
@@ -45,7 +59,7 @@ export default class RenderStaticPlugin {
     });
   }
 
-  renderPath(routes, path) {
+  renderPath(routes, linkRegistry, path) {
     return new Promise((resolve, reject) => {
       let location = createLocation(path);
       match({routes, location}, (error, redirectLocation, props) => {
@@ -54,7 +68,10 @@ export default class RenderStaticPlugin {
         } else {
           let innerMarkup = renderToString(<RoutingContext {...props} />);
           let markup = renderToStaticMarkup(
-            <Site jsBundlePath={'/' + JS_BUNDLE_NAME} cssBundlePath={'/' + CSS_BUNDLE_NAME}>
+            <Site
+              jsBundlePath={'/' + JS_BUNDLE_NAME}
+              cssBundlePath={'/' + CSS_BUNDLE_NAME}
+              linkRegistry={linkRegistry}>
               {innerMarkup}
             </Site>
           );
