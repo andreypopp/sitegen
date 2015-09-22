@@ -4,21 +4,38 @@ import {RoutingContext, match}  from 'react-router';
 import createBrowserHistory     from 'history/lib/createBrowserHistory';
 import RenderRoot               from './RenderRoot';
 import createPage               from './createPage';
+import * as RouteUtils          from './RouteUtils';
+import * as LinkRegistry        from './LinkRegistry';
 
-export default function createSite(spec) {
-  let page = {...createPage(spec)};
+function initializeLinkRegistry(routes) {
+  if (LinkRegistry.isInitialized()) {
+    return Promise.resolve();
+  } else {
+    return RouteUtils.collectRoutes(routes).then(LinkRegistry.initialize);
+  }
+}
 
-  page.renderIntoDocument = function(element = RenderRoot.getDOMNode()) {
-    let history = createBrowserHistory();
-    let unlisten = history.listen(location =>
-      match({routes: page, location}, (err, redirect, props) =>
-        ReactDOM.render(<RoutingContext {...props} history={history} />, element)));
+export default function createSite(spec, key) {
+  let routes = {...createPage(spec, key)};
 
-    return function unmount() {
-      unlisten();
-      ReactDOM.unmountComponentAtNode(element);
-    };
+  routes.renderIntoDocument = function(element = RenderRoot.getDOMNode()) {
+
+    function render() {
+      let history = createBrowserHistory();
+      let unlisten = history.listen(location =>
+        match({routes, location}, (err, redirect, props) =>
+          ReactDOM.render(<RoutingContext {...props} history={history} />, element)));
+
+      return Promise.resolve(function unmount() {
+        unlisten();
+        ReactDOM.unmountComponentAtNode(element);
+      });
+    }
+
+    return initializeLinkRegistry(routes).then(render).catch(err => {
+      throw err;
+    });
   };
 
-  return page;
+  return routes;
 }

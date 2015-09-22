@@ -25,7 +25,7 @@
   "bugs": {
     "url": "https://github.com/andreypopp/sitegen/issues"
   },
-  "homepage": "https://github.com/andreypopp/sitegen#readme",
+  "homepage": "https://github.com/andreypopp/sitegen",
   "peerDependencies": {
     "react": "^0.14.0-rc1",
     "react-dom": "^0.14.0-rc1",
@@ -45,13 +45,14 @@
     "babel-plugin-react-transform": "^1.0.4",
     "babel-runtime": "^5.8.24",
     "bundle-loader": "^0.5.4",
-    "css-loader": "^0.18.0",
+    "css-loader": "^0.19.0",
     "eval": "^0.1.1",
     "express": "^4.13.3",
     "extract-text-webpack-plugin": "^0.8.2",
     "file-loader": "^0.8.4",
     "history": "^1.9.1",
     "invariant": "^2.1.0",
+    "json-loader": "^0.5.3",
     "react-transform-hmr": "^1.0.0",
     "rimraf": "^2.4.3",
     "sitegen-loader-markdown": "^0.1.1",

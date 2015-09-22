@@ -1,4 +1,5 @@
 import LoaderUtils from 'loader-utils';
+import resourceID  from '../resourceID';
 
 function normalizePath(path) {
   if (path[0] === '/') {
@@ -13,19 +14,20 @@ module.exports = function(source) {
     this.cacheable();
   }
   let options = LoaderUtils.parseQuery(this.query);
+  let key = JSON.stringify(resourceID(this.resource));
   if (options.asContext) {
     source = `
       var site = Sitegen.createSite({
         path: '/',
         page: require.context('page!${normalizePath(options.content)}', true, /.+/)
-      });
+      }, ${key});
     `;
   } else {
     source = `
       var site = Sitegen.createSite({
         path: '/',
         page: require('page!${normalizePath(options.content)}')
-      });
+      }, ${key});
     `;
   }
   source = `

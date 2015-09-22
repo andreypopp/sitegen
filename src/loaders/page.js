@@ -1,12 +1,14 @@
 import LoaderUtils from 'loader-utils';
+import resourceID  from '../resourceID';
 
 module.exports = function(source) {
   if (this.cacheable) {
     this.cacheable();
   }
+  let key = JSON.stringify(resourceID(this.resource));
   source = `
     ${source};
-    module.exports = require('sitegen').createPage(module.exports);
+    module.exports = require('sitegen').createPage(module.exports, ${key});
   `;
   return source;
 };
@@ -19,14 +21,14 @@ module.exports.pitch = function(remainingRequest) {
   let options = this.options.sitegen;
 
   if (query.wrap) {
-    return;
-  }
-
-  if (options.mode === 'serve' && !options.dev) {
+    return undefined;
+  } else if (options.mode === 'serve' && !options.dev) {
     let request = LoaderUtils.stringifyRequest(
       this,
       `!!bundle?name=[path][name]!${__filename}?wrap!${remainingRequest}`
     );
     return `module.exports = require(${request});`;
+  } else {
+    return undefined;
   }
 };

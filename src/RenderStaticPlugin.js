@@ -5,15 +5,20 @@ import {match, RoutingContext}                from 'react-router';
 import {renderToString, renderToStaticMarkup} from 'react-dom/server';
 import Site                                   from './Site';
 import {JS_BUNDLE_NAME, CSS_BUNDLE_NAME}      from './createWebpackConfig';
-import {flattenRoutes}                        from './RouteUtils';
+import {collectRoutes}                        from './RouteUtils';
 import {mapSequential}                        from './PromiseUtils';
+import * as LinkRegistry                      from './LinkRegistry';
 
 export default class RenderStaticPlugin {
 
   apply(compiler) {
     compiler.plugin('emit', (compilation, done) => {
       let source = compilation.assets[JS_BUNDLE_NAME]._source.source();
-      let scope = {console, process, setTimeout};
+      let scope = {
+        console,
+        process,
+        setTimeout,
+      };
       let routes = evaluate('module.exports = ' + source, '<bootstrap>', scope);
 
       cleanAssets(compilation.assets);
@@ -22,11 +27,14 @@ export default class RenderStaticPlugin {
         compilation.assets[routePathToAssetPath(path)] = createAssetFromContents(markup);
       }
 
-      flattenRoutes(routes)
-        .then(childRoutes => mapSequential(
-          childRoutes,
-          route => this.render(routes, route.path).then(addToAssets.bind(null, route.path))
-        ))
+      let collectedRoutes = collectRoutes(routes);
+
+      collectRoutes
+        .then(childRoutes => {
+          LinkRegistry.initialize(childRoutes);
+          return mapSequential(childRoutes, route =>
+            this.renderPath(routes, route.path).then(addToAssets.bind(null, route.path)));
+        })
         .then(
           () => {
             done();
@@ -37,7 +45,7 @@ export default class RenderStaticPlugin {
     });
   }
 
-  render(routes, path) {
+  renderPath(routes, path) {
     return new Promise((resolve, reject) => {
       let location = createLocation(path);
       match({routes, location}, (error, redirectLocation, props) => {
