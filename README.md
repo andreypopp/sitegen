@@ -5,7 +5,6 @@ Sitegen
 
 Generate websites by composing React components.
 
-
 Getting started
 ---------------
 
