@@ -8,6 +8,15 @@ function flattenArray(array) {
   return result;
 }
 
+async function loadRouteKey(route) {
+  if (route.getKey) {
+    let key = await awaitCallback(route.getKey);
+    return {...route, key};
+  } else {
+    return route;
+  }
+}
+
 export function pathConcat(a, b) {
   if (!a) {
     return b;
@@ -38,13 +47,24 @@ export async function getChildRoutes(route) {
   }
 }
 
-export async function flattenRoutes(route) {
+export async function collectRoutes(route) {
+  let routes = [route];
+
+  let indexRoute = await getIndexRoute(route);
+  if (indexRoute) {
+    indexRoute = {...indexRoute, path: route.path};
+    routes.push(indexRoute);
+  }
+
   let childRoutes = await getChildRoutes(route);
-  childRoutes = await Promise.all(childRoutes.map(flattenRoutes));
-  childRoutes = flattenArray(childRoutes);
-  childRoutes = childRoutes.map(childRoute => ({
-    ...childRoute,
-    path: pathConcat(route.path, childRoute.path)
-  }));
-  return [route].concat(childRoutes);
+  if (childRoutes.length > 0) {
+    childRoutes = await Promise.all(childRoutes.map(collectRoutes));
+    childRoutes = flattenArray(childRoutes);
+    childRoutes = childRoutes.map(childRoute => ({
+      ...childRoute,
+      path: pathConcat(route.path, childRoute.path)
+    }));
+    routes = routes.concat(childRoutes);
+  }
+  return await Promise.all(routes.map(loadRouteKey));
 }

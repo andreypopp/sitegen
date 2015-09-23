@@ -1,50 +1,27 @@
-import React     from 'react';
-import invariant from 'invariant';
+import invariant          from 'invariant';
+import suggestPullRequest from './suggestPullRequest';
 
-export default function createPage(spec) {
-  let {page, indexRoute, childRoutes, childPages, component, path} = spec;
-
-  invariant(
-    !(childRoutes && childPages),
-    'Page cannot specify both childPages and childRoutes at the same time.'
-  );
-
-  invariant(
-    !(childPages && page),
-    'Page cannot specify both childPages and page at the same time.'
-  );
+export default function createPage(spec, key) {
+  invariant(key !== undefined, 'oops');
+  let {
+    page,
+    path,
+    component,
+    indexRoute,
+    childRoutes = [],
+  } = spec;
 
   if (page) {
     if (isContextModule(page)) {
-      let contextModule = createContextRoute(path, page, component);
-      return createProxyRoute(path, contextModule);
+      return {...createContextRoute(path, page, component), key};
     } else {
-      return createProxyRoute(path, page, component);
+      return {...createProxyRoute(path, page, component), key};
     }
-  }
-
-  if (childPages) {
-    childRoutes = [];
-    for (let key in childPages) {
-      if (!childPages.hasOwnProperty(key)) {
-        continue;
-      }
-      let module = childPages[key];
-      if (isContextModule(module)) {
-        childRoutes.push(createContextRoute(key, childPages[key]));
-      } else {
-        childRoutes.push(createModuleRoute(key, childPages[key]));
-      }
-    }
-    childRoutes.sort(sortChildRoutes);
-  }
-
-  if (!childRoutes) {
-    childRoutes = [];
   }
 
   return {
-    type: 'PlainRoute',
+    type: 'Module',
+    key,
     path,
     component,
     childRoutes,
@@ -52,39 +29,61 @@ export default function createPage(spec) {
   };
 }
 
-function loadModule(module, callback) {
-  if (typeof module === 'function' && module.keys === undefined && module.resolve === undefined) {
-    module(callback);
-  } else {
-    setTimeout(callback.bind(null, module), 0);
-  }
-}
-
-function Compose(Wrapper, Component) {
-  if (Wrapper === undefined) {
-    return Component;
-  }
-  return function Composed(props) {
-    return (
-      <Wrapper {...props}>
-        <Component {...props} />
-      </Wrapper>
-    );
+function createContextRoute(path, context, component) {
+  let childRoutes = [];
+  let indexRoute;
+  context.keys().forEach(key => {
+    let module = cb => ensureModuleLoaded(context(key), cb);
+    let childPath = key.substring(1).replace(/\..+$/, '').replace(/^\//, '');
+    if (childPath === 'index') {
+      indexRoute = createProxyRoute(path, module);
+    } else {
+      childRoutes.push(createProxyRoute(childPath, module));
+    }
+  });
+  childRoutes.sort(sortChildRoutes);
+  return {
+    type: 'Context',
+    path,
+    childRoutes,
+    indexRoute,
+    component,
+    getKey(callback) {
+      if (indexRoute) {
+        indexRoute.getKey(callback);
+      } else {
+        callback(null, null);
+      }
+    }
   };
 }
 
-function createProxyRoute(path, module, component) {
-  return {
-    type: 'ProxyRoute',
+function ensureModuleLoaded(module, callback) {
+  if (isModuleLoader(module)) {
+    module(callback);
+  } else {
+    callback(module);
+  }
+}
+
+function createProxyRoute(path, module) {
+  let self = {
+    type: 'Proxy',
 
     path,
 
+    getKey(callback) {
+      getKeyRecursively(module, callback);
+    },
+
     getIndexRoute(location, callback) {
-      loadModule(module, function(module) {
-        if (module.indexRoute !== undefined) {
+      ensureModuleLoaded(module, function(module) {
+        if (module.type === 'Proxy') {
+          module.getIndexRoute(location, callback);
+        } else if (module.indexRoute !== undefined) {
           callback(null, module.indexRoute);
         } else if (module.getIndexRoute) {
-          module.getIndexRoute(location, callback);
+          suggestPullRequest('Route.getIndexRoute');
         } else {
           callback(null, undefined);
         }
@@ -92,17 +91,13 @@ function createProxyRoute(path, module, component) {
     },
 
     getComponent(location, callback) {
-      loadModule(module, function(module) {
-        if (module.component !== undefined) {
-          callback(null, Compose(component, module.component));
+      ensureModuleLoaded(module, function(module) {
+        if (module.type === 'Proxy') {
+          module.getComponent(location, callback);
+        } else if (module.component !== undefined) {
+          callback(null, module.component);
         } else if (module.getComponent) {
-          module.getComponent(location, function(error, routeComponent) {
-            if (error) {
-              callback(error);
-            } else {
-              callback(null, Compose(component, routeComponent));
-            }
-          });
+          suggestPullRequest('Route.getChildRoutes');
         } else {
           callback(null, undefined);
         }
@@ -110,29 +105,47 @@ function createProxyRoute(path, module, component) {
     },
 
     getChildRoutes(location, callback) {
-      loadModule(module, function(module) {
-        if (module.childRoutes !== undefined) {
-          callback(null, rewriteChildRoutes(path, module.childRoutes, component));
+      ensureModuleLoaded(module, function(module) {
+        if (module.type === 'Proxy') {
+          module.getChildRoutes(location, callback);
+        } else if (module.childRoutes !== undefined) {
+          callback(null, module.childRoutes);
         } else if (module.getChildRoutes) {
-          module.getChildRoutes(location, function(error, childRoutes) {
-            if (error) {
-              callback(error);
-            } else {
-              callback(null, rewriteChildRoutes(path, childRoutes, component));
-            }
-          });
+          suggestPullRequest('Route.getChildRoutes');
         } else {
           callback(null, []);
         }
       });
     }
   };
+
+  return self;
 }
 
+/**
+ * Check if `module` is a context module.
+ */
 function isContextModule(module) {
-  return typeof module.keys === 'function' && typeof module.resolve === 'function';
+  return (
+    typeof module === 'function' &&
+    typeof module.keys === 'function' &&
+    typeof module.resolve === 'function'
+  );
 }
 
+/**
+ * Check if `module` is a module loader (created with bundle-loader).
+ */
+function isModuleLoader(module) {
+  return (
+    typeof module === 'function' &&
+    !isContextModule(module)
+  );
+}
+
+/**
+ * Sort function for child routes.
+ */
 function sortChildRoutes(a, b) {
   if (a.path.length > b.path.length) {
     return 1;
@@ -143,88 +156,18 @@ function sortChildRoutes(a, b) {
   }
 }
 
-function rewriteChildRoutes(path = '/', childRoutes = [], component) {
-  return childRoutes
-    .map(route => ({
-      ...route, path: path + route.path.substring(1),
-      component: Compose(component, route.component),
-      getComponent(location, callback) {
-        route.getComponent(location, function(error, routeComponent) {
-          if (error) {
-            callback(error);
-          } else {
-            callback(null, Compose(component, routeComponent));
-          }
-        });
-      }
-    }))
-    .filter(route => route.path !== path);
-}
-
-function createModuleRoute(path, module) {
-
-  return {
-    type: 'ModuleRoute',
-
-    path,
-
-    getComponent(location, callback) {
-      getComponentWithProxy(path, module, location, callback);
-    },
-
-    getChildRoutes(location, callback) {
-      getChildRoutesWithProxy(path, module, location, callback);
-    }
-  };
-}
-
-function getComponentWithProxy(path, module, location, callback) {
-  loadModule(module, function(module) {
-    if (module.type === 'ProxyRoute') {
-      module.getComponent(location, function(error, component) {
+function getKeyRecursively(module, callback) {
+  ensureModuleLoaded(module, function(module) {
+    if (module.key) {
+      callback(null, module.key);
+    } else if (module.getKey) {
+      module.getKey(function(error, key) {
         if (error) {
           callback(error);
         } else {
-          callback(null, Compose(module.component, component));
+          callback(null, key);
         }
       });
-    } else {
-      callback(null, module.component);
     }
   });
-}
-
-function getChildRoutesWithProxy(path, module, location, callback) {
-  loadModule(module, function(module) {
-    if (module.type === 'ProxyRoute') {
-      module.getChildRoutes(location, function(error, childRoutes) {
-        if (error) {
-          callback(error);
-        } else {
-          callback(null, rewriteChildRoutes('', childRoutes, module.component));
-        }
-      });
-    } else {
-      callback(null, rewriteChildRoutes(path, module.childRoutes));
-    }
-  });
-}
-
-function createContextRoute(path, context, component) {
-  let keys = context.keys();
-  let childRoutes = [];
-  let indexRoute;
-  keys.forEach(key => {
-    let module = function loadContextModule(cb) {
-      loadModule(context(key), cb);
-    };
-    let childPath = key.substring(1).replace(/\..+$/, '');
-    if (childPath === '/index') {
-      indexRoute = createModuleRoute(undefined, module);
-    } else {
-      childRoutes.push(createModuleRoute(childPath, module));
-    }
-  });
-  childRoutes.sort(sortChildRoutes);
-  return {type: 'ContextRoute', path, childRoutes, indexRoute, component};
 }

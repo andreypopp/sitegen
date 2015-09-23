@@ -22,6 +22,7 @@ export default function createWebpackConfig(options = {}) {
     entry: entry.filter(Boolean),
     target: options.mode === 'build' ? 'node' : 'web',
     sitegen: options,
+    devtool: options.dev ? 'cheap-module-eval-source-map' : undefined,
     babel: options.mode === 'serve' && options.dev && {
       plugins: [
         'react-transform'
@@ -58,12 +59,18 @@ export default function createWebpackConfig(options = {}) {
     },
     resolveLoader: {
       alias: {
-        page: require.resolve('./loaders/page'),
+        ['page']: require.resolve('./loaders/page'),
+        ['page-link']: require.resolve('./loaders/page-link'),
+        ['site']: require.resolve('./loaders/site'),
       },
     },
     module: {
       loaders: [
         // content
+        {
+          test: /\.json$/,
+          loader: 'json-loader',
+        },
         {
           test: /\.js$/,
           loader: 'babel-loader?stage=0'
