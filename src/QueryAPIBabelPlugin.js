@@ -7,7 +7,7 @@ export default function QueryAPIBabelPlugin({Plugin, types: t}) {
     return t.newExpression(t.identifier('RegExp'), [t.literal(re.source)]);
   }
 
-  function makeSitegenInternalCallExpression(name, args) {
+  function makeSitegenAPICall(name, args) {
     let callee = t.memberExpression(
       t.identifier('Sitegen'),
       t.identifier('__internal')
@@ -16,78 +16,63 @@ export default function QueryAPIBabelPlugin({Plugin, types: t}) {
     return t.callExpression(callee, args);
   }
 
-  return new Plugin("sitegen-query-api", {
+  function makeRequire(request) {
+    return t.callExpression(t.identifier('require'), [t.literal(request)]);
+  }
+
+  function makeRequireContext(request, pattern) {
+    let callee = t.memberExpression(
+      t.identifier('require'),
+      t.identifier('context'));
+    return t.callExpression(callee, [
+      t.literal(request),
+      t.literal(true),
+      makeRegExpNode(pattern),
+    ]);
+  }
+
+  return new Plugin('sitegen-query-api', {
     visitor: {
-      CallExpression(node, parent) {
+      CallExpression(node) {
 
         if (isSitegenAPI('requirePage', node)) {
           checkSitegenAPI('requirePage', node);
           let request = node.arguments[0].value;
-          return t.callExpression(
-            t.identifier('require'),
-            [t.literal(`page!${request}`)]
-          );
+          let moduleNode = makeRequire(`page!${request}`);
+          return makeSitegenAPICall('wrapPageModule', [moduleNode]);
 
         } else if (isSitegenAPI('requirePageList', node)) {
           checkSitegenAPI('requirePageList', node);
           let request = node.arguments[0].value;
           let {directory, regexp} = parseRequest(request);
-          return t.callExpression(
-            t.identifier('require.context'),
-            [
-              t.literal(`page!${directory}`),
-              t.literal(true),
-              makeRegExpNode(regexp)
-            ]
-          );
+          let contextNode = makeRequireContext(`page!${directory}`, regexp);
+          return makeSitegenAPICall('wrapPageContext', [contextNode]);
 
         } else if (isSitegenAPI('getLink', node)) {
           checkSitegenAPI('getLink', node);
           let request = node.arguments[0].value;
-          return t.callExpression(
-            t.identifier('require'),
-            [t.literal(`page-link!${request}`)]
-          );
+          let moduleNode = makeRequire(`page-link!${request}`);
+          return makeSitegenAPICall('wrapPageLinkModule', [moduleNode]);
 
         } else if (isSitegenAPI('getLinkList', node)) {
           checkSitegenAPI('getLinkList', node);
           let request = node.arguments[0].value;
           let {directory, regexp} = parseRequest(request);
-          let contextNode = t.callExpression(
-            t.identifier('require.context'),
-            [
-              t.literal(`page-link!${directory}`),
-              t.literal(true),
-              makeRegExpNode(regexp)
-            ]
-          );
-          return makeSitegenInternalCallExpression(
-            'makeLinkListFromContext',
-            [contextNode]);
+          let contextNode = makeRequireContext(`page-link!${directory}`, regexp);
+          return makeSitegenAPICall('wrapPageLinkContext', [contextNode]);
 
         } else if (isSitegenAPI('getMeta', node)) {
           checkSitegenAPI('getMeta', node);
           let request = node.arguments[0].value;
-          return t.callExpression(
-            t.identifier('require'),
-            [t.literal(`page-meta!${request}`)]
-          );
+          let moduleNode = makeRequire(`page-meta!${request}`);
+          return makeSitegenAPICall('wrapPageMetaModule', [moduleNode]);
 
         } else if (isSitegenAPI('getMetaList', node)) {
           checkSitegenAPI('getMetaList', node);
           let request = node.arguments[0].value;
           let {directory, regexp} = parseRequest(request);
-          let contextNode = t.callExpression(
-            t.identifier('require.context'),
-            [
-              t.literal(`page-meta!${directory}`),
-              t.literal(true),
-              makeRegExpNode(regexp)
-            ]
-          );
-          return makeSitegenInternalCallExpression(
-            'makeMetaListFromContext',
-            [contextNode]);
+          let contextNode = makeRequireContext(`page-meta!${directory}`, regexp);
+          return makeSitegenAPICall('wrapPageMetaContext', [contextNode]);
         }
       }
     }
