@@ -1,7 +1,8 @@
-import webpack            from 'webpack';
-import ExtractTextPlugin  from 'extract-text-webpack-plugin';
-import RenderStaticPlugin from './RenderStaticPlugin';
-import LogProgressPlugin  from './LogProgressPlugin';
+import webpack              from 'webpack';
+import ExtractTextPlugin    from 'extract-text-webpack-plugin';
+import RenderStaticPlugin   from './RenderStaticPlugin';
+import LogProgressPlugin    from './LogProgressPlugin';
+import QueryAPIBabelPlugin  from './QueryAPIBabelPlugin';
 
 export let JS_BUNDLE_NAME = '_bootstrap.js';
 export let CSS_BUNDLE_NAME = '_bootstrap.css';
@@ -25,7 +26,8 @@ export default function createWebpackConfig(options = {}) {
     devtool: options.dev ? 'cheap-module-eval-source-map' : undefined,
     babel: options.mode === 'serve' && options.dev && {
       plugins: [
-        'react-transform'
+        QueryAPIBabelPlugin,
+        'react-transform',
       ],
       extra: {
         'react-transform': [{
