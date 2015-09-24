@@ -93,7 +93,8 @@ function parseRequest(request) {
     directory = directory.join('/');
   }
   pattern = new minimatch.Minimatch(request.substring(directory.length + 1));
-  return {directory, regexp: pattern.makeRe()};
+  let regexp = pattern.makeRe() || /.+/;
+  return {directory, regexp};
 }
 
 function isSitegenAPI(name, node) {

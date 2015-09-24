@@ -8,7 +8,7 @@ BIN-LIB       = $(BIN-SRC:src/bin/%=bin/%)
 SRC           = $(filter-out $(TESTS), $(shell find src -name '*' -type f))
 LIB           = $(SRC:src/%=lib/%)
 NODE          = $(BIN)/babel-node $(BABEL_OPTIONS)
-MOCHA_OPTIONS = --compilers js:babel/register --require ./src/__tests__/setup.js
+MOCHA_OPTIONS = --compilers js:babel/register
 MOCHA					= NODE_ENV=test iojs $(BIN)/mocha $(MOCHA_OPTIONS)
 
 build:
