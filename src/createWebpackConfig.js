@@ -36,11 +36,13 @@ export default function createWebpackConfig(options = {}) {
         serveDev ? 'react-transform' : null
       ].filter(Boolean),
       extra: {
-        'react-transform': [{
-          target: 'react-transform-hmr',
-          imports: ['react'],
-          locals: ['module']
-        }]
+        'react-transform': {
+          transforms: [{
+            transform: 'react-transform-hmr',
+            imports: ['react'],
+            locals: ['module']
+          }]
+        }
       }
     },
     stats: {
