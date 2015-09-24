@@ -9,7 +9,7 @@
     "sitegen-build": "./bin/sitegen-build"
   },
   "scripts": {
-    "test": "make lint"
+    "test": "make test lint"
   },
   "repository": {
     "type": "git",
