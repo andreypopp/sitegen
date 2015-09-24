@@ -51,11 +51,11 @@ describe('QueryAPIBabelPlugin', function() {
   it('transforms Sitegen.includePages', function() {
     assert.equal(
       transform('Sitegen.includePages("./page")')[1],
-      'Sitegen.__internal.wrapPageContext(require.context("page!./page", true, new RegExp(".+")));'
+      'Sitegen.__internal.wrapPageContext(require.context("page!./page", true, /.+/));'
     );
     assert.equal(
       transform('Sitegen.includePages("./page/*.md")')[1],
-      'Sitegen.__internal.wrapPageContext(require.context("page!./page", true, new RegExp("^(?:(?!\\\\.)(?=.)[^\\\\/]*?\\\\.md)$")));'
+      'Sitegen.__internal.wrapPageContext(require.context("page!./page", true, /^(?:(?!\\.)(?=.)[^\\/]*?\\.md)$/));'
     );
 
     assert.throws(function() {
@@ -69,11 +69,11 @@ describe('QueryAPIBabelPlugin', function() {
   it('transforms Sitegen.links', function() {
     assert.equal(
       transform('Sitegen.links("./page")')[1],
-      'Sitegen.__internal.wrapPageLinkContext(require.context("page-link!./page", true, new RegExp(".+")));'
+      'Sitegen.__internal.wrapPageLinkContext(require.context("page-link!./page", true, /.+/));'
     );
     assert.equal(
       transform('Sitegen.links("./page/*.md")')[1],
-      'Sitegen.__internal.wrapPageLinkContext(require.context("page-link!./page", true, new RegExp("^(?:(?!\\\\.)(?=.)[^\\\\/]*?\\\\.md)$")));'
+      'Sitegen.__internal.wrapPageLinkContext(require.context("page-link!./page", true, /^(?:(?!\\.)(?=.)[^\\/]*?\\.md)$/));'
     );
 
     assert.throws(function() {
@@ -87,11 +87,11 @@ describe('QueryAPIBabelPlugin', function() {
   it('transforms Sitegen.pages', function() {
     assert.equal(
       transform('Sitegen.pages("./page")')[1],
-      'Sitegen.__internal.wrapPageMetaContext(require.context("page-meta!./page", true, new RegExp(".+")));'
+      'Sitegen.__internal.wrapPageMetaContext(require.context("page-meta!./page", true, /.+/));'
     );
     assert.equal(
       transform('Sitegen.pages("./page/*.md")')[1],
-      'Sitegen.__internal.wrapPageMetaContext(require.context("page-meta!./page", true, new RegExp("^(?:(?!\\\\.)(?=.)[^\\\\/]*?\\\\.md)$")));'
+      'Sitegen.__internal.wrapPageMetaContext(require.context("page-meta!./page", true, /^(?:(?!\\.)(?=.)[^\\/]*?\\.md)$/));'
     );
 
     assert.throws(function() {

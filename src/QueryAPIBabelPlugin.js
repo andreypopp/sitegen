@@ -3,8 +3,11 @@ import minimatch from 'minimatch';
 
 export default function QueryAPIBabelPlugin({Plugin, types: t}) {
 
-  function makeRegExpNode(re) {
-    return t.newExpression(t.identifier('RegExp'), [t.literal(re.source)]);
+  function makeRegExpLiteral(re) {
+    return {
+      type: 'Literal',
+      regex: {pattern: re.source, flags: ''}
+    };
   }
 
   function makeSitegenAPICall(name, args) {
@@ -27,7 +30,7 @@ export default function QueryAPIBabelPlugin({Plugin, types: t}) {
     return t.callExpression(callee, [
       t.literal(request),
       t.literal(true),
-      makeRegExpNode(pattern),
+      makeRegExpLiteral(pattern),
     ]);
   }
 
