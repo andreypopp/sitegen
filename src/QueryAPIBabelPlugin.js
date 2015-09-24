@@ -95,8 +95,8 @@ function parseRequest(request) {
   if (directory.length > 1) {
     directory = directory.join('/');
   }
-  pattern = new minimatch.Minimatch(request.substring(directory.length + 1));
-  let regexp = pattern.makeRe() || /.+/;
+  pattern = new minimatch.Minimatch('./' + request.substring(directory.length + 1));
+  let regexp = pattern.makeRe();
   return {directory, regexp};
 }
 
