@@ -1,32 +1,40 @@
-import webpack            from 'webpack';
-import ExtractTextPlugin  from 'extract-text-webpack-plugin';
-import RenderStaticPlugin from './RenderStaticPlugin';
-import LogProgressPlugin  from './LogProgressPlugin';
+import webpack              from 'webpack';
+import ExtractTextPlugin    from 'extract-text-webpack-plugin';
+import RenderStaticPlugin   from './RenderStaticPlugin';
+import LogProgressPlugin    from './LogProgressPlugin';
+import QueryAPIBabelPlugin  from './QueryAPIBabelPlugin';
 
 export let JS_BUNDLE_NAME = '_bootstrap.js';
 export let CSS_BUNDLE_NAME = '_bootstrap.css';
 
 export default function createWebpackConfig(options = {}) {
+  let build = options.mode === 'build' && !options.dev;
+  let serve = options.mode === 'serve' && !options.dev;
+  let serveDev = options.mode === 'serve' && options.dev;
+
   let plugins = [
     new LogProgressPlugin(options.compilerName),
-    options.mode === 'build' && new RenderStaticPlugin(),
-    options.mode === 'serve' && options.dev && new webpack.optimize.OccurenceOrderPlugin(),
-    options.mode === 'serve' && options.dev && new webpack.HotModuleReplacementPlugin(),
-    options.mode === 'serve' && options.dev && new webpack.NoErrorsPlugin(),
-    !options.dev && new ExtractTextPlugin(CSS_BUNDLE_NAME),
+    build && new RenderStaticPlugin(),
+    serveDev && new webpack.optimize.OccurenceOrderPlugin(),
+    serveDev && new webpack.HotModuleReplacementPlugin(),
+    serveDev && new webpack.NoErrorsPlugin(),
+    (build || serve) && new ExtractTextPlugin(CSS_BUNDLE_NAME),
   ];
+
   let entry = [
-    options.mode === 'serve' && options.dev && 'webpack-hot-middleware/client?reload=true',
+    serveDev && 'webpack-hot-middleware/client?reload=true',
   ].concat(options.entry);
+
   return {
     entry: entry.filter(Boolean),
-    target: options.mode === 'build' ? 'node' : 'web',
+    target: build ? 'node' : 'web',
     sitegen: options,
-    devtool: options.dev ? 'cheap-module-eval-source-map' : undefined,
-    babel: options.mode === 'serve' && options.dev && {
+    devtool: serveDev ? 'cheap-module-eval-source-map' : undefined,
+    babel: {
       plugins: [
-        'react-transform'
-      ],
+        QueryAPIBabelPlugin,
+        serveDev ? 'react-transform' : null
+      ].filter(Boolean),
       extra: {
         'react-transform': [{
           target: 'react-transform-hmr',
@@ -45,7 +53,7 @@ export default function createWebpackConfig(options = {}) {
     output: {
       publicPath: options.publicPath || '/',
       library: 'SitegenSite',
-      libraryTarget: options.mode === 'build' ? 'commonjs2' : 'var',
+      libraryTarget: build ? 'commonjs2' : 'var',
       path: options.output,
       filename: JS_BUNDLE_NAME,
       chunkFilename: '[name].js',
@@ -53,8 +61,9 @@ export default function createWebpackConfig(options = {}) {
     plugins: plugins.filter(Boolean),
     resolve: {
       alias: {
-        sitegen: require.resolve('./'),
-        site: options.lib,
+        ['sitegen/internal']: require.resolve('./internal'),
+        ['sitegen']: require.resolve('./'),
+        ['site']: options.lib,
       },
     },
     resolveLoader: {
