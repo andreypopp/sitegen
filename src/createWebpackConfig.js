@@ -61,9 +61,9 @@ export default function createWebpackConfig(options = {}) {
     plugins: plugins.filter(Boolean),
     resolve: {
       alias: {
-        'sitegen/internal': require.resolve('./internal'),
-        'sitegen': require.resolve('./'),
-        'site': options.lib,
+        ['sitegen/internal']: require.resolve('./internal'),
+        ['sitegen']: require.resolve('./'),
+        ['site']: options.lib,
       },
     },
     resolveLoader: {

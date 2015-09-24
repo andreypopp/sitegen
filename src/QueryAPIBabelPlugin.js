@@ -143,7 +143,7 @@ function makeSitegenAPIRecognizer(file) {
       }
     }
     return true;
-  }
+  };
 }
 
 function parseRequest(request) {

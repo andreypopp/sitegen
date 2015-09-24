@@ -14,4 +14,4 @@ export default {
   wrapPageLinkContext(context) {
     return context.keys().map(key => context(key));
   }
-}
+};
