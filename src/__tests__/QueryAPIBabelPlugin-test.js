@@ -9,97 +9,97 @@ function transform(code) {
 
 describe('QueryAPIBabelPlugin', function() {
 
-  it('transforms Sitegen.requirePage', function() {
+  it('transforms Sitegen.includePage', function() {
     assert.equal(
-      transform('Sitegen.requirePage("./page")')[1],
+      transform('Sitegen.includePage("./page")')[1],
       'Sitegen.__internal.wrapPageModule(require("page!./page"));'
     );
     assert.throws(function() {
-      transform('Sitegen.requirePage(x)');
-    }, 'Invariant Violation: Sitegen.requirePage(...): only string literal argument is allowed');
+      transform('Sitegen.includePage(x)');
+    }, 'Invariant Violation: Sitegen.includePage(...): only string literal argument is allowed');
     assert.throws(function() {
-      transform('Sitegen.requirePage("x", 1)');
-    }, 'Invariant Violation: Sitegen.requirePage(...): only string literal argument is allowed');
+      transform('Sitegen.includePage("x", 1)');
+    }, 'Invariant Violation: Sitegen.includePage(...): only string literal argument is allowed');
   });
 
-  it('transforms Sitegen.getLink', function() {
+  it('transforms Sitegen.link', function() {
     assert.equal(
-      transform('Sitegen.getLink("./page")')[1],
+      transform('Sitegen.link("./page")')[1],
       'Sitegen.__internal.wrapPageLinkModule(require("page-link!./page"));'
     );
     assert.throws(function() {
-      transform('Sitegen.getLink(x)');
-    }, 'Invariant Violation: Sitegen.getLink(...): only string literal argument is allowed');
+      transform('Sitegen.link(x)');
+    }, 'Invariant Violation: Sitegen.link(...): only string literal argument is allowed');
     assert.throws(function() {
-      transform('Sitegen.getLink("x", 1)');
-    }, 'Invariant Violation: Sitegen.getLink(...): only string literal argument is allowed');
+      transform('Sitegen.link("x", 1)');
+    }, 'Invariant Violation: Sitegen.link(...): only string literal argument is allowed');
   });
 
-  it('transforms Sitegen.getMeta', function() {
+  it('transforms Sitegen.page', function() {
     assert.equal(
-      transform('Sitegen.getMeta("./page")')[1],
+      transform('Sitegen.page("./page")')[1],
       'Sitegen.__internal.wrapPageMetaModule(require("page-meta!./page"));'
     );
     assert.throws(function() {
-      transform('Sitegen.getMeta(x)');
-    }, 'Invariant Violation: Sitegen.getMeta(...): only string literal argument is allowed');
+      transform('Sitegen.page(x)');
+    }, 'Invariant Violation: Sitegen.page(...): only string literal argument is allowed');
     assert.throws(function() {
-      transform('Sitegen.getMeta("x", 1)');
-    }, 'Invariant Violation: Sitegen.getMeta(...): only string literal argument is allowed');
+      transform('Sitegen.page("x", 1)');
+    }, 'Invariant Violation: Sitegen.page(...): only string literal argument is allowed');
   });
 
-  it('transforms Sitegen.requirePageList', function() {
+  it('transforms Sitegen.includePages', function() {
     assert.equal(
-      transform('Sitegen.requirePageList("./page")')[1],
+      transform('Sitegen.includePages("./page")')[1],
       'Sitegen.__internal.wrapPageContext(require.context("page!./page", true, new RegExp(".+")));'
     );
     assert.equal(
-      transform('Sitegen.requirePageList("./page/*.md")')[1],
+      transform('Sitegen.includePages("./page/*.md")')[1],
       'Sitegen.__internal.wrapPageContext(require.context("page!./page", true, new RegExp("^(?:(?!\\\\.)(?=.)[^\\\\/]*?\\\\.md)$")));'
     );
 
     assert.throws(function() {
-      transform('Sitegen.requirePageList(x)');
-    }, 'Invariant Violation: Sitegen.requirePageList(...): only string literal argument is allowed');
+      transform('Sitegen.includePages(x)');
+    }, 'Invariant Violation: Sitegen.includePages(...): only string literal argument is allowed');
     assert.throws(function() {
-      transform('Sitegen.requirePageList("x", 1)');
-    }, 'Invariant Violation: Sitegen.requirePageList(...): only string literal argument is allowed');
+      transform('Sitegen.includePages("x", 1)');
+    }, 'Invariant Violation: Sitegen.includePages(...): only string literal argument is allowed');
   });
 
-  it('transforms Sitegen.getLinkList', function() {
+  it('transforms Sitegen.links', function() {
     assert.equal(
-      transform('Sitegen.getLinkList("./page")')[1],
+      transform('Sitegen.links("./page")')[1],
       'Sitegen.__internal.wrapPageLinkContext(require.context("page-link!./page", true, new RegExp(".+")));'
     );
     assert.equal(
-      transform('Sitegen.getLinkList("./page/*.md")')[1],
+      transform('Sitegen.links("./page/*.md")')[1],
       'Sitegen.__internal.wrapPageLinkContext(require.context("page-link!./page", true, new RegExp("^(?:(?!\\\\.)(?=.)[^\\\\/]*?\\\\.md)$")));'
     );
 
     assert.throws(function() {
-      transform('Sitegen.getLinkList(x)');
-    }, 'Invariant Violation: Sitegen.getLinkList(...): only string literal argument is allowed');
+      transform('Sitegen.links(x)');
+    }, 'Invariant Violation: Sitegen.links(...): only string literal argument is allowed');
     assert.throws(function() {
-      transform('Sitegen.getLinkList("x", 1)');
-    }, 'Invariant Violation: Sitegen.getLinkList(...): only string literal argument is allowed');
+      transform('Sitegen.links("x", 1)');
+    }, 'Invariant Violation: Sitegen.links(...): only string literal argument is allowed');
   });
 
-  it('transforms Sitegen.getMetaList', function() {
+  it('transforms Sitegen.pages', function() {
     assert.equal(
-      transform('Sitegen.getMetaList("./page")')[1],
+      transform('Sitegen.pages("./page")')[1],
       'Sitegen.__internal.wrapPageMetaContext(require.context("page-meta!./page", true, new RegExp(".+")));'
     );
     assert.equal(
-      transform('Sitegen.getMetaList("./page/*.md")')[1],
+      transform('Sitegen.pages("./page/*.md")')[1],
       'Sitegen.__internal.wrapPageMetaContext(require.context("page-meta!./page", true, new RegExp("^(?:(?!\\\\.)(?=.)[^\\\\/]*?\\\\.md)$")));'
     );
 
     assert.throws(function() {
-      transform('Sitegen.getMetaList(x)');
-    }, 'Invariant Violation: Sitegen.getMetaList(...): only string literal argument is allowed');
+      transform('Sitegen.pages(x)');
+    }, 'Invariant Violation: Sitegen.pages(...): only string literal argument is allowed');
     assert.throws(function() {
-      transform('Sitegen.getMetaList("x", 1)');
-    }, 'Invariant Violation: Sitegen.getMetaList(...): only string literal argument is allowed');
+      transform('Sitegen.pages("x", 1)');
+    }, 'Invariant Violation: Sitegen.pages(...): only string literal argument is allowed');
   });
 
 });

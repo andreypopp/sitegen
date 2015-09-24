@@ -35,40 +35,40 @@ export default function QueryAPIBabelPlugin({Plugin, types: t}) {
     visitor: {
       CallExpression(node) {
 
-        if (isSitegenAPI('requirePage', node)) {
-          checkSitegenAPI('requirePage', node);
+        if (isSitegenAPI('includePage', node)) {
+          checkSitegenAPI('includePage', node);
           let request = node.arguments[0].value;
           let moduleNode = makeRequire(`page!${request}`);
           return makeSitegenAPICall('wrapPageModule', [moduleNode]);
 
-        } else if (isSitegenAPI('requirePageList', node)) {
-          checkSitegenAPI('requirePageList', node);
+        } else if (isSitegenAPI('includePages', node)) {
+          checkSitegenAPI('includePages', node);
           let request = node.arguments[0].value;
           let {directory, regexp} = parseRequest(request);
           let contextNode = makeRequireContext(`page!${directory}`, regexp);
           return makeSitegenAPICall('wrapPageContext', [contextNode]);
 
-        } else if (isSitegenAPI('getLink', node)) {
-          checkSitegenAPI('getLink', node);
+        } else if (isSitegenAPI('link', node)) {
+          checkSitegenAPI('link', node);
           let request = node.arguments[0].value;
           let moduleNode = makeRequire(`page-link!${request}`);
           return makeSitegenAPICall('wrapPageLinkModule', [moduleNode]);
 
-        } else if (isSitegenAPI('getLinkList', node)) {
-          checkSitegenAPI('getLinkList', node);
+        } else if (isSitegenAPI('links', node)) {
+          checkSitegenAPI('links', node);
           let request = node.arguments[0].value;
           let {directory, regexp} = parseRequest(request);
           let contextNode = makeRequireContext(`page-link!${directory}`, regexp);
           return makeSitegenAPICall('wrapPageLinkContext', [contextNode]);
 
-        } else if (isSitegenAPI('getMeta', node)) {
-          checkSitegenAPI('getMeta', node);
+        } else if (isSitegenAPI('page', node)) {
+          checkSitegenAPI('page', node);
           let request = node.arguments[0].value;
           let moduleNode = makeRequire(`page-meta!${request}`);
           return makeSitegenAPICall('wrapPageMetaModule', [moduleNode]);
 
-        } else if (isSitegenAPI('getMetaList', node)) {
-          checkSitegenAPI('getMetaList', node);
+        } else if (isSitegenAPI('pages', node)) {
+          checkSitegenAPI('pages', node);
           let request = node.arguments[0].value;
           let {directory, regexp} = parseRequest(request);
           let contextNode = makeRequireContext(`page-meta!${directory}`, regexp);
