@@ -18,6 +18,7 @@ export default function createWebpackConfig(options = {}) {
     serveDev && new webpack.optimize.OccurenceOrderPlugin(),
     serveDev && new webpack.HotModuleReplacementPlugin(),
     serveDev && new webpack.NoErrorsPlugin(),
+    serve && new webpack.optimize.UglifyJsPlugin(),
     (build || serve) && new ExtractTextPlugin(CSS_BUNDLE_NAME, {allChunks: true}),
   ];
 
