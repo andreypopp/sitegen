@@ -53,15 +53,15 @@ describe('QueryAPIBabelPlugin', function() {
   it('transforms Sitegen.link', function() {
     assert.equal(
       transform('import * as Sitegen from "sitegen";\nSitegen.link("./page")'),
-      'require("sitegen/internal").wrapPageLinkModule(require("page-link!./page"));'
+      'require("sitegen/internal").wrapPageLinkModule(require("page-id!./page"));'
     );
     assert.equal(
       transform('import {link} from "sitegen";\nlink("./page")'),
-      'require("sitegen/internal").wrapPageLinkModule(require("page-link!./page"));'
+      'require("sitegen/internal").wrapPageLinkModule(require("page-id!./page"));'
     );
     assert.equal(
       transform('import {link as l} from "sitegen";\nl("./page")'),
-      'require("sitegen/internal").wrapPageLinkModule(require("page-link!./page"));'
+      'require("sitegen/internal").wrapPageLinkModule(require("page-id!./page"));'
     );
 
     assert.equal(
@@ -84,15 +84,15 @@ describe('QueryAPIBabelPlugin', function() {
   it('transforms Sitegen.page', function() {
     assert.equal(
       transform('import * as Sitegen from "sitegen";\nSitegen.page("./page")'),
-      'require("sitegen/internal").wrapPageMetaModule(require("page-meta!./page"));'
+      'require("sitegen/internal").wrapPageMetaModule(require("page-id!./page"));'
     );
     assert.equal(
       transform('import {page} from "sitegen";\npage("./page")'),
-      'require("sitegen/internal").wrapPageMetaModule(require("page-meta!./page"));'
+      'require("sitegen/internal").wrapPageMetaModule(require("page-id!./page"));'
     );
     assert.equal(
       transform('import {page as p} from "sitegen";\np("./page")'),
-      'require("sitegen/internal").wrapPageMetaModule(require("page-meta!./page"));'
+      'require("sitegen/internal").wrapPageMetaModule(require("page-id!./page"));'
     );
 
     assert.equal(
@@ -151,15 +151,15 @@ describe('QueryAPIBabelPlugin', function() {
   it('transforms Sitegen.links', function() {
     assert.equal(
       transform('import * as Sitegen from "sitegen";\nSitegen.links("./page")'),
-      'require("sitegen/internal").wrapPageLinkContext(require.context("page-link!./page", true, /^(?:\\.\\/)$/));'
+      'require("sitegen/internal").wrapPageLinkContext(require.context("page-id!./page", true, /^(?:\\.\\/)$/));'
     );
     assert.equal(
       transform('import {links} from "sitegen";\nlinks("./page")'),
-      'require("sitegen/internal").wrapPageLinkContext(require.context("page-link!./page", true, /^(?:\\.\\/)$/));'
+      'require("sitegen/internal").wrapPageLinkContext(require.context("page-id!./page", true, /^(?:\\.\\/)$/));'
     );
     assert.equal(
       transform('import {links as l} from "sitegen";\nl("./page")'),
-      'require("sitegen/internal").wrapPageLinkContext(require.context("page-link!./page", true, /^(?:\\.\\/)$/));'
+      'require("sitegen/internal").wrapPageLinkContext(require.context("page-id!./page", true, /^(?:\\.\\/)$/));'
     );
 
     assert.equal(
@@ -173,7 +173,7 @@ describe('QueryAPIBabelPlugin', function() {
 
     assert.equal(
       transform('import * as Sitegen from "sitegen";\nSitegen.links("./page/*.md")'),
-      'require("sitegen/internal").wrapPageLinkContext(require.context("page-link!./page", true, /^(?:\\.\\/(?!\\.)(?=.)[^\\/]*?\\.md)$/));'
+      'require("sitegen/internal").wrapPageLinkContext(require.context("page-id!./page", true, /^(?:\\.\\/(?!\\.)(?=.)[^\\/]*?\\.md)$/));'
     );
 
     assert.throws(function() {
@@ -187,15 +187,15 @@ describe('QueryAPIBabelPlugin', function() {
   it('transforms Sitegen.pages', function() {
     assert.equal(
       transform('import * as Sitegen from "sitegen";\nSitegen.pages("./page")'),
-      'require("sitegen/internal").wrapPageMetaContext(require.context("page-meta!./page", true, /^(?:\\.\\/)$/));'
+      'require("sitegen/internal").wrapPageMetaContext(require.context("page-id!./page", true, /^(?:\\.\\/)$/));'
     );
     assert.equal(
       transform('import {pages} from "sitegen";\npages("./page")'),
-      'require("sitegen/internal").wrapPageMetaContext(require.context("page-meta!./page", true, /^(?:\\.\\/)$/));'
+      'require("sitegen/internal").wrapPageMetaContext(require.context("page-id!./page", true, /^(?:\\.\\/)$/));'
     );
     assert.equal(
       transform('import {pages as p} from "sitegen";\np("./page")'),
-      'require("sitegen/internal").wrapPageMetaContext(require.context("page-meta!./page", true, /^(?:\\.\\/)$/));'
+      'require("sitegen/internal").wrapPageMetaContext(require.context("page-id!./page", true, /^(?:\\.\\/)$/));'
     );
 
     assert.equal(
@@ -209,7 +209,7 @@ describe('QueryAPIBabelPlugin', function() {
 
     assert.equal(
       transform('import * as Sitegen from "sitegen";\nSitegen.pages("./page/*.md")'),
-      'require("sitegen/internal").wrapPageMetaContext(require.context("page-meta!./page", true, /^(?:\\.\\/(?!\\.)(?=.)[^\\/]*?\\.md)$/));'
+      'require("sitegen/internal").wrapPageMetaContext(require.context("page-id!./page", true, /^(?:\\.\\/(?!\\.)(?=.)[^\\/]*?\\.md)$/));'
     );
 
     assert.throws(function() {

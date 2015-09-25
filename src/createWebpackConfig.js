@@ -71,7 +71,7 @@ export default function createWebpackConfig(options = {}) {
     resolveLoader: {
       alias: {
         ['page']: require.resolve('./loaders/page'),
-        ['page-link']: require.resolve('./loaders/page-link'),
+        ['page-id']: require.resolve('./loaders/page-id'),
         ['site']: require.resolve('./loaders/site'),
       },
     },

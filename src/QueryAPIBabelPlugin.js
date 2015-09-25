@@ -60,27 +60,27 @@ export default function QueryAPIBabelPlugin({Plugin, types: t}) {
         } else if (file.isSitegenAPI('link', node, scope)) {
           checkSitegenAPI('link', node, file);
           let request = node.arguments[0].value;
-          let moduleNode = makeRequire(`page-link!${request}`);
+          let moduleNode = makeRequire(`page-id!${request}`);
           return makeSitegenAPICall('wrapPageLinkModule', [moduleNode]);
 
         } else if (file.isSitegenAPI('links', node, scope)) {
           checkSitegenAPI('links', node, file);
           let request = node.arguments[0].value;
           let {directory, regexp} = parseRequest(request);
-          let contextNode = makeRequireContext(`page-link!${directory}`, regexp);
+          let contextNode = makeRequireContext(`page-id!${directory}`, regexp);
           return makeSitegenAPICall('wrapPageLinkContext', [contextNode]);
 
         } else if (file.isSitegenAPI('page', node, scope)) {
           checkSitegenAPI('page', node, file);
           let request = node.arguments[0].value;
-          let moduleNode = makeRequire(`page-meta!${request}`);
+          let moduleNode = makeRequire(`page-id!${request}`);
           return makeSitegenAPICall('wrapPageMetaModule', [moduleNode]);
 
         } else if (file.isSitegenAPI('pages', node, scope)) {
           checkSitegenAPI('pages', node, file);
           let request = node.arguments[0].value;
           let {directory, regexp} = parseRequest(request);
-          let contextNode = makeRequireContext(`page-meta!${directory}`, regexp);
+          let contextNode = makeRequireContext(`page-id!${directory}`, regexp);
           return makeSitegenAPICall('wrapPageMetaContext', [contextNode]);
         }
       }
