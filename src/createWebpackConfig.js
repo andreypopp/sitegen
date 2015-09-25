@@ -18,7 +18,7 @@ export default function createWebpackConfig(options = {}) {
     serveDev && new webpack.optimize.OccurenceOrderPlugin(),
     serveDev && new webpack.HotModuleReplacementPlugin(),
     serveDev && new webpack.NoErrorsPlugin(),
-    (build || serve) && new ExtractTextPlugin(CSS_BUNDLE_NAME),
+    (build || serve) && new ExtractTextPlugin(CSS_BUNDLE_NAME, {allChunks: true}),
   ];
 
   let entry = [
