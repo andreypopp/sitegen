@@ -94,7 +94,7 @@ export default function createWebpackConfig(options = {}) {
         // styles
         {
           test: /\.css$/,
-          loader: serve ?
+          loader: serve ? // eslint-disable-line no-nested-ternary
             ExtractTextPlugin.extract('style-loader', 'css-loader') :
             serveDev ?
             'style-loader!css-loader' :
