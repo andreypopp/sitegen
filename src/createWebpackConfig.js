@@ -4,8 +4,8 @@ import RenderStaticPlugin   from './RenderStaticPlugin';
 import LogProgressPlugin    from './LogProgressPlugin';
 import QueryAPIBabelPlugin  from './QueryAPIBabelPlugin';
 
-export let JS_BUNDLE_NAME = '_bootstrap.js';
-export let CSS_BUNDLE_NAME = '_bootstrap.css';
+export let JS_BUNDLE_NAME = 'bootstrap.js';
+export let CSS_BUNDLE_NAME = 'bootstrap.css';
 
 export default function createWebpackConfig(options = {}) {
   let build = options.mode === 'build' && !options.dev;
