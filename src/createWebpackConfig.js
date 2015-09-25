@@ -94,9 +94,11 @@ export default function createWebpackConfig(options = {}) {
         // styles
         {
           test: /\.css$/,
-          loader: options.dev ?
+          loader: serve ?
+            ExtractTextPlugin.extract('style-loader', 'css-loader') :
+            serveDev ?
             'style-loader!css-loader' :
-            ExtractTextPlugin.extract('style-loader', 'css-loader')
+            'css-loader/locals'
         },
 
         // images
