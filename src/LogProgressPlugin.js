@@ -4,7 +4,7 @@ export default class LogProgressPlugin {
 
   constructor(name = 'webpack') {
     this.name = name;
-    this._logger = createLogger(`compiler:${name}`);
+    this._logger = createLogger(`sitegen:compiler:${name}`);
     this._notifyOnCompile = true;
   }
 

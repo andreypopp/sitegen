@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import debug                  from 'debug';
+import createLogger           from 'debug';
 
-debug.enable('compiler:*');
+createLogger.enable('sitegen:compiler:*,sitegen:server');
 
 import express                from 'express';
 import Webpack                from 'webpack';
@@ -15,6 +15,8 @@ import configureFromDirectory from '../configureFromDirectory';
 import {JS_BUNDLE_NAME}       from '../createWebpackConfig';
 import {parse}                from '../CLIUtils';
 
+let log = createLogger('sitegen:server');
+
 let {site, options} = parse(process.argv, {allowOutput: false});
 
 let config = configureFromDirectory(site, {
@@ -23,7 +25,7 @@ let config = configureFromDirectory(site, {
   mode: 'serve',
   require: options.require,
   dev: true,
-  compilerName: 'sitegen'
+  compilerName: 'main'
 });
 
 let compiler = Webpack(config);
@@ -35,7 +37,9 @@ let app = express();
 app.use(devMiddleware);
 app.use(hotMiddleware);
 app.use(render);
-app.listen(3000);
+app.listen(3000, function() {
+  log('started listening on port %d', 3000);
+});
 
 function render(req, res, next) {
   let markup = renderToStaticMarkup(<Site jsBundlePath={'/' + JS_BUNDLE_NAME} />);
