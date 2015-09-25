@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+import debug                  from 'debug';
+
+debug.enable('compiler:*');
+
 import Webpack                from 'webpack';
 import configureFromDirectory from '../configureFromDirectory';
 import {parse}                from '../CLIUtils';
@@ -11,7 +15,7 @@ let renderAssets = Webpack(configureFromDirectory(site, {
   output: options.output,
   require: options.require,
   mode: 'serve',
-  compilerName: 'sitegen-assets',
+  compilerName: 'assets',
 }));
 
 let renderPages = Webpack(configureFromDirectory(site, {
@@ -19,7 +23,7 @@ let renderPages = Webpack(configureFromDirectory(site, {
   output: options.output,
   require: options.require,
   mode: 'build',
-  compilerName: 'sitegen-pages',
+  compilerName: 'pages',
 }));
 
 renderAssets.run(function(error) {

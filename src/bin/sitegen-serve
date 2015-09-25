@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+import debug                  from 'debug';
+
+debug.enable('compiler:*');
+
 import express                from 'express';
 import Webpack                from 'webpack';
 import WebpackDevMiddleware   from 'webpack-dev-middleware';

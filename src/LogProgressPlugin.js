@@ -1,7 +1,10 @@
+import createLogger from 'debug';
+
 export default class LogProgressPlugin {
 
   constructor(name = 'webpack') {
     this.name = name;
+    this._logger = createLogger(`compiler:${name}`);
     this._notifyOnCompile = true;
   }
 
@@ -11,28 +14,23 @@ export default class LogProgressPlugin {
     compiler.plugin('done', this._onDone.bind(this));
   }
 
-  _log(message) {
-    console.log(`${this.name}: ${message}`); // eslint-disable-line no-console
-  }
-
   _onDone(stats) {
-    let time = stats.endTime - stats.startTime;
     if (stats.compilation.errors.length > 0) {
-      this._log('compilation failed');
-      stats.compilation.errors.forEach(error => this._log(error.message));
+      this._logger('compilation failed');
+      stats.compilation.errors.forEach(error => this._logger(error.message));
     } else {
-      this._log('compilation finished (' + time + 'ms)');
+      this._logger('compilation finished');
     }
   }
 
   _onCompile() {
     if (this._notifyOnCompile) {
       this._notifyOnCompile = false;
-      this._log('compilation started');
+      this._logger('compilation started');
     }
   }
 
   _onInvalid() {
-    this._log('bundled invalidated, recompiling...');
+    this._logger('bundled invalidated, recompiling...');
   }
 }
