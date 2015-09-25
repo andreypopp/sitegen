@@ -19,14 +19,14 @@ module.exports = function(source) {
     source = `
       var site = Sitegen.createSite({
         path: '/',
-        page: require.context('page!${normalizePath(options.content)}', true, /.+/)
+        route: require.context('page!${normalizePath(options.content)}', true, /.+/)
       }, ${key});
     `;
   } else {
     source = `
       var site = Sitegen.createSite({
         path: '/',
-        page: require('page!${normalizePath(options.content)}')
+        route: require('page!${normalizePath(options.content)}')
       }, ${key});
     `;
   }

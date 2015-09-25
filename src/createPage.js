@@ -4,18 +4,18 @@ import suggestPullRequest from './suggestPullRequest';
 export default function createPage(spec, key) {
   invariant(key !== undefined, 'oops');
   let {
-    page,
+    route,
     path,
     component,
     indexRoute,
     childRoutes = [],
   } = spec;
 
-  if (page) {
-    if (isContextModule(page)) {
-      return {...createContextRoute(path, page, component), key};
+  if (route) {
+    if (isContextModule(route)) {
+      return {...createContextRoute(path, route, component), key};
     } else {
-      return {...createProxyRoute(path, page, component), key};
+      return {...createProxyRoute(path, route, component), key};
     }
   }
 
