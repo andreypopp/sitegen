@@ -2,7 +2,7 @@
 
 import debug                  from 'debug';
 
-debug.enable('compiler:*');
+debug.enable('sitegen:compiler:*');
 
 import Webpack                from 'webpack';
 import configureFromDirectory from '../configureFromDirectory';
