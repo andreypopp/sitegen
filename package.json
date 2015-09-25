@@ -25,7 +25,7 @@
   "bugs": {
     "url": "https://github.com/andreypopp/sitegen/issues"
   },
-  "homepage": "https://github.com/andreypopp/sitegen",
+  "homepage": "https://sitegen.github.io/",
   "peerDependencies": {
     "react": "^0.14.0-rc1",
     "react-dom": "^0.14.0-rc1",
