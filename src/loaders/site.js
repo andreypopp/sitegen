@@ -16,24 +16,21 @@ module.exports = function(source) {
   let options = LoaderUtils.parseQuery(this.query);
   let key = JSON.stringify(resourceID(this.resource));
   if (options.asContext) {
-    source = `
-      var site = Sitegen.createSite({
+    return `
+      module.exports = require('sitegen/internal').createSite({
         path: '/',
-        route: require.context('page!${normalizePath(options.content)}', true, /.+/)
+        route: require.context(
+          'page!${normalizePath(options.content)}',
+          true,
+          /.+/)
       }, ${key});
     `;
   } else {
-    source = `
-      var site = Sitegen.createSite({
+    return `
+      module.exports = require('sitegen/internal').createSite({
         path: '/',
         route: require('page!${normalizePath(options.content)}')
       }, ${key});
     `;
   }
-  source = `
-    var Sitegen = require('sitegen');
-    ${source}
-    module.exports = site;
-  `;
-  return source;
 };

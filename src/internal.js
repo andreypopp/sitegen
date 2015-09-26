@@ -1,28 +1,28 @@
 import * as LinkRegistry from './LinkRegistry';
 
-export default {
+export createPage from './createPage';
+export createSite from './createSite';
 
-  wrapPageModule(module) {
-    return module;
-  },
+export function wrapPageModule(module) {
+  return module;
+}
 
-  wrapPageContext(context) {
-    return context;
-  },
+export function wrapPageContext(context) {
+  return context;
+}
 
-  wrapPageLinkModule(module) {
-    return LinkRegistry.getLink(module.id);
-  },
+export function wrapPageLinkModule(module) {
+  return LinkRegistry.getLink(module.id);
+}
 
-  wrapPageLinkContext(context) {
-    return context.keys().map(key => LinkRegistry.getLink(context(key).id));
-  },
+export function wrapPageLinkContext(context) {
+  return context.keys().map(key => LinkRegistry.getLink(context(key).id));
+}
 
-  wrapPageMetaModule(module) {
-    return module;
-  },
+export function wrapPageMetaModule(module) {
+  return module;
+}
 
-  wrapPageMetaContext(context) {
-    return context.keys().map(key => context(key));
-  },
-};
+export function wrapPageMetaContext(context) {
+  return context.keys().map(key => context(key));
+}

@@ -8,7 +8,7 @@ module.exports = function(source) {
   let key = JSON.stringify(resourceID(this.resource));
   source = `
     ${source};
-    module.exports = require('sitegen').createPage(module.exports, ${key});
+    module.exports = require('sitegen/internal').createPage(module.exports, ${key});
   `;
   return source;
 };
