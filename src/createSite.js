@@ -6,6 +6,7 @@ import RenderRoot               from './RenderRoot';
 import createPage               from './createPage';
 import * as RouteUtils          from './RouteUtils';
 import * as LinkRegistry        from './LinkRegistry';
+import Meta                     from './Meta';
 
 function initializeLinkRegistry(routes) {
   if (LinkRegistry.isInitialized()) {
@@ -16,7 +17,13 @@ function initializeLinkRegistry(routes) {
 }
 
 export default function createSite(spec, key) {
-  let routes = {...createPage(spec, key)};
+  let routes = {
+    ...createPage(spec, key),
+
+    getRenderedMeta() {
+      return Meta.rewind();
+    }
+  };
 
   routes.renderIntoDocument = function(element = RenderRoot.getDOMNode()) {
 

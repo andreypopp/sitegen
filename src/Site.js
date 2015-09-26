@@ -5,24 +5,42 @@ export default class Site extends React.Component {
 
   static propTypes = {
     children: PropTypes.node,
-    head: PropTypes.node,
+
     jsBundlePath: PropTypes.string,
+
     cssBundlePath: PropTypes.string,
+
+    title: PropTypes.string,
+
+    meta: PropTypes.node,
+
+    link: PropTypes.node,
+
     linkRegistry: PropTypes.object,
   };
 
   render() {
-    let {children, head, jsBundlePath, cssBundlePath, linkRegistry} = this.props;
+    let {
+      children,
+      title,
+      meta,
+      link,
+      jsBundlePath,
+      cssBundlePath,
+      linkRegistry,
+    } = this.props;
     return (
       <html>
         <head>
           <meta charSet="utf8" />
-          <CSSBundle path={cssBundlePath} />
-          {head}
+          {title && <title>{title}</title>}
+          {meta}
+          {link}
         </head>
         <body>
           <RenderRoot markup={children} />
           <LinkRegistry linkRegistry={linkRegistry} />
+          <CSSBundle path={cssBundlePath} />
           <JSBundle path={jsBundlePath} />
           <StartSite path={jsBundlePath} />
         </body>

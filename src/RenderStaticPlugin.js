@@ -67,8 +67,12 @@ export default class RenderStaticPlugin {
           reject(error);
         } else {
           let innerMarkup = renderToString(<RoutingContext {...props} />);
+          let {title, meta, link} = routes.getRenderedMeta();
           let markup = renderToStaticMarkup(
             <Site
+              title={title}
+              meta={meta}
+              link={link}
               jsBundlePath={'/' + JS_BUNDLE_NAME}
               cssBundlePath={'/' + CSS_BUNDLE_NAME}
               linkRegistry={linkRegistry}>
