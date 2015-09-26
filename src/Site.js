@@ -36,11 +36,11 @@ export default class Site extends React.Component {
           {title && <title>{title}</title>}
           {meta}
           {link}
+          <CSSBundle path={cssBundlePath} />
         </head>
         <body>
           <RenderRoot markup={children} />
           <LinkRegistry linkRegistry={linkRegistry} />
-          <CSSBundle path={cssBundlePath} />
           <JSBundle path={jsBundlePath} />
           <StartSite path={jsBundlePath} />
         </body>
