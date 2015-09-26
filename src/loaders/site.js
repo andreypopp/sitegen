@@ -9,7 +9,7 @@ function normalizePath(path) {
   }
 }
 
-module.exports = function(source) {
+module.exports = function() {
   if (this.cacheable) {
     this.cacheable();
   }
