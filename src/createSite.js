@@ -1,18 +1,27 @@
-import React                    from 'react';
-import ReactDOM                 from 'react-dom';
-import {RoutingContext, match}  from 'react-router';
-import createBrowserHistory     from 'history/lib/createBrowserHistory';
-import RenderRoot               from './RenderRoot';
-import createPage               from './createPage';
-import * as RouteUtils          from './RouteUtils';
-import * as LinkRegistry        from './LinkRegistry';
-import Meta                     from './Meta';
+import React                              from 'react';
+import ReactDOM                           from 'react-dom';
+import {RoutingContext, match}            from 'react-router';
+import createBrowserHistory               from 'history/lib/createBrowserHistory';
+import RenderRoot                         from './RenderRoot';
+import createPage                         from './createPage';
+import * as RouteUtils                    from './RouteUtils';
+import * as LinkRegistry                  from './LinkRegistry';
+import * as MetaRegistry                  from './MetaRegistry';
+import Meta                               from './Meta';
 
 function initializeLinkRegistry(routes) {
   if (LinkRegistry.isInitialized()) {
     return Promise.resolve();
   } else {
     return RouteUtils.collectRoutes(routes).then(LinkRegistry.initialize);
+  }
+}
+
+function initializeMetaRegistry(routes) {
+  if (MetaRegistry.isInitialized) {
+    return Promise.resolve();
+  } else {
+    return RouteUtils.collectRoutes(routes).then(MetaRegistry.populateFromRoutes);
   }
 }
 
@@ -39,9 +48,13 @@ export default function createSite(spec, key) {
       });
     }
 
-    return initializeLinkRegistry(routes).then(render).catch(err => {
-      throw err;
-    });
+    return Promise.resolve()
+      .then(() => initializeLinkRegistry(routes))
+      .then(() => initializeMetaRegistry(routes))
+      .then(() => render())
+      .catch(err => {
+        throw err;
+      });
   };
 
   return routes;

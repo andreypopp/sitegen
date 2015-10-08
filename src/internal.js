@@ -1,4 +1,5 @@
 import * as LinkRegistry from './LinkRegistry';
+import MetaRegistry from './MetaRegistry';
 
 export createPage from './createPage';
 export createSite from './createSite';
@@ -20,9 +21,9 @@ export function wrapPageLinkContext(context) {
 }
 
 export function wrapPageMetaModule(module) {
-  return module;
+  return MetaRegistry.get(module.id);
 }
 
 export function wrapPageMetaContext(context) {
-  return context.keys().map(key => context(key));
+  return context.keys().map(key => MetaRegistry.get(context(key).id));
 }

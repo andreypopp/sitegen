@@ -1,6 +1,6 @@
 import React, {PropTypes}     from 'react';
 import RenderRoot             from './RenderRoot';
-import {LinkRegistryPayload}  from './LinkRegistryPayload';
+import {LinkRegistryPayload}  from './LinkRegistry';
 
 export default class Site extends React.Component {
 

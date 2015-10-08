@@ -1,10 +1,12 @@
 import invariant from 'invariant';
 import React from 'react';
 
+const PAYLOAD_SYMBOL = 'SitegenLinkRegistry';
+
 let _REGISTRY = null;
 
-if (typeof window !== 'undefined' && window.SitegenLinkRegistry) {
-  _REGISTRY = window.SitegenLinkRegistry;
+if (typeof window !== 'undefined' && window[PAYLOAD_SYMBOL]) {
+  _REGISTRY = window[PAYLOAD_SYMBOL];
 }
 
 export function getLink(resource) {
@@ -38,6 +40,6 @@ export function LinkRegistryPayload({linkRegistry}) {
   if (!linkRegistry) {
     return <noscript />;
   }
-  let __html = `var SitegenLinkRegistry = ${JSON.stringify(linkRegistry)};`;
+  let __html = `var ${PAYLOAD_SYMBOL} = ${JSON.stringify(linkRegistry)};`;
   return <script dangerouslySetInnerHTML={{__html}} />;
 }

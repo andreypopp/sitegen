@@ -17,6 +17,15 @@ async function loadRouteKey(route) {
   }
 }
 
+async function loadRouteMeta(route) {
+  if (route.getMeta) {
+    let meta = await awaitCallback(route.getMeta);
+    return {...route, meta};
+  } else {
+    return route;
+  }
+}
+
 export function pathConcat(a, b) {
   if (!a) {
     return b;
@@ -66,5 +75,7 @@ export async function collectRoutes(route) {
     }));
     routes = routes.concat(childRoutes);
   }
-  return await Promise.all(routes.map(loadRouteKey));
+  routes = await Promise.all(routes.map(loadRouteKey));
+  routes = await Promise.all(routes.map(loadRouteMeta));
+  return routes;
 }
