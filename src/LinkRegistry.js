@@ -1,4 +1,5 @@
 import invariant from 'invariant';
+import React from 'react';
 
 let _REGISTRY = null;
 
@@ -31,4 +32,12 @@ export function initialize(routes) {
     'LinkRegistry already initialized'
   );
   _REGISTRY = routesToRegistry(routes);
+}
+
+export function LinkRegistryPayload({linkRegistry}) {
+  if (!linkRegistry) {
+    return <noscript />;
+  }
+  let __html = `var SitegenLinkRegistry = ${JSON.stringify(linkRegistry)};`;
+  return <script dangerouslySetInnerHTML={{__html}} />;
 }

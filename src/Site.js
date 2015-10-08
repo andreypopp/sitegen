@@ -1,5 +1,6 @@
-import React, {PropTypes} from 'react';
-import RenderRoot         from './RenderRoot';
+import React, {PropTypes}     from 'react';
+import RenderRoot             from './RenderRoot';
+import {LinkRegistryPayload}  from './LinkRegistryPayload';
 
 export default class Site extends React.Component {
 
@@ -40,21 +41,13 @@ export default class Site extends React.Component {
         </head>
         <body>
           <RenderRoot markup={children} />
-          <LinkRegistry linkRegistry={linkRegistry} />
+          <LinkRegistryPayload linkRegistry={linkRegistry} />
           <JSBundle path={jsBundlePath} />
           <StartSite path={jsBundlePath} />
         </body>
       </html>
     );
   }
-}
-
-function LinkRegistry({linkRegistry}) {
-  if (!linkRegistry) {
-    return <noscript />;
-  }
-  let __html = `var SitegenLinkRegistry = ${JSON.stringify(linkRegistry)};`;
-  return <script dangerouslySetInnerHTML={{__html}} />;
 }
 
 function JSBundle({path}) {
