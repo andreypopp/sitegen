@@ -8,29 +8,6 @@ import * as RouteUtils                    from './RouteUtils';
 import LinkRegistry                       from './LinkRegistry';
 import PageRegistry                       from './PageRegistry';
 import Meta                               from './Meta';
-import Runtime                            from './Runtime';
-
-function initializeLinkRegistry(routes) {
-  if (LinkRegistry.installed()) {
-    return Promise.resolve();
-  } else {
-    return RouteUtils.collectRoutes(routes).then(routes => {
-      let registry = LinkRegistry.createFromRoutes(routes);
-      registry.install();
-    });
-  }
-}
-
-function initializePageRegistry(routes) {
-  if (PageRegistry.installed()) {
-    return Promise.resolve();
-  } else {
-    return RouteUtils.collectRoutes(routes).then(routes => {
-      let registry = PageRegistry.createFromRoutes(routes);
-      registry.install();
-    });
-  }
-}
 
 export default function createSite(spec, key) {
   let routes = {
@@ -41,27 +18,23 @@ export default function createSite(spec, key) {
     }
   };
 
-  routes.renderIntoDocument = function(element = RenderRoot.getDOMNode()) {
+  routes.renderIntoDocument = async function(element = RenderRoot.getDOMNode()) {
 
-    function render() {
-      let history = createBrowserHistory();
-      let unlisten = history.listen(location =>
-        match({routes, location}, (err, redirect, props) =>
-          ReactDOM.render(<RoutingContext {...props} history={history} />, element)));
-
-      return Promise.resolve(function unmount() {
-        unlisten();
-        ReactDOM.unmountComponentAtNode(element);
-      });
+    if (!PageRegistry.installed() || !LinkRegistry.installed()) {
+      let flatRoutes = await RouteUtils.collectRoutes(routes);
+      PageRegistry.createFromRoutes(flatRoutes).install();
+      LinkRegistry.createFromRoutes(flatRoutes).install();
     }
 
-    return Promise.resolve()
-      .then(() => initializeLinkRegistry(routes))
-      .then(() => initializePageRegistry(routes))
-      .then(() => render())
-      .catch(err => {
-        throw err;
-      });
+    let history = createBrowserHistory();
+    let unlisten = history.listen(location =>
+      match({routes, location}, (err, redirect, props) =>
+        ReactDOM.render(<RoutingContext {...props} history={history} />, element)));
+
+    return function unmount() {
+      unlisten();
+      ReactDOM.unmountComponentAtNode(element);
+    };
   };
 
   return routes;
