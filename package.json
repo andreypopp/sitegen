@@ -57,6 +57,7 @@
     "history": "^1.9.1",
     "invariant": "^2.1.0",
     "json-loader": "^0.5.3",
+    "memoize-decorator": "^1.0.2",
     "minimatch": "^2.0.10",
     "react-helmet": "^1.1.5",
     "react-transform-hmr": "^1.0.0",

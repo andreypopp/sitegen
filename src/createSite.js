@@ -6,8 +6,9 @@ import RenderRoot                         from './RenderRoot';
 import createPage                         from './createPage';
 import * as RouteUtils                    from './RouteUtils';
 import * as LinkRegistry                  from './LinkRegistry';
-import * as MetaRegistry                  from './MetaRegistry';
+import PageRegistry                       from './PageRegistry';
 import Meta                               from './Meta';
+import Runtime                            from './Runtime';
 
 function initializeLinkRegistry(routes) {
   if (LinkRegistry.isInitialized()) {
@@ -17,11 +18,14 @@ function initializeLinkRegistry(routes) {
   }
 }
 
-function initializeMetaRegistry(routes) {
-  if (MetaRegistry.isInitialized) {
+function initializePageRegistry(routes) {
+  if (PageRegistry.installed()) {
     return Promise.resolve();
   } else {
-    return RouteUtils.collectRoutes(routes).then(MetaRegistry.populateFromRoutes);
+    return RouteUtils.collectRoutes(routes).then(routes => {
+      let registry = PageRegistry.createFromRoutes(routes);
+      registry.install();
+    });
   }
 }
 
@@ -50,7 +54,7 @@ export default function createSite(spec, key) {
 
     return Promise.resolve()
       .then(() => initializeLinkRegistry(routes))
-      .then(() => initializeMetaRegistry(routes))
+      .then(() => initializePageRegistry(routes))
       .then(() => render())
       .catch(err => {
         throw err;

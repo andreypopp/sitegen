@@ -1,48 +1,96 @@
 import invariant from 'invariant';
 import React from 'react';
 
-export function create(symbol) {
+export default class TransferableRegistry {
 
-  let _registry = null;
+  static key = null;
 
-  if (typeof window !== 'undefined' && window[symbol]) {
-    _registry = window[symbol];
+  static Render({registry}) {
+    if (!registry) {
+      return <noscript />;
+    } else {
+      let __html = `window[${JSON.stringify(this.key)}] = ${JSON.stringify(registry)};`;
+      return <script dangerouslySetInnerHTML={{__html}} />;
+    }
   }
 
-  return {
+  static installed(scope = global) {
+    return scope[this.key] !== undefined;
+  }
 
-    symbol,
+  static resolve(scope = global) {
+    invariant(
+      scope[this.key] !== undefined,
+      'Cannot resolve a registry with key "%s", it is undefined',
+      this.key
+    );
+    let registry = scope[this.key];
+    if (!(registry instanceof this)) {
+      registry = new this(registry);
+    }
+    return registry;
+  }
 
-    update(registry) {
-      _registry = registry;
-    },
+  constructor(storage = null) {
+    this._storage = storage || {};
+    this.initialized = storage !== null;
+  }
 
-    get(key) {
-      return _registry ? _registry[key] : undefined;
-    },
+  install(scope = global) {
+    invariant(
+      scope[this.constructor.key] === undefined,
+      'Cannot install a registry as key "%s" is already allocated in the scope',
+      this.constructor.key
+    );
+    scope[this.constructor.key] = this;
+  }
 
-    set(key, value) {
-      if (_registry === null) {
-        _registry = {};
-      }
-      _registry[key] = value;
-    },
+  get size() {
+    return Object.keys(this._storage).length;
+  }
 
-    get isInitialized() {
-      return _registry !== null;
-    },
+  clear() {
+    this._storage = {};
+  }
 
-    Render({registry}) {
-      if (!registry) {
-        return <noscript />;
-      } else {
-        let __html = `var ${symbol} = ${JSON.stringify(registry)};`;
-        return <script dangerouslySetInnerHTML={{__html}} />;
-      }
-    },
+  delete(key) {
+    delete this._storage[key];
+  }
 
-    toJSON() {
-      return _registry;
-    },
-  };
+  entries() {
+    return Object.keys(this._storage).map(key => [key, this._storage[key]]);
+  }
+
+  keys() {
+    return Object.keys(this._storage);
+  }
+
+  values() {
+    return Object.keys(this._storage).map(key => this._storage[key]);
+  }
+
+  forEach(func, context) {
+    Object.keys(this._storage).forEach(key =>
+      func.call(context, this._storage[key], key));
+  }
+
+  get(key) {
+    return this._storage[key];
+  }
+
+  has(key) {
+    return key in this._storage;
+  }
+
+  update(items) {
+    this._storage = {...this._storage, ...items};
+  }
+
+  set(key, value) {
+    this._storage[key] = value;
+  }
+
+  toJSON() {
+    return this._storage;
+  }
 }
