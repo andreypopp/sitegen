@@ -1,6 +1,7 @@
 import React, {PropTypes}     from 'react';
 import RenderRoot             from './RenderRoot';
-import {LinkRegistryPayload}  from './LinkRegistry';
+import LinkRegistry           from './LinkRegistry';
+import PageRegistry           from './PageRegistry';
 
 export default class Site extends React.Component {
 
@@ -18,6 +19,8 @@ export default class Site extends React.Component {
     link: PropTypes.node,
 
     linkRegistry: PropTypes.object,
+
+    pageRegistry: PropTypes.object,
   };
 
   render() {
@@ -29,6 +32,7 @@ export default class Site extends React.Component {
       jsBundlePath,
       cssBundlePath,
       linkRegistry,
+      pageRegistry,
     } = this.props;
     return (
       <html>
@@ -41,7 +45,8 @@ export default class Site extends React.Component {
         </head>
         <body>
           <RenderRoot markup={children} />
-          <LinkRegistryPayload linkRegistry={linkRegistry} />
+          <LinkRegistry.Render registry={linkRegistry} />
+          <PageRegistry.Render registry={pageRegistry} />
           <JSBundle path={jsBundlePath} />
           <StartSite path={jsBundlePath} />
         </body>

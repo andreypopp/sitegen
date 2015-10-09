@@ -1,4 +1,3 @@
-import * as LinkRegistry from './LinkRegistry';
 import Runtime from './Runtime';
 
 export createPage from './createPage';
@@ -13,11 +12,11 @@ export function wrapPageContext(context) {
 }
 
 export function wrapPageLinkModule(module) {
-  return LinkRegistry.getLink(module.id);
+  return Runtime.LinkRegistry.get(module.id);
 }
 
 export function wrapPageLinkContext(context) {
-  return context.keys().map(key => LinkRegistry.getLink(context(key).id));
+  return context.keys().map(key => Runtime.LinkRegistry.get(context(key).id));
 }
 
 export function wrapPageMetaModule(module) {

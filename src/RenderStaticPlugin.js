@@ -7,7 +7,8 @@ import Site                                   from './Site';
 import {JS_BUNDLE_NAME, CSS_BUNDLE_NAME}      from './createWebpackConfig';
 import * as RouteUtils                        from './RouteUtils';
 import {mapSequential}                        from './PromiseUtils';
-import * as LinkRegistry                      from './LinkRegistry';
+import LinkRegistry                           from './LinkRegistry';
+import PageRegistry                           from './PageRegistry';
 
 export default class RenderStaticPlugin {
 
@@ -43,10 +44,12 @@ export default class RenderStaticPlugin {
 
       collectedRoutes
         .then(childRoutes => {
-          let linkRegistry = LinkRegistry.routesToRegistry(childRoutes);
-          populateLinkRegistry(linkRegistry);
+          let linkRegistry = LinkRegistry.createFromRoutes(childRoutes);
+          let pageRegistry = PageRegistry.createFromRoutes(childRoutes);
+          linkRegistry.install(scope);
+          pageRegistry.install(scope);
           return mapSequential(childRoutes, route =>
-            this.renderPath(routes, linkRegistry, route.path)
+            this.renderPath(routes, route.path, {linkRegistry, pageRegistry})
               .then(addToAssets.bind(null, route.path)));
         })
         .then(
@@ -59,14 +62,14 @@ export default class RenderStaticPlugin {
     });
   }
 
-  renderPath(routes, linkRegistry, path) {
+  renderPath(routes, path, siteProps) {
     return new Promise((resolve, reject) => {
       let location = createLocation(path);
-      match({routes, location}, (error, redirectLocation, props) => {
+      match({routes, location}, (error, redirectLocation, routeProps) => {
         if (error) {
           reject(error);
         } else {
-          let innerMarkup = renderToString(<RoutingContext {...props} />);
+          let innerMarkup = renderToString(<RoutingContext {...routeProps} />);
           let {title, meta, link} = routes.getRenderedMeta();
           let markup = renderToStaticMarkup(
             <Site
@@ -75,7 +78,7 @@ export default class RenderStaticPlugin {
               link={link}
               jsBundlePath={'/' + JS_BUNDLE_NAME}
               cssBundlePath={'/' + CSS_BUNDLE_NAME}
-              linkRegistry={linkRegistry}>
+              {...siteProps}>
               {innerMarkup}
             </Site>
           );

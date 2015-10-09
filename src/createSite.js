@@ -5,16 +5,19 @@ import createBrowserHistory               from 'history/lib/createBrowserHistory
 import RenderRoot                         from './RenderRoot';
 import createPage                         from './createPage';
 import * as RouteUtils                    from './RouteUtils';
-import * as LinkRegistry                  from './LinkRegistry';
+import LinkRegistry                       from './LinkRegistry';
 import PageRegistry                       from './PageRegistry';
 import Meta                               from './Meta';
 import Runtime                            from './Runtime';
 
 function initializeLinkRegistry(routes) {
-  if (LinkRegistry.isInitialized()) {
+  if (LinkRegistry.installed()) {
     return Promise.resolve();
   } else {
-    return RouteUtils.collectRoutes(routes).then(LinkRegistry.initialize);
+    return RouteUtils.collectRoutes(routes).then(routes => {
+      let registry = LinkRegistry.createFromRoutes(routes);
+      registry.install();
+    });
   }
 }
 
