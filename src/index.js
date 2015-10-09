@@ -1,5 +1,4 @@
 import {suggestIssue} from './ErrorUtils';
-import PageRegistry   from './PageRegistry';
 
 export Meta from './Meta';
 

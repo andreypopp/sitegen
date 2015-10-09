@@ -32,14 +32,6 @@ export default class RenderStaticPlugin {
         compilation.assets[routePathToAssetPath(path)] = createAssetFromContents(markup);
       }
 
-      function populateLinkRegistry(registry) {
-        for (let key in registry) {
-          if (registry.hasOwnProperty(key)) {
-            window.SitegenLinkRegistry[key] = registry[key];
-          }
-        }
-      }
-
       let collectedRoutes = RouteUtils.collectRoutes(routes);
 
       collectedRoutes
