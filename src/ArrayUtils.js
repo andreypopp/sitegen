@@ -1,5 +1,8 @@
 import identity from 'empty/functionThatReturnsArgument';
 
+/**
+ * Filter `array` for dups by key provided by `keyFunc`.
+ */
 export function uniqueBy(array, keyFunc = identity) {
   let seen = {};
   let result = [];

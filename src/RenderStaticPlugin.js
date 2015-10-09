@@ -6,7 +6,7 @@ import {renderToString, renderToStaticMarkup} from 'react-dom/server';
 import Site                                   from './Site';
 import {JS_BUNDLE_NAME, CSS_BUNDLE_NAME}      from './createWebpackConfig';
 import * as RouteUtils                        from './RouteUtils';
-import {mapSequential}                        from './PromiseUtils';
+import {forEachSeq}                           from './PromiseUtils';
 import LinkRegistry                           from './LinkRegistry';
 import PageRegistry                           from './PageRegistry';
 
@@ -40,7 +40,7 @@ export default class RenderStaticPlugin {
           let pageRegistry = PageRegistry.createFromRoutes(childRoutes);
           linkRegistry.install(scope);
           pageRegistry.install(scope);
-          return mapSequential(childRoutes, route =>
+          return forEachSeq(childRoutes, route =>
             this.renderPath(routes, route.path, {linkRegistry, pageRegistry})
               .then(addToAssets.bind(null, route.path)));
         })
