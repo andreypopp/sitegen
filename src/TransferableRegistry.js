@@ -1,10 +1,23 @@
 import invariant from 'invariant';
 import React from 'react';
 
+/**
+ * `TransferableRegistry` provides ES2015 Map-like abstraction which can be
+ * transfered across different scopes and realms.
+ */
 export default class TransferableRegistry {
 
+  /**
+   * Unique global key for a transferable registry instance.
+   *
+   * This should be set by subclasses.
+   */
   static key = null;
 
+  /**
+   * React component to render a registry instance into a `<script />` element
+   * from which the registry could be bootstrapped again.
+   */
   static Render({registry}) {
     if (!registry) {
       return <noscript />;
@@ -14,10 +27,18 @@ export default class TransferableRegistry {
     }
   }
 
+  /**
+   * Check if registry is installed in the `scope`.
+   */
   static installed(scope = global) {
     return scope[this.key] !== undefined;
   }
 
+  /**
+   * Resolve installed registry in the `scope`.
+   *
+   * This fails if no registry is installed in the `scope`.
+   */
   static resolve(scope = global) {
     invariant(
       scope[this.key] !== undefined,
@@ -36,6 +57,10 @@ export default class TransferableRegistry {
     this.initialized = storage !== null;
   }
 
+  /**
+   * Install registry instance into the `scope` so that it could be resolved
+   * later.
+   */
   install(scope = global) {
     invariant(
       scope[this.constructor.key] === undefined,
@@ -45,51 +70,102 @@ export default class TransferableRegistry {
     scope[this.constructor.key] = this;
   }
 
+  /**
+   * Size of the registry.
+   *
+   * See ES2015 Map interface for details.
+   */
   get size() {
     return Object.keys(this._storage).length;
   }
 
+  /**
+   * Clear registry.
+   *
+   * See ES2015 Map interface for details.
+   */
   clear() {
     this._storage = {};
   }
 
+  /**
+   * Delete key from the registry.
+   *
+   * See ES2015 Map interface for details.
+   */
   delete(key) {
     delete this._storage[key];
   }
 
+  /**
+   * Returns an iterator of k-v pairs.
+   *
+   * See ES2015 Map interface for details.
+   */
   entries() {
-    return Object.keys(this._storage).map(key => [key, this._storage[key]]);
+    return Object.keys(this._storage).map(key =>
+      [key, this._storage[key]]).values();
   }
 
+  /**
+   * Returns an iterator of keys.
+   *
+   * See ES2015 Map interface for details.
+   */
   keys() {
-    return Object.keys(this._storage);
+    return Object.keys(this._storage).values();
   }
 
+  /**
+   * Returns an iterator of values.
+   *
+   * See ES2015 Map interface for details.
+   */
   values() {
-    return Object.keys(this._storage).map(key => this._storage[key]);
+    return Object.keys(this._storage).map(key =>
+      this._storage[key]).values();
   }
 
+  /**
+   * Call a `func` for each k-v pair in registry.
+   *
+   * See ES2015 Map interface for details.
+   */
   forEach(func, context) {
     Object.keys(this._storage).forEach(key =>
       func.call(context, this._storage[key], key));
   }
 
+  /**
+   * Get a value by `key`.
+   *
+   * See ES2015 Map interface for details.
+   */
   get(key) {
     return this._storage[key];
   }
 
+  /**
+   * Check if registry has a value for `key`.
+   *
+   * See ES2015 Map interface for details.
+   */
   has(key) {
     return key in this._storage;
   }
 
-  update(items) {
-    this._storage = {...this._storage, ...items};
-  }
-
+  /**
+   * Check if registry has a value for `key`.
+   *
+   * See ES2015 Map interface for details.
+   */
   set(key, value) {
     this._storage[key] = value;
   }
 
+  /**
+   * Get JSON serializable representation of registry.
+   */
   toJSON() {
     return this._storage;
   }
