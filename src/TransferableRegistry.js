@@ -15,22 +15,9 @@ export default class TransferableRegistry {
   static key = null;
 
   /**
-   * React component to render a registry instance into a `<script />` element
-   * from which the registry could be bootstrapped again.
-   */
-  static Render({registry}) {
-    if (!registry) {
-      return <noscript />;
-    } else {
-      let __html = `window[${JSON.stringify(this.key)}] = ${JSON.stringify(registry)};`;
-      return <script dangerouslySetInnerHTML={{__html}} />;
-    }
-  }
-
-  /**
    * Check if registry is installed in the `scope`.
    */
-  static installed(scope = global) {
+  static installed(scope = window) {
     return scope[this.key] !== undefined;
   }
 
@@ -39,14 +26,15 @@ export default class TransferableRegistry {
    *
    * This fails if no registry is installed in the `scope`.
    */
-  static resolve(scope = global) {
+  static resolve(scope = window) {
     invariant(
       scope[this.key] !== undefined,
       'Cannot resolve a registry with key "%s", it is undefined',
       this.key
     );
     let registry = scope[this.key];
-    if (!(registry instanceof this)) {
+    // This is a cross realm check...
+    if (registry.constructor && registry.constructor.name !== this.name) {
       registry = new this(registry);
     }
     return registry;
@@ -61,13 +49,13 @@ export default class TransferableRegistry {
    * Install registry instance into the `scope` so that it could be resolved
    * later.
    */
-  install(scope = global) {
+  install(scope = window) {
     invariant(
       scope[this.constructor.key] === undefined,
       'Cannot install a registry as key "%s" is already allocated in the scope',
       this.constructor.key
     );
-    scope[this.constructor.key] = this;
+    scope[this.constructor.key] = this._storage;
   }
 
   /**
@@ -170,3 +158,25 @@ export default class TransferableRegistry {
     return this._storage;
   }
 }
+
+/**
+  * React component to render a registry instance into a `<script />` element
+  * from which the registry could be bootstrapped again.
+  */
+function RenderRegistry(key, {registry}) {
+  if (!registry) {
+    return <noscript />;
+  } else {
+    let __html = `window[${JSON.stringify(key)}] = ${JSON.stringify(registry)};`;
+    return <script dangerouslySetInnerHTML={{__html}} />;
+  }
+}
+
+Object.defineProperty(TransferableRegistry, 'Render', {
+  configurable: true,
+  get() {
+    let value = RenderRegistry.bind(null, this.key);
+    Object.defineProperty(this, 'Render', {value});
+    return value;
+  }
+});
