@@ -14,10 +14,11 @@ export default class RenderStaticPlugin {
 
   apply(compiler) {
     compiler.plugin('emit', (compilation, done) => {
-      let source = compilation.assets[JS_BUNDLE_NAME]._source.source();
-      let window = {
-        SitegenLinkRegistry: {}
-      };
+      let bundle = compilation.assets[JS_BUNDLE_NAME];
+      let source = bundle._source ?
+        bundle._source.source() :
+        bundle.source();
+      let window = {};
       let scope = {
         console,
         process,
@@ -38,8 +39,8 @@ export default class RenderStaticPlugin {
         .then(childRoutes => {
           let linkRegistry = LinkRegistry.createFromRoutes(childRoutes);
           let pageRegistry = PageRegistry.createFromRoutes(childRoutes);
-          linkRegistry.install(scope);
-          pageRegistry.install(scope);
+          linkRegistry.install(window);
+          pageRegistry.install(window);
           return forEachSeq(childRoutes, route =>
             this.renderPath(routes, route.path, {linkRegistry, pageRegistry})
               .then(addToAssets.bind(null, route.path)));
@@ -49,6 +50,7 @@ export default class RenderStaticPlugin {
             done();
           },
           err => {
+            compilation.errors.push(err);
             done(err);
           });
     });
