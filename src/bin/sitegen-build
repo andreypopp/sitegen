@@ -28,12 +28,16 @@ let renderPages = Webpack(configureFromDirectory(site, {
 
 renderAssets.run(function(error) {
   if (error) {
-    throw error;
+    process.nextTick(function() {
+      throw error;
+    });
   }
 });
 
 renderPages.run(function(error) {
   if (error) {
-    throw error;
+    process.nextTick(function() {
+      throw error;
+    });
   }
 });
