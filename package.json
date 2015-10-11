@@ -48,6 +48,7 @@
     "babel-plugin-react-transform": "^1.0.4",
     "babel-runtime": "^5.8.24",
     "bundle-loader": "^0.5.4",
+    "commander": "^2.8.1",
     "css-loader": "^0.19.0",
     "debug": "^2.2.0",
     "empty": "^0.10.1",
