@@ -1,5 +1,7 @@
-import React, {PropTypes} from 'react';
-import RenderRoot         from './RenderRoot';
+import React, {PropTypes}     from 'react';
+import RenderRoot             from './RenderRoot';
+import LinkRegistry           from './LinkRegistry';
+import PageRegistry           from './PageRegistry';
 
 export default class Site extends React.Component {
 
@@ -17,6 +19,8 @@ export default class Site extends React.Component {
     link: PropTypes.node,
 
     linkRegistry: PropTypes.object,
+
+    pageRegistry: PropTypes.object,
   };
 
   render() {
@@ -28,6 +32,7 @@ export default class Site extends React.Component {
       jsBundlePath,
       cssBundlePath,
       linkRegistry,
+      pageRegistry,
     } = this.props;
     return (
       <html>
@@ -40,21 +45,14 @@ export default class Site extends React.Component {
         </head>
         <body>
           <RenderRoot markup={children} />
-          <LinkRegistry linkRegistry={linkRegistry} />
+          <LinkRegistry.Render registry={linkRegistry} />
+          <PageRegistry.Render registry={pageRegistry} />
           <JSBundle path={jsBundlePath} />
           <StartSite path={jsBundlePath} />
         </body>
       </html>
     );
   }
-}
-
-function LinkRegistry({linkRegistry}) {
-  if (!linkRegistry) {
-    return <noscript />;
-  }
-  let __html = `var SitegenLinkRegistry = ${JSON.stringify(linkRegistry)};`;
-  return <script dangerouslySetInnerHTML={{__html}} />;
 }
 
 function JSBundle({path}) {

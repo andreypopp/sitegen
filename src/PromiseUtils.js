@@ -11,7 +11,7 @@ export function awaitCallback(func, ...args) {
   });
 }
 
-export function mapSequential(array, func) {
+export function forEachSeq(array, func) {
   let promise = Promise.resolve();
   array.forEach(item => promise = promise.then(() => func(item)));
   return promise;

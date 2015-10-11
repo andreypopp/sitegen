@@ -1,20 +1,13 @@
-import React                    from 'react';
-import ReactDOM                 from 'react-dom';
-import {RoutingContext, match}  from 'react-router';
-import createBrowserHistory     from 'history/lib/createBrowserHistory';
-import RenderRoot               from './RenderRoot';
-import createPage               from './createPage';
-import * as RouteUtils          from './RouteUtils';
-import * as LinkRegistry        from './LinkRegistry';
-import Meta                     from './Meta';
-
-function initializeLinkRegistry(routes) {
-  if (LinkRegistry.isInitialized()) {
-    return Promise.resolve();
-  } else {
-    return RouteUtils.collectRoutes(routes).then(LinkRegistry.initialize);
-  }
-}
+import React                              from 'react';
+import ReactDOM                           from 'react-dom';
+import {RoutingContext, match}            from 'react-router';
+import createBrowserHistory               from 'history/lib/createBrowserHistory';
+import RenderRoot                         from './RenderRoot';
+import createPage                         from './createPage';
+import * as RouteUtils                    from './RouteUtils';
+import LinkRegistry                       from './LinkRegistry';
+import PageRegistry                       from './PageRegistry';
+import Meta                               from './Meta';
 
 export default function createSite(spec, key) {
   let routes = {
@@ -25,23 +18,23 @@ export default function createSite(spec, key) {
     }
   };
 
-  routes.renderIntoDocument = function(element = RenderRoot.getDOMNode()) {
+  routes.renderIntoDocument = async function(element = RenderRoot.getDOMNode()) {
 
-    function render() {
-      let history = createBrowserHistory();
-      let unlisten = history.listen(location =>
-        match({routes, location}, (err, redirect, props) =>
-          ReactDOM.render(<RoutingContext {...props} history={history} />, element)));
-
-      return Promise.resolve(function unmount() {
-        unlisten();
-        ReactDOM.unmountComponentAtNode(element);
-      });
+    if (!PageRegistry.installed() || !LinkRegistry.installed()) {
+      let flatRoutes = await RouteUtils.collectRoutes(routes);
+      PageRegistry.createFromRoutes(flatRoutes).install();
+      LinkRegistry.createFromRoutes(flatRoutes).install();
     }
 
-    return initializeLinkRegistry(routes).then(render).catch(err => {
-      throw err;
-    });
+    let history = createBrowserHistory();
+    let unlisten = history.listen(location =>
+      match({routes, location}, (err, redirect, props) =>
+        ReactDOM.render(<RoutingContext {...props} history={history} />, element)));
+
+    return function unmount() {
+      unlisten();
+      ReactDOM.unmountComponentAtNode(element);
+    };
   };
 
   return routes;

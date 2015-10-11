@@ -5,6 +5,7 @@ export default function createPage(spec, key) {
   invariant(key !== undefined, 'oops');
   let {
     route,
+    meta,
     path,
     component,
     indexRoute,
@@ -21,6 +22,7 @@ export default function createPage(spec, key) {
 
   return {
     type: 'Module',
+    meta,
     key,
     path,
     component,
@@ -48,6 +50,15 @@ function createContextRoute(path, context, component) {
     childRoutes,
     indexRoute,
     component,
+
+    getMeta(callback) {
+      if (indexRoute) {
+        indexRoute.getMeta(callback);
+      } else {
+        callback(null, null);
+      }
+    },
+
     getKey(callback) {
       if (indexRoute) {
         indexRoute.getKey(callback);
@@ -75,6 +86,11 @@ function createProxyRoute(path, module) {
     getKey(callback) {
       getKeyRecursively(module, callback);
     },
+
+    getMeta(callback) {
+      getMetaRecursively(module, callback);
+    },
+
 
     getIndexRoute(location, callback) {
       ensureModuleLoaded(module, function(module) {
@@ -166,6 +182,22 @@ function getKeyRecursively(module, callback) {
           callback(error);
         } else {
           callback(null, key);
+        }
+      });
+    }
+  });
+}
+
+function getMetaRecursively(module, callback) {
+  ensureModuleLoaded(module, function(module) {
+    if (module.meta) {
+      callback(null, module.meta);
+    } else if (module.getMeta) {
+      module.getMeta(function(error, meta) {
+        if (error) {
+          callback(error);
+        } else {
+          callback(null, meta);
         }
       });
     }

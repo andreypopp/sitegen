@@ -1,6 +1,7 @@
 import {suggestIssue} from './ErrorUtils';
 
 export Meta from './Meta';
+export Link from './Link';
 
 export function includePage() {
   suggestIssue(
