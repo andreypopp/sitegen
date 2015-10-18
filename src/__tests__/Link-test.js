@@ -10,7 +10,7 @@ function render(element) {
   return renderer.getRenderOutput();
 }
 
-describe('Linke', function() {
+describe('Link', function() {
 
   it('renders link with to and children props', function() {
     let page = {path: '/path', title: 'Title'};
