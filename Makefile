@@ -29,9 +29,8 @@ ci:
 version-major version-minor version-patch: test lint
 	@npm version $(@:version-%=%)
 
-publish: build
+push:
 	@git push --tags origin HEAD:master
-	@npm publish --access public
 
 clean:
 	@rm -rf ./lib ./bin
