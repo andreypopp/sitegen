@@ -7,6 +7,18 @@ import QueryAPIBabelPlugin  from './QueryAPIBabelPlugin';
 export let JS_BUNDLE_NAME = 'bootstrap.js';
 export let CSS_BUNDLE_NAME = 'bootstrap.css';
 
+let babelLoader = require.resolve('babel-loader');
+let cssLoader = require.resolve('css-loader');
+let cssLoaderLocals = require.resolve('css-loader/locals');
+let styleLoader= require.resolve('style-loader');
+let fileLoader = require.resolve('file-loader');
+let jsonLoader = require.resolve('json-loader');
+let urlLoader = require.resolve('url-loader');
+let sitegenLoaderMarkdown = require.resolve('sitegen-loader-markdown');
+let webpackHotMiddlewareClient = require.resolve('webpack-hot-middleware/client');
+let babelPluginReactTransform = require.resolve('babel-plugin-react-transform');
+let reactTransformHMR = require.resolve('react-transform-hmr');
+
 export default function createWebpackConfig(options = {}) {
   let build = options.mode === 'build' && !options.dev;
   let serve = options.mode === 'serve' && !options.dev;
@@ -23,7 +35,7 @@ export default function createWebpackConfig(options = {}) {
   ];
 
   let entry = [
-    serveDev && 'webpack-hot-middleware/client?reload=true',
+    serveDev && `${webpackHotMiddlewareClient}?reload=true`,
   ].concat(options.entry);
 
   return {
@@ -34,12 +46,12 @@ export default function createWebpackConfig(options = {}) {
     babel: {
       plugins: [
         QueryAPIBabelPlugin,
-        serveDev ? 'react-transform' : null
+        serveDev ? babelPluginReactTransform : null
       ].filter(Boolean),
       extra: {
         'react-transform': {
           transforms: [{
-            transform: 'react-transform-hmr',
+            transform: reactTransformHMR,
             imports: ['react'],
             locals: ['module']
           }]
@@ -81,61 +93,61 @@ export default function createWebpackConfig(options = {}) {
         // content
         {
           test: /\.json$/,
-          loader: 'json-loader',
+          loader: jsonLoader,
         },
         {
           test: /\.js$/,
-          loader: 'babel-loader?stage=0'
+          loader: `${babelLoader}?stage=0`
         },
         {
           test: /\.md$/,
-          loader: 'babel-loader!sitegen-loader-markdown'
+          loader: `${babelLoader}!${sitegenLoaderMarkdown}`
         },
 
         // styles
         {
           test: /\.css$/,
           loader: serve ? // eslint-disable-line no-nested-ternary
-            ExtractTextPlugin.extract('style-loader', 'css-loader') :
+            ExtractTextPlugin.extract(styleLoader, cssLoader) :
             serveDev ?
-            'style-loader!css-loader' :
-            'css-loader/locals'
+            `${styleLoader}!${cssLoader}` :
+            cssLoaderLocals
         },
 
         // images
         {
           test: /\.png$/,
-          loader: 'url-loader?prefix=img/&limit=5000'
+          loader: `${urlLoader}?prefix=img/&limit=5000`
         },
         {
           test: /\.jpg$/,
-          loader: 'url-loader?prefix=img/&limit=5000'
+          loader: `${urlLoader}?prefix=img/&limit=5000`
         },
         {
           test: /\.gif$/,
-          loader: 'url-loader?prefix=img/&limit=5000'
+          loader: `${urlLoader}?prefix=img/&limit=5000`
         },
 
         // fonts
         {
           test: /\.eot(\?[a-z0-9]+)?$/,
-          loader: 'file-loader?prefix=font/'
+          loader: `${fileLoader}?prefix=font/`
         },
         {
           test: /\.ttf(\?[a-z0-9]+)?$/,
-          loader: 'file-loader?prefix=font/'
+          loader: `${fileLoader}?prefix=font/`
         },
         {
           test: /\.svg(\?[a-z0-9]+)?$/,
-          loader: 'file-loader?prefix=font/'
+          loader: `${fileLoader}?prefix=font/`
         },
         {
           test: /\.woff(\?[a-z0-9]+)?$/,
-          loader: 'url-loader?prefix=font/&limit=5000'
+          loader: `${urlLoader}?prefix=img/&limit=5000`
         },
         {
           test: /\.woff2(\?[a-z0-9]+)?$/,
-          loader: 'url-loader?prefix=font/&limit=5000'
+          loader: `${urlLoader}?prefix=img/&limit=5000`
         }
       ]
     }
