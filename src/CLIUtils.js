@@ -9,7 +9,7 @@ export function listFormatter(items = []) {
   };
 }
 
-export function parse(argv, params = {allowOutput: false}) {
+export function parse(argv, configure = null) {
   let parser = commander
     .version(pkg.version)
     .usage('sitegen-serve [options] <site>')
@@ -17,9 +17,8 @@ export function parse(argv, params = {allowOutput: false}) {
     .option('-L, --lib <directory>', 'site library directory (default: $site/lib)')
     .option('-r, --require <entry>', 'additional entry to require', listFormatter(), []);
 
-
-  if (params.allowOutput) {
-    parser = parser.option('-o, --output <directory>', 'output directory');
+  if (configure) {
+    parser = configure(parser);
   }
 
   let options = parser.parse(process.argv);

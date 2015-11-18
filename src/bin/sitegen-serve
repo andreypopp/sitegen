@@ -17,7 +17,7 @@ import {parse}                from '../CLIUtils';
 
 let log = createLogger('sitegen:server');
 
-let {site, options} = parse(process.argv, {allowOutput: false});
+let {site, options} = parse(process.argv);
 
 let config = configureFromDirectory(site, {
   lib: options.lib,
