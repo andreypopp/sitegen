@@ -97,7 +97,8 @@ export default function createWebpackConfig(options = {}) {
         },
         {
           test: /\.js$/,
-          loader: `${babelLoader}?stage=0`
+          loader: `${babelLoader}?stage=0`,
+          exclude: /node_modules/
         },
         {
           test: /\.md$/,
