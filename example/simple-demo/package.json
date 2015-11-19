@@ -1,0 +1,6 @@
+{
+  "name": "sitegen-simple-demo",
+  "version": "1.0.0",
+  "description": "Sitegen bases site which consist of a single component",
+  "main": "index.js"
+}
