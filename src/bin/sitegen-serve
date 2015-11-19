@@ -4,6 +4,7 @@ import createLogger           from 'debug';
 
 createLogger.enable('sitegen:compiler:*,sitegen:server');
 
+import open                   from 'open';
 import express                from 'express';
 import Webpack                from 'webpack';
 import WebpackDevMiddleware   from 'webpack-dev-middleware';
@@ -17,7 +18,10 @@ import {parse}                from '../CLIUtils';
 
 let log = createLogger('sitegen:server');
 
-let {site, options} = parse(process.argv);
+let {site, options} = parse(process.argv, parser => {
+  parser = parser.option('--open', 'open browser automatically');
+  return parser;
+});
 
 let config = configureFromDirectory(site, {
   lib: options.lib,
@@ -40,6 +44,10 @@ app.use(render);
 app.listen(3000, function() {
   log('started listening on port %d', 3000);
 });
+
+if (options.open) {
+  open('http://localhost:3000');
+}
 
 function render(req, res, next) {
   let markup = renderToStaticMarkup(<Site jsBundlePath={'/' + JS_BUNDLE_NAME} />);
