@@ -14,7 +14,7 @@ export default function createSite(spec, key) {
     ...createPage(spec, key),
 
     getRenderedMeta() {
-      return Meta.rewind();
+      return Meta.rewind() || {};
     }
   };
 
