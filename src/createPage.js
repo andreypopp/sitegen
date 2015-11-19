@@ -184,6 +184,8 @@ function getKeyRecursively(module, callback) {
           callback(null, key);
         }
       });
+    } else {
+      invariant(false, 'Cannot get key of the module');
     }
   });
 }
@@ -200,6 +202,8 @@ function getMetaRecursively(module, callback) {
           callback(null, meta);
         }
       });
+    } else {
+      callback(null, {});
     }
   });
 }
