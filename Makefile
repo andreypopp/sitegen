@@ -14,6 +14,9 @@ MOCHA					= NODE_ENV=test $(BIN)/mocha $(MOCHA_OPTIONS)
 build:
 	@$(MAKE) -j 8 $(LIB) $(BIN-LIB)
 
+watch:
+	@$(BIN)/babel $(BABEL_OPTIONS) --watch -d ./lib ./src
+
 example::
 	@$(BIN)/heatpack ./example/index.js
 
