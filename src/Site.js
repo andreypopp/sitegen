@@ -73,6 +73,11 @@ function StartSite({path}) {
   if (!path) {
     return <noscript />;
   }
-  let __html = `SitegenSite.renderIntoDocument();`;
+  let __html = `
+    SitegenSite.renderIntoDocument().then(
+      function() { /* OK */ },
+      function(err) { throw err; }
+    );
+  `;
   return <script dangerouslySetInnerHTML={{__html}} />;
 }
