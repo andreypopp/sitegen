@@ -1,5 +1,12 @@
 import React, {PropTypes} from 'react';
 
+let Style = {
+  self: {
+    width: '100%',
+    height: '100%',
+  }
+};
+
 export default class RenderRoot extends React.Component {
 
   static propTypes = {
@@ -16,6 +23,7 @@ export default class RenderRoot extends React.Component {
     let {markup} = this.props;
     return (
       <div
+        style={Style.self}
         id={this.constructor.id}
         dangerouslySetInnerHTML={{__html: markup}}
         />
