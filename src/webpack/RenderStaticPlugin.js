@@ -4,11 +4,11 @@ import React                                  from 'react';
 import {match, RoutingContext}                from 'react-router';
 import {renderToString, renderToStaticMarkup} from 'react-dom/server';
 import Site                                   from '../Site';
-import {JS_BUNDLE_NAME, CSS_BUNDLE_NAME}      from '../configure';
 import {collectRoutes}                        from '../util/Route';
 import {forEachSeq}                           from '../util/Promise';
 import LinkRegistry                           from '../LinkRegistry';
 import PageRegistry                           from '../PageRegistry';
+import {JS_BUNDLE_NAME, CSS_BUNDLE_NAME}      from './configure';
 
 export default class RenderStaticPlugin {
 
