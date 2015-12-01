@@ -2,3 +2,4 @@ node_modules
 lib/
 bin/
 example/*/output
+npm-shrinkwrap.json
