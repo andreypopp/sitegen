@@ -12,7 +12,7 @@ import WebpackHotMiddleware   from 'webpack-hot-middleware';
 import React                  from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import Site                   from '../Site';
-import {JS_BUNDLE_NAME}       from '../createWebpackConfig';
+import {JS_BUNDLE_NAME}       from '../webpack/configure';
 import {parse, configure}     from '../util/CLI';
 
 let log = createLogger('sitegen:server');
