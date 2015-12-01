@@ -1,4 +1,4 @@
-import {awaitCallback} from './util/Promise';
+import {awaitCallback} from './Promise';
 
 function flattenArray(array) {
   let result = [];

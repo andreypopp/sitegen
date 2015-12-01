@@ -1,4 +1,4 @@
-import {homepage, bugs} from '../package.json';
+import {homepage, bugs} from '../../package.json';
 
 export default function suggestPullRequest(feature) {
   throw new Error(

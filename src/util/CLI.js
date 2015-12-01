@@ -1,7 +1,7 @@
 import path from 'path';
 import commander from 'commander';
-import pkg from '../package.json';
-import createWebpackConfig from './createWebpackConfig';
+import pkg from '../../package.json';
+import configureWebpack from '../webpack/configure';
 
 export function listFormatter(items = []) {
   return function(item) {
@@ -38,7 +38,7 @@ export function parse(argv, configure = null) {
   };
 }
 
-let siteLoader = require.resolve('./webpack/loader/site');
+let siteLoader = require.resolve('../webpack/loader/site');
 
 function makeSiteEntry(entry, options) {
   options = JSON.stringify(options);
@@ -53,5 +53,5 @@ export function configure(site, options) {
     .filter(Boolean);
   let lib = options.lib || relativize('lib');
   let output = options.output || relativize('output');
-  return createWebpackConfig({...options, entry, lib, output });
+  return configureWebpack({...options, entry, lib, output});
 }

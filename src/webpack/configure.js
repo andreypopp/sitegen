@@ -1,8 +1,8 @@
 import webpack              from 'webpack';
 import ExtractTextPlugin    from 'extract-text-webpack-plugin';
-import RenderStaticPlugin   from './webpack/RenderStaticPlugin';
-import LogProgressPlugin    from './webpack/LogProgressPlugin';
-import QueryAPIBabelPlugin  from './babel/QueryAPIBabelPlugin';
+import RenderStaticPlugin   from './RenderStaticPlugin';
+import LogProgressPlugin    from './LogProgressPlugin';
+import QueryAPIBabelPlugin  from '../babel/QueryAPIBabelPlugin';
 
 export let JS_BUNDLE_NAME = 'bootstrap.js';
 export let CSS_BUNDLE_NAME = 'bootstrap.css';
@@ -10,7 +10,7 @@ export let CSS_BUNDLE_NAME = 'bootstrap.css';
 let babelLoader = require.resolve('babel-loader');
 let cssLoader = require.resolve('css-loader');
 let cssLoaderLocals = require.resolve('css-loader/locals');
-let styleLoader= require.resolve('style-loader');
+let styleLoader = require.resolve('style-loader');
 let fileLoader = require.resolve('file-loader');
 let jsonLoader = require.resolve('json-loader');
 let urlLoader = require.resolve('url-loader');
@@ -19,7 +19,7 @@ let webpackHotMiddlewareClient = require.resolve('webpack-hot-middleware/client'
 let babelPluginReactTransform = require.resolve('babel-plugin-react-transform');
 let reactTransformHMR = require.resolve('react-transform-hmr');
 
-export default function createWebpackConfig(options = {}) {
+export default function configure(options = {}) {
   let build = options.mode === 'build' && !options.dev;
   let serve = options.mode === 'serve' && !options.dev;
   let serveDev = options.mode === 'serve' && options.dev;
@@ -76,16 +76,16 @@ export default function createWebpackConfig(options = {}) {
     plugins: plugins.filter(Boolean),
     resolve: {
       alias: {
-        ['sitegen/internal']: require.resolve('./internal'),
-        ['sitegen']: require.resolve('./'),
+        ['sitegen/internal']: require.resolve('../internal'),
+        ['sitegen']: require.resolve('../'),
         ['site']: options.lib,
       },
     },
     resolveLoader: {
       alias: {
-        ['page']: require.resolve('./webpack/loader/page'),
-        ['page-id']: require.resolve('./webpack/loader/page-id'),
-        ['site']: require.resolve('./webpack/loader/site'),
+        ['page']: require.resolve('./loader/page'),
+        ['page-id']: require.resolve('./loader/page-id'),
+        ['site']: require.resolve('./loader/site'),
       },
     },
     module: {
