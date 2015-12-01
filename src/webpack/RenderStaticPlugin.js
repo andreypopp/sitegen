@@ -3,12 +3,12 @@ import createLocation                         from 'history/lib/createLocation';
 import React                                  from 'react';
 import {match, RoutingContext}                from 'react-router';
 import {renderToString, renderToStaticMarkup} from 'react-dom/server';
-import Site                                   from './Site';
-import {JS_BUNDLE_NAME, CSS_BUNDLE_NAME}      from './createWebpackConfig';
-import * as RouteUtils                        from './RouteUtils';
-import {forEachSeq}                           from './PromiseUtils';
-import LinkRegistry                           from './LinkRegistry';
-import PageRegistry                           from './PageRegistry';
+import Site                                   from '../Site';
+import {JS_BUNDLE_NAME, CSS_BUNDLE_NAME}      from '../createWebpackConfig';
+import {collectRoutes}                        from '../util/Route';
+import {forEachSeq}                           from '../util/Promise';
+import LinkRegistry                           from '../LinkRegistry';
+import PageRegistry                           from '../PageRegistry';
 
 export default class RenderStaticPlugin {
 
@@ -33,7 +33,7 @@ export default class RenderStaticPlugin {
         compilation.assets[routePathToAssetPath(path)] = createAssetFromContents(markup);
       }
 
-      let collectedRoutes = RouteUtils.collectRoutes(routes);
+      let collectedRoutes = collectRoutes(routes);
 
       collectedRoutes
         .then(childRoutes => {

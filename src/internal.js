@@ -3,7 +3,7 @@ import PageRegistry from './PageRegistry';
 
 export createPage from './createPage';
 export createSite from './createSite';
-import {uniqueBy} from './ArrayUtils';
+import {uniqueBy} from './util/Array';
 
 export function wrapPageModule(module) {
   return module;

@@ -1,4 +1,4 @@
-import resourceID from '../resourceID';
+import resourceID from '../../resourceID';
 
 module.exports = function(source) {
   if (this.cacheable) {

@@ -1,5 +1,5 @@
 import invariant            from 'invariant';
-import {suggestPullRequest} from './ErrorUtils';
+import {suggestPullRequest} from './util/Error';
 
 export default function createPage(spec, key) {
   invariant(key !== undefined, 'oops');

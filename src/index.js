@@ -1,4 +1,4 @@
-import {suggestIssue} from './ErrorUtils';
+import {suggestIssue} from './util/Error';
 
 export Meta from './Meta';
 export Link from './Link';

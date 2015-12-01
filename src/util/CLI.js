@@ -38,7 +38,7 @@ export function parse(argv, configure = null) {
   };
 }
 
-let siteLoader = require.resolve('./loaders/site');
+let siteLoader = require.resolve('./webpack/loader/site');
 
 function makeSiteEntry(entry, options) {
   options = JSON.stringify(options);

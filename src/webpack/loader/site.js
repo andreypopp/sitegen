@@ -1,5 +1,5 @@
 import LoaderUtils from 'loader-utils';
-import resourceID  from '../resourceID';
+import resourceID  from '../../resourceID';
 
 function normalizePath(path) {
   if (path[0] === '/') {

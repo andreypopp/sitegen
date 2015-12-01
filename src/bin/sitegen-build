@@ -5,7 +5,7 @@ import debug                  from 'debug';
 debug.enable('sitegen:compiler:*');
 
 import Webpack                from 'webpack';
-import {parse, configure}     from '../CLIUtils';
+import {parse, configure}     from '../util/CLI';
 
 let {site, options} = parse(process.argv, parser => {
   parser = parser.option('-o, --output <directory>', 'output directory');

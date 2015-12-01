@@ -1,8 +1,8 @@
 import webpack              from 'webpack';
 import ExtractTextPlugin    from 'extract-text-webpack-plugin';
-import RenderStaticPlugin   from './RenderStaticPlugin';
-import LogProgressPlugin    from './LogProgressPlugin';
-import QueryAPIBabelPlugin  from './QueryAPIBabelPlugin';
+import RenderStaticPlugin   from './webpack/RenderStaticPlugin';
+import LogProgressPlugin    from './webpack/LogProgressPlugin';
+import QueryAPIBabelPlugin  from './babel/QueryAPIBabelPlugin';
 
 export let JS_BUNDLE_NAME = 'bootstrap.js';
 export let CSS_BUNDLE_NAME = 'bootstrap.css';
@@ -83,9 +83,9 @@ export default function createWebpackConfig(options = {}) {
     },
     resolveLoader: {
       alias: {
-        ['page']: require.resolve('./loaders/page'),
-        ['page-id']: require.resolve('./loaders/page-id'),
-        ['site']: require.resolve('./loaders/site'),
+        ['page']: require.resolve('./webpack/loader/page'),
+        ['page-id']: require.resolve('./webpack/loader/page-id'),
+        ['site']: require.resolve('./webpack/loader/site'),
       },
     },
     module: {

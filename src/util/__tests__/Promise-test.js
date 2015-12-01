@@ -1,7 +1,7 @@
 import assert from 'power-assert';
-import * as PromiseUtils from '../PromiseUtils';
+import * as PromiseUtil from '../Promise';
 
-describe('PromiseUtils', function() {
+describe('PromiseUtil', function() {
 
   describe('forEachSeq', function() {
     
@@ -17,7 +17,7 @@ describe('PromiseUtils', function() {
           resolve()
         }, timeout));
       }
-      PromiseUtils.forEachSeq(array, func)
+      PromiseUtil.forEachSeq(array, func)
         .then(() => {
           assert.deepEqual(trace, [101, 102, 103]);
           assert.deepEqual(traceInvokations, [1, 2, 3]);
@@ -35,7 +35,7 @@ describe('PromiseUtils', function() {
           cb(null, 'OK');
         }, 10);
       }
-      PromiseUtils.awaitCallback(doAsync)
+      PromiseUtil.awaitCallback(doAsync)
         .then(result => {
           assert(result === 'OK');
           done();
@@ -49,7 +49,7 @@ describe('PromiseUtils', function() {
           cb(new Error('OK'));
         }, 10);
       }
-      PromiseUtils.awaitCallback(doAsync)
+      PromiseUtil.awaitCallback(doAsync)
         .then(result => {
           assert(false);
           done();
