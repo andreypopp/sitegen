@@ -1,6 +1,7 @@
-import path       from 'path';
-import commander  from 'commander';
-import pkg        from '../package.json';
+import path from 'path';
+import commander from 'commander';
+import pkg from '../package.json';
+import createWebpackConfig from './createWebpackConfig';
 
 export function listFormatter(items = []) {
   return function(item) {
@@ -35,4 +36,22 @@ export function parse(argv, configure = null) {
       require: options.require.map(item => path.join(cwd, item))
     }
   };
+}
+
+let siteLoader = require.resolve('./loaders/site');
+
+function makeSiteEntry(entry, options) {
+  options = JSON.stringify(options);
+  return `${siteLoader}?${options}!${entry}`;
+}
+
+export function configure(site, options) {
+  let relativize = p => path.join(path.dirname(site), p);
+  let entry = []
+    .concat(options.require)
+    .concat(makeSiteEntry(site, {content: site, asContext: false}))
+    .filter(Boolean);
+  let lib = options.lib || relativize('lib');
+  let output = options.output || relativize('output');
+  return createWebpackConfig({...options, entry, lib, output });
 }

@@ -12,9 +12,8 @@ import WebpackHotMiddleware   from 'webpack-hot-middleware';
 import React                  from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import Site                   from '../Site';
-import configureFromDirectory from '../configureFromDirectory';
 import {JS_BUNDLE_NAME}       from '../createWebpackConfig';
-import {parse}                from '../CLIUtils';
+import {parse, configure}     from '../CLIUtils';
 
 let log = createLogger('sitegen:server');
 
@@ -23,7 +22,7 @@ let {site, options} = parse(process.argv, parser => {
   return parser;
 });
 
-let config = configureFromDirectory(site, {
+let config = configure(site, {
   lib: options.lib,
   output: options.output,
   mode: 'serve',

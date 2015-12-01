@@ -5,8 +5,7 @@ import debug                  from 'debug';
 debug.enable('sitegen:compiler:*');
 
 import Webpack                from 'webpack';
-import configureFromDirectory from '../configureFromDirectory';
-import {parse}                from '../CLIUtils';
+import {parse, configure}     from '../CLIUtils';
 
 let {site, options} = parse(process.argv, parser => {
   parser = parser.option('-o, --output <directory>', 'output directory');
@@ -17,7 +16,7 @@ let {site, options} = parse(process.argv, parser => {
 });
 
 if (!options.onlyPages) {
-  let renderAssets = Webpack(configureFromDirectory(site, {
+  let renderAssets = Webpack(configure(site, {
     lib: options.lib,
     output: options.output,
     require: options.require,
@@ -36,7 +35,7 @@ if (!options.onlyPages) {
 }
 
 if (!options.onlyAssets) {
-  let renderPages = Webpack(configureFromDirectory(site, {
+  let renderPages = Webpack(configure(site, {
     lib: options.lib,
     output: options.output,
     require: options.require,
