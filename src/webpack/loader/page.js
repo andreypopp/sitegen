@@ -1,6 +1,8 @@
 import LoaderUtils from 'loader-utils';
 import resourceID  from '../../resourceID';
 
+let bundleLoader = require.resolve('bundle-loader');
+
 module.exports = function(source) {
   if (this.cacheable) {
     this.cacheable();
@@ -25,7 +27,7 @@ module.exports.pitch = function(remainingRequest) {
   } else if (options.mode === 'serve' && !options.dev) {
     let request = LoaderUtils.stringifyRequest(
       this,
-      `!!bundle?name=[path][name]!${__filename}?wrap!${remainingRequest}`
+      `!!${bundleLoader}?name=[path][name]!${__filename}?wrap!${remainingRequest}`
     );
     return `module.exports = require(${request});`;
   } else {
