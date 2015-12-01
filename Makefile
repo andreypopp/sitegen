@@ -29,6 +29,9 @@ test:
 ci:
 	@$(MOCHA) --watch -- $(TESTS)
 
+shrinkwrap:
+	@npm shrinkwrap
+
 version-major version-minor version-patch: test lint
 	@npm version $(@:version-%=%)
 

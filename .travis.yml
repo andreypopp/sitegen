@@ -2,7 +2,7 @@ language: node_js
 node_js:
 - stable
 before_install: npm install -g npm@latest
-before_deploy: make build
+before_deploy: make build shrinkwrap
 deploy:
   provider: npm
   email: 8mayday@gmail.com
