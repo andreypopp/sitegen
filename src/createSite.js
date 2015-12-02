@@ -1,6 +1,6 @@
 import React                              from 'react';
 import ReactDOM                           from 'react-dom';
-import {RoutingContext, match}            from 'react-router';
+import {RoutingContext, match, useRoutes} from 'react-router';
 import createBrowserHistory               from 'history/lib/createBrowserHistory';
 import RenderRoot                         from './RenderRoot';
 import createPage                         from './createPage';
@@ -26,10 +26,14 @@ export default function createSite(spec, key) {
       LinkRegistry.createFromRoutes(flatRoutes).install();
     }
 
-    let history = createBrowserHistory();
-    let unlisten = history.listen(location =>
+    let history = useRoutes(createBrowserHistory)({routes: [routes]});
+    let unlisten = history.listen((err, {location}) => {
+      if (err) {
+        throw err;
+      }
       match({routes, location}, (err, redirect, props) =>
-        ReactDOM.render(<RoutingContext {...props} history={history} />, element)));
+        ReactDOM.render(<RoutingContext {...props} history={history} />, element));
+    });
 
     return function unmount() {
       unlisten();
