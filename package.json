@@ -39,6 +39,7 @@
     "eslint-plugin-react": "^3.3.2",
     "mocha": "^2.3.3",
     "power-assert": "^1.0.1",
+    "history": "^1.9.1",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
     "react-router": "^1.0.0"
@@ -56,7 +57,6 @@
     "express": "^4.13.3",
     "extract-text-webpack-plugin": "^0.8.2",
     "file-loader": "^0.8.4",
-    "history": "^1.9.1",
     "invariant": "^2.1.0",
     "json-loader": "^0.5.3",
     "memoize-decorator": "^1.0.2",
