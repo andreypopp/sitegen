@@ -10,6 +10,8 @@ export let CSS_BUNDLE_NAME = 'bootstrap.css';
 let babelLoader = require.resolve('babel-loader');
 let cssLoader = require.resolve('css-loader');
 let cssLoaderLocals = require.resolve('css-loader/locals');
+let cssModuleLoader = `${cssLoader}?modules`;
+let cssModuleLoaderLocals = `${cssLoaderLocals}?modules`;
 let styleLoader = require.resolve('style-loader');
 let fileLoader = require.resolve('file-loader');
 let jsonLoader = require.resolve('json-loader');
@@ -108,11 +110,20 @@ export default function configure(options = {}) {
         // styles
         {
           test: /\.css$/,
+          exclude: /\.module\.css$/,
           loader: serve ? // eslint-disable-line no-nested-ternary
             ExtractTextPlugin.extract(styleLoader, cssLoader) :
             serveDev ?
             `${styleLoader}!${cssLoader}` :
             cssLoaderLocals
+        },
+        {
+          test: /\.module\.css$/,
+          loader: serve ? // eslint-disable-line no-nested-ternary
+            ExtractTextPlugin.extract(styleLoader, cssModuleLoader) :
+            serveDev ?
+            `${styleLoader}!${cssModuleLoader}` :
+            cssModuleLoaderLocals
         },
 
         // images
