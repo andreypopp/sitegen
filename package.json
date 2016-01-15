@@ -1,6 +1,6 @@
 {
   "name": "sitegen",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Generate websites by composing React components",
   "main": "./lib/index.js",
   "bin": {
