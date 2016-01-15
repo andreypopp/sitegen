@@ -78,22 +78,57 @@ function ensureModuleLoaded(module, callback) {
 }
 
 function createProxyRoute(path, module) {
+  function cache(module) {
+    self.meta = module.meta;
+    self.key = module.key;
+  }
   let self = {
     type: 'Proxy',
 
     path,
 
     getKey(callback) {
-      getKeyRecursively(module, callback);
+      ensureModuleLoaded(module, function(module) {
+        cache(module);
+        if (module.key) {
+          callback(null, module.key);
+        } else if (module.getKey) {
+          module.getKey(function(error, key) {
+            if (error) {
+              callback(error);
+            } else {
+              callback(null, key);
+            }
+          });
+        } else {
+          invariant(false, 'Cannot get key of the module');
+        }
+      });
     },
 
     getMeta(callback) {
-      getMetaRecursively(module, callback);
+      ensureModuleLoaded(module, function(module) {
+        cache(module);
+        if (module.meta) {
+          callback(null, module.meta);
+        } else if (module.getMeta) {
+          module.getMeta(function(error, meta) {
+            if (error) {
+              callback(error);
+            } else {
+              callback(null, meta);
+            }
+          });
+        } else {
+          callback(null, {});
+        }
+      });
     },
 
 
     getIndexRoute(location, callback) {
       ensureModuleLoaded(module, function(module) {
+        cache(module);
         if (module.type === 'Proxy') {
           module.getIndexRoute(location, callback);
         } else if (module.indexRoute !== undefined) {
@@ -108,6 +143,7 @@ function createProxyRoute(path, module) {
 
     getComponent(location, callback) {
       ensureModuleLoaded(module, function(module) {
+        cache(module);
         if (module.type === 'Proxy') {
           module.getComponent(location, callback);
         } else if (module.component !== undefined) {
@@ -122,6 +158,7 @@ function createProxyRoute(path, module) {
 
     getChildRoutes(location, callback) {
       ensureModuleLoaded(module, function(module) {
+        cache(module);
         if (module.type === 'Proxy') {
           module.getChildRoutes(location, callback);
         } else if (module.childRoutes !== undefined) {
@@ -170,40 +207,4 @@ function sortChildRoutes(a, b) {
   } else {
     return 0;
   }
-}
-
-function getKeyRecursively(module, callback) {
-  ensureModuleLoaded(module, function(module) {
-    if (module.key) {
-      callback(null, module.key);
-    } else if (module.getKey) {
-      module.getKey(function(error, key) {
-        if (error) {
-          callback(error);
-        } else {
-          callback(null, key);
-        }
-      });
-    } else {
-      invariant(false, 'Cannot get key of the module');
-    }
-  });
-}
-
-function getMetaRecursively(module, callback) {
-  ensureModuleLoaded(module, function(module) {
-    if (module.meta) {
-      callback(null, module.meta);
-    } else if (module.getMeta) {
-      module.getMeta(function(error, meta) {
-        if (error) {
-          callback(error);
-        } else {
-          callback(null, meta);
-        }
-      });
-    } else {
-      callback(null, {});
-    }
-  });
 }
