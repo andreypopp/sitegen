@@ -59,6 +59,7 @@
     "file-loader": "^0.8.4",
     "invariant": "^2.1.0",
     "json-loader": "^0.5.3",
+    "loader-utils": "^0.2.14",
     "memoize-decorator": "^1.0.2",
     "minimatch": "^2.0.10",
     "open": "0.0.5",
