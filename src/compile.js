@@ -8,7 +8,6 @@ import React from 'react';
 import {renderToStaticMarkup, renderToString} from 'react-dom/server';
 import {match, RouterContext} from 'react-router';
 import evaluate from 'eval';
-import Site from './Site';
 import {forEachPath} from './route';
 
 const BOOT_LOADER = require.resolve('./loader/boot');
@@ -60,7 +59,7 @@ class RenderStaticPlugin {
         require,
         setTimeout,
       };
-      let route = evaluate('module.exports = ' + source, '<bootstrap>', scope).route;
+      let {route, Meta, Site} = evaluate('module.exports = ' + source, '<boot>', scope);
 
       cleanAssets(compilation.assets);
 
@@ -72,7 +71,7 @@ class RenderStaticPlugin {
       forEachPath(route, path => {
         compiler.debug('rendering path', path);
         tasks.push(
-          this.renderPath(route, path).then(
+          this.renderPath(route, path, Site, Meta).then(
             markup => {
               if (markup) {
                 addToAssets(path, markup)
@@ -96,7 +95,7 @@ class RenderStaticPlugin {
     });
   }
 
-  renderPath(route, path) {
+  renderPath(route, path, Site, Meta) {
     return new Promise((resolve, reject) => {
       let location = path;
       match({routes: route, location}, (error, redirectLocation, routeProps) => {
@@ -106,8 +105,10 @@ class RenderStaticPlugin {
           resolve(null);
         } else {
           let innerMarkup = renderToString(<RouterContext {...routeProps} />);
+          let meta = Meta.rewind();
           let markup = renderToStaticMarkup(
             <Site
+              meta={meta}
               bundle={{js: '/bundle.js'}}
               content={innerMarkup}
               />

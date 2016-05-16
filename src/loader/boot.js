@@ -2,6 +2,8 @@ import {renderRoute, validate, forEach} from '../route';
 import evalAsModule from 'eval-as-module';
 
 const BOOT_MODULE = require.resolve('../boot');
+const META_MODULE = require.resolve('../meta');
+const SITE_MODULE = require.resolve('../Site');
 
 module.exports = function(source) {
   this.cacheable();
@@ -33,6 +35,9 @@ module.exports = function(source) {
       var debug = makeDebug('sitegen:runtime:route');
 
       exports.route = ${route};
+      exports.Meta = require("${META_MODULE}").default;
+      exports.Site = require("${SITE_MODULE}").default;
+      exports.React = React;
 
       if (typeof window !== 'undefined') {
         boot(${route});
