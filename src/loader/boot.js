@@ -26,8 +26,11 @@ module.exports = function(source) {
     split: compiler.options.env === 'content' ? false : undefined
   }).then(
     route => cb(null, `
+      var makeDebug = require('debug');
       var React = require('react');
       var boot = require("${BOOT_MODULE}").boot;
+
+      var debug = makeDebug('sitegen:runtime:route');
 
       exports.route = ${route};
 

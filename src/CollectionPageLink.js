@@ -21,7 +21,9 @@ export default class CollectionPageLink extends React.Component {
     if (nextPageNumber < 1 || nextPageNumber > page.collection.pageCount) {
       return null;
     }
-    let to = page.createPath('@page', nextPageNumber);
+    let to = nextPageNumber === 1
+      ? page.createPath()
+      : page.createPath('@page', nextPageNumber);
     return <Link {...this.props} to={to} />;
   }
 }

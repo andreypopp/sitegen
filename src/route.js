@@ -210,7 +210,9 @@ function renderGetCollectionChunk(page, options) {
   if (options.split) {
     return expr`
       function getCollectionPage(cb) {
+        debug('fetching collection chunk');
         require.ensure([], function(require) {
+          debug('fetching collection chunk complete');
           var page = ${types.arrayExpression(requireList)};
           var path = ${types.arrayExpression(pathList)};
           page = page.map(function(item, idx) {
@@ -269,7 +271,9 @@ function renderGetComponent(id, options) {
   if (options.split) {
     return expr`
       function getComponentAsync(_nextState, cb) {
+        debug('fetching component');
         require.ensure([], function(require) {
+          debug('fetching component complete');
           cb(null, require(${req}).default);
         }, ${types.stringLiteral(options.chunkName)});
       }
@@ -326,3 +330,23 @@ async function walkDirectory(fs, directory) {
   return flatten(files);
 }
 
+export function forEachPath(route, func, trace = ['']) {
+  let path = '/' + trace.filter(Boolean).join('/');
+  if (route.params) {
+    Object.keys(route.params).forEach(key => {
+      route.params[key].forEach(value => {
+        func(interpolateParams(path, {[key]: value}));
+      });
+    });
+  } else {
+    func(path);
+  }
+  if (route.childRoutes) {
+    route.childRoutes.forEach(route =>
+      forEachPath(route, func, trace.concat(route.path)));
+  }
+}
+
+function interpolateParams(path, params) {
+  return path.replace(/:([a-zA-Z_\-]+)/g, (_, key) => params[key]);
+}
