@@ -96,20 +96,8 @@ class RenderStaticPlugin {
 
   apply(compiler) {
     compiler.plugin('emit', (compilation, done) => {
-      let bundle = compilation.assets['bundle.js'];
-      let source = bundle._source ?
-        bundle._source.source() :
-        bundle.source();
-      let scope = {
-        console,
-        process,
-        require,
-        setTimeout,
-      };
-      let {route, Meta, Site} = evaluate('module.exports = ' + source, '<boot>', scope);
-
+      let {route, Meta, Site} = evalBundle(compilation.assets);
       cleanAssets(compilation.assets);
-
       function addToAssets(path, markup) {
         compilation.assets[routePathToAssetPath(path)] = createAssetFromContents(markup);
       }
