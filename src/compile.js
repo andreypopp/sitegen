@@ -39,8 +39,10 @@ export function createCompiler({entry, output, env, dev}) {
       new LogProgressPlugin(env),
       new webpack.DefinePlugin({
         '__DEBUG__': __DEBUG__,
+        'process.env.NODE_ENV': JSON.stringify(env),
       }),
       env === 'content' && new RenderStaticPlugin(),
+      env === 'production' && new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}}),
     ].filter(Boolean)
   });
 }
