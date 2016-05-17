@@ -210,9 +210,7 @@ function renderGetCollectionChunk(page, options) {
   if (options.split) {
     return expr`
       function getCollectionPage(cb) {
-        debug('fetching collection chunk');
         require.ensure([], function(require) {
-          debug('fetching collection chunk complete');
           var page = ${types.arrayExpression(requireList)};
           var path = ${types.arrayExpression(pathList)};
           page = page.map(function(item, idx) {
@@ -271,9 +269,7 @@ function renderGetComponent(id, options) {
   if (options.split) {
     return expr`
       function getComponentAsync(_nextState, cb) {
-        debug('fetching component');
         require.ensure([], function(require) {
-          debug('fetching component complete');
           cb(null, require(${req}).default);
         }, ${types.stringLiteral(options.chunkName)});
       }
