@@ -40,7 +40,7 @@ module.exports = function(source) {
       exports.React = React;
 
       if (typeof window !== 'undefined') {
-        boot(${route});
+        boot(exports.route);
       }
     `),
     err => cb(err)
