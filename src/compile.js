@@ -16,6 +16,7 @@ const BOOT_LOADER = require.resolve('./loader/boot');
 const BABEL_LOADER = require.resolve('babel-loader');
 const CSS_LOADER = require.resolve('css-loader');
 const STYLE_LOADER = require.resolve('style-loader');
+const REACTDOWN_LOADER = require.resolve('reactdown/webpack');
 
 export function createCompiler(config) {
   config = configureCompiler(config);
@@ -43,6 +44,11 @@ export function configureCompiler({entry, output, env, dev, inlineCSS}) {
       loader: ExtractTextPlugin.extract(STYLE_LOADER, CSS_LOADER),
     };
 
+  let REACTDOWN_LOADER_CONFIG = {
+    test: /\.md$/,
+    loaders: [BABEL_LOADER, REACTDOWN_LOADER],
+  };
+
   return {
     entry: [BOOT_LOADER, entry].join('!'),
     devtool: env === 'development' ? 'cheap-module-source-map' : undefined,
@@ -58,6 +64,7 @@ export function configureCompiler({entry, output, env, dev, inlineCSS}) {
       loaders: [
         BABEL_LOADER_CONFIG,
         CSS_LOADER_CONFIG,
+        REACTDOWN_LOADER_CONFIG,
       ],
     },
     plugins: [
