@@ -8,6 +8,7 @@ import React from 'react';
 import {renderToStaticMarkup, renderToString} from 'react-dom/server';
 import {match, RouterContext} from 'react-router';
 import evaluate from 'eval';
+import Promise from 'bluebird';
 import {forEachPath} from './route';
 
 const BOOT_LOADER = require.resolve('./loader/boot');
@@ -46,10 +47,49 @@ export function configureCompiler({entry, output, env, dev}) {
         '__DEBUG__': __DEBUG__,
         'process.env.NODE_ENV': JSON.stringify(env),
       }),
+      env === 'development' && new PromiseAssetsPlugin('promiseBundle', evalBundle),
       env === 'content' && new RenderStaticPlugin(),
       env === 'production' && new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}}),
     ].filter(Boolean)
   };
+}
+
+function evalBundle(assets) {
+  let bundle = assets['bundle.js'];
+  let source = bundle._source ?
+    bundle._source.source() :
+    bundle.source();
+  let scope = {
+    console,
+    process,
+    require,
+    setTimeout,
+  };
+  return evaluate('module.exports = ' + source, '<boot>', scope);
+}
+
+class PromiseAssetsPlugin {
+
+  constructor(name = 'promiseAssets', then = value => value) {
+    this.then = then;
+    this.name = name;
+  }
+
+  apply(compiler) {
+    let pending;
+
+    let init = () => {
+      pending = Promise.pending();
+      compiler[this.name] = pending.promise.then(this.then);
+    };
+
+    init();
+
+    compiler.plugin('done', ({compilation}) => {
+      pending.resolve(compilation.assets);
+    });
+    compiler.plugin('invalid', init);
+  }
 }
 
 class RenderStaticPlugin {

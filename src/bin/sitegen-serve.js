@@ -8,7 +8,6 @@ import WebpackDevMiddleware from 'webpack-dev-middleware';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {parse, error, log} from './utils';
-import Site from '../Site';
 import {createCompiler} from '../compile';
 
 let debug = makeDebug('sitegen:cmd:serve');
@@ -31,9 +30,10 @@ let compilerMiddleware = WebpackDevMiddleware(compiler, {
 });
 
 function render(req, res, next) {
-  res.send(renderToStaticMarkup(
-    <Site bundle={{js: '/bundle.js'}} />
-  ));
+  compiler.promiseBundle.then(
+    mod => res.send(renderToStaticMarkup(<mod.Site bundle={{js: '/bundle.js'}} />)),
+    err => next(err)
+  );
 }
 
 let app = express()
