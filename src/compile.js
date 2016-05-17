@@ -6,6 +6,7 @@ import webpack from 'webpack';
 import createLogger from 'debug';
 import React from 'react';
 import {renderToStaticMarkup, renderToString} from 'react-dom/server';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import {match, RouterContext} from 'react-router';
 import evaluate from 'eval';
 import Promise from 'bluebird';
@@ -13,20 +14,35 @@ import {forEachPath} from './route';
 
 const BOOT_LOADER = require.resolve('./loader/boot');
 const BABEL_LOADER = require.resolve('babel-loader');
-
-const BABEL_LOADER_CONFIG = {
-  test: /\.js$/,
-  exclude: /node_modules/,
-  loader: BABEL_LOADER,
-};
+const CSS_LOADER = require.resolve('css-loader');
+const STYLE_LOADER = require.resolve('style-loader');
 
 export function createCompiler(config) {
   config = configureCompiler(config);
   return webpack(config);
 }
 
-export function configureCompiler({entry, output, env, dev}) {
-  let __DEBUG__ = env === 'production' ? undefined : JSON.stringify(process.env.DEBUG);
+export function configureCompiler({entry, output, env, dev, inlineCSS}) {
+  let __DEBUG__ = env === 'production'
+    ? undefined
+    : JSON.stringify(process.env.DEBUG);
+
+  let BABEL_LOADER_CONFIG = {
+    test: /\.js$/,
+    exclude: /node_modules/,
+    loader: BABEL_LOADER,
+  };
+
+  let CSS_LOADER_CONFIG = env === 'development'
+    ? {
+      test: /\.css$/,
+      loaders: [STYLE_LOADER, CSS_LOADER],
+    }
+    : {
+      test: /\.css$/,
+      loader: ExtractTextPlugin.extract(STYLE_LOADER, CSS_LOADER),
+    };
+
   return {
     entry: [BOOT_LOADER, entry].join('!'),
     devtool: env === 'development' ? 'cheap-module-source-map' : undefined,
@@ -39,7 +55,10 @@ export function configureCompiler({entry, output, env, dev}) {
       publicPath: '/',
     },
     module: {
-      loaders: [BABEL_LOADER_CONFIG],
+      loaders: [
+        BABEL_LOADER_CONFIG,
+        CSS_LOADER_CONFIG,
+      ],
     },
     plugins: [
       new LogProgressPlugin(env),
@@ -47,18 +66,21 @@ export function configureCompiler({entry, output, env, dev}) {
         '__DEBUG__': __DEBUG__,
         'process.env.NODE_ENV': JSON.stringify(env),
       }),
-      env === 'development' && new PromiseAssetsPlugin('promiseBundle', evalBundle),
-      env === 'content' && new RenderStaticPlugin(),
+      env === 'development' && new PromiseAssetsPlugin({
+        name: 'promiseBundle',
+        then: evalBundle
+      }),
+      (env === 'content' || env === 'production') && new ExtractTextPlugin('bundle.css'),
+      env === 'content' && new RenderStaticPlugin({
+        inlineCSS: inlineCSS
+      }),
       env === 'production' && new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}}),
     ].filter(Boolean)
   };
 }
 
 function evalBundle(assets) {
-  let bundle = assets['bundle.js'];
-  let source = bundle._source ?
-    bundle._source.source() :
-    bundle.source();
+  let source = assetSource(assets['bundle.js']);
   let scope = {
     console,
     process,
@@ -70,9 +92,9 @@ function evalBundle(assets) {
 
 class PromiseAssetsPlugin {
 
-  constructor(name = 'promiseAssets', then = value => value) {
-    this.then = then;
-    this.name = name;
+  constructor({name, then}) {
+    this.name = name || 'promiseAssets';
+    this.then = then || (assets => assets);
   }
 
   apply(compiler) {
@@ -94,10 +116,17 @@ class PromiseAssetsPlugin {
 
 class RenderStaticPlugin {
 
+  constructor({inlineCSS}) {
+    this.inlineCSS = inlineCSS;
+  }
+
   apply(compiler) {
     compiler.plugin('emit', (compilation, done) => {
       let {route, Meta, Site} = evalBundle(compilation.assets);
+      let css = compilation.assets['bundle.css'];
+
       cleanAssets(compilation.assets);
+
       function addToAssets(path, markup) {
         compilation.assets[routePathToAssetPath(path)] = createAssetFromContents(markup);
       }
@@ -106,7 +135,7 @@ class RenderStaticPlugin {
       forEachPath(route, path => {
         compiler.debug('rendering path', path);
         tasks.push(
-          this.renderPath(route, path, Site, Meta).then(
+          this.renderPath(route, path, css, Site, Meta).then(
             markup => {
               if (markup) {
                 addToAssets(path, markup)
@@ -130,7 +159,7 @@ class RenderStaticPlugin {
     });
   }
 
-  renderPath(route, path, Site, Meta) {
+  renderPath(route, path, css, Site, Meta) {
     return new Promise((resolve, reject) => {
       let location = path;
       match({routes: route, location}, (error, redirectLocation, routeProps) => {
@@ -144,7 +173,8 @@ class RenderStaticPlugin {
           let markup = renderToStaticMarkup(
             <Site
               meta={meta}
-              bundle={{js: '/bundle.js'}}
+              bundle={{js: '/bundle.js', css: !this.inlineCSS && '/bundle.css'}}
+              style={this.inlineCSS && assetSource(css)}
               content={innerMarkup}
               />
           );
@@ -153,6 +183,15 @@ class RenderStaticPlugin {
       });
     });
   }
+}
+
+function assetSource(asset) {
+  if (!asset) {
+    return null;
+  }
+  return  asset._source
+    ? asset._source.source()
+    : asset.source();
 }
 
 function createAssetFromContents(contents) {

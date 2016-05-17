@@ -6,8 +6,8 @@ import fs from 'fs';
 import path from 'path';
 import commander from 'commander';
 
-export function parse(args = process.argv) {
-  args = commander
+export function parse(configure = p => p, args = process.argv) {
+  args = configure(commander)
     .parse(args);
 
   let [entry] = args.args;
