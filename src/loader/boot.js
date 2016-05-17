@@ -25,7 +25,7 @@ module.exports = function(source) {
 
   renderRoute(route, {
     fs,
-    split: compiler.options.env === 'content' ? false : undefined
+    split: compiler.options.env === 'production' ? undefined : false,
   }).then(
     route => cb(null, `
       var makeDebug = require('debug');
