@@ -19,9 +19,14 @@ const BABEL_LOADER_CONFIG = {
   loader: BABEL_LOADER,
 };
 
-export function createCompiler({entry, output, env, dev}) {
+export function createCompiler(config) {
+  config = configureCompiler(config);
+  return webpack(config);
+}
+
+export function configureCompiler({entry, output, env, dev}) {
   let __DEBUG__ = env === 'production' ? undefined : JSON.stringify(process.env.DEBUG);
-  return webpack({
+  return {
     entry: [BOOT_LOADER, entry].join('!'),
     devtool: env === 'development' ? 'cheap-module-source-map' : undefined,
     env: env,
@@ -44,7 +49,7 @@ export function createCompiler({entry, output, env, dev}) {
       env === 'content' && new RenderStaticPlugin(),
       env === 'production' && new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}}),
     ].filter(Boolean)
-  });
+  };
 }
 
 class RenderStaticPlugin {
