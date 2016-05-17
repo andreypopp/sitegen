@@ -17,9 +17,9 @@ module.exports = function meta(source) {
   });
 
   if (found) {
-    return `module.exports = ${generate(found).code};`;
+    return `exports.default = ${generate(found).code};`;
   } else {
-    return `module.exports.default = {}`;
+    return `exports.default = {}`;
   }
 }
 

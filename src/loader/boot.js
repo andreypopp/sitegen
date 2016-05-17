@@ -40,8 +40,12 @@ module.exports = function(source) {
       exports.React = React;
 
       if (typeof window !== 'undefined') {
+        if (module.hot) {
+          module.hot.accept();
+        }
         boot(exports.route);
       }
+
     `),
     err => cb(err)
   );

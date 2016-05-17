@@ -18,6 +18,11 @@ const CSS_LOADER = require.resolve('css-loader');
 const STYLE_LOADER = require.resolve('style-loader');
 const REACTDOWN_LOADER = require.resolve('reactdown/webpack');
 
+const ES2015_BABEL_PRESET = require.resolve('babel-preset-es2015');
+const STAGE_1_BABEL_PRESET = require.resolve('babel-preset-stage-1');
+const REACT_BABEL_PRESET = require.resolve('babel-preset-react');
+const REACT_HOT_BABEL_PLUGIN = require.resolve('react-hot-loader/babel');
+
 export function createCompiler(config) {
   config = configureCompiler(config);
   return webpack(config);
@@ -50,7 +55,11 @@ export function configureCompiler({entry, output, env, dev, inlineCSS}) {
   };
 
   return {
-    entry: [BOOT_LOADER, entry].join('!'),
+    entry: [
+      env === 'development' && 'react-hot-loader/patch',
+      env === 'development' && 'webpack-hot-middleware/client',
+      [BOOT_LOADER, entry].join('!'),
+    ].filter(Boolean),
     devtool: env === 'development' ? 'cheap-module-source-map' : undefined,
     env: env,
     target: env === 'content' ? 'node' : 'web',
@@ -67,12 +76,25 @@ export function configureCompiler({entry, output, env, dev, inlineCSS}) {
         REACTDOWN_LOADER_CONFIG,
       ],
     },
+    babel: {
+      presets: [
+        ES2015_BABEL_PRESET,
+        STAGE_1_BABEL_PRESET,
+        REACT_BABEL_PRESET
+      ],
+      plugins: [
+        env === 'development' && REACT_HOT_BABEL_PLUGIN,
+      ].filter(Boolean),
+    },
     plugins: [
       new LogProgressPlugin(env),
       new webpack.DefinePlugin({
         '__DEBUG__': __DEBUG__,
         'process.env.NODE_ENV': JSON.stringify(env),
       }),
+      env === 'development' && new webpack.optimize.OccurenceOrderPlugin(),
+      env === 'development' && new webpack.HotModuleReplacementPlugin(),
+      env === 'development' && new webpack.NoErrorsPlugin(),
       env === 'development' && new PromiseAssetsPlugin({
         name: 'promiseBundle',
         then: evalBundle

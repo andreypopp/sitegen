@@ -6,6 +6,7 @@
 import express from 'express';
 import makeDebug from 'debug';
 import WebpackDevMiddleware from 'webpack-dev-middleware';
+import WebpackHotMiddleware from 'webpack-hot-middleware';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {parse, error, log} from './utils';
@@ -21,13 +22,17 @@ let compiler = createCompiler({
   env: 'development',
 });
 
-let compilerMiddleware = WebpackDevMiddleware(compiler, {
+let compileDevMiddleware = WebpackDevMiddleware(compiler, {
   noInfo: false,
   quiet: true,
   stats: {
     chunks: false,
     modules: false,
   },
+});
+
+let compileHotMiddleware = WebpackHotMiddleware(compiler, {
+  log() { },
 });
 
 function render(req, res, next) {
@@ -38,6 +43,7 @@ function render(req, res, next) {
 }
 
 let app = express()
-  .use(compilerMiddleware)
+  .use(compileDevMiddleware)
+  .use(compileHotMiddleware)
   .use(render)
   .listen(3000, () => debug('started listening on port 3000'));
