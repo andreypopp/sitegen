@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * @copyright 2016-present, Sitegen team
  */
