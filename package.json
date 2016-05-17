@@ -45,6 +45,7 @@
     "babel-runtime": "^6.6.1",
     "babel-traverse": "^6.8.0",
     "babel-types": "^6.8.1",
+    "babylon": "^6.8.0",
     "bluebird": "^3.3.5",
     "bundle-loader": "^0.5.4",
     "commander": "^2.9.0",
