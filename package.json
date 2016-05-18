@@ -3,7 +3,6 @@
   "version": "0.20.0",
   "description": "Static site generator",
   "main": "./lib/index.js",
-  "browser": "./lib/browser.js",
   "bin": {
     "sitegen-serve": "./lib/bin/sitegen-serve.js",
     "sitegen-build": "./lib/bin/sitegen-build.js"
