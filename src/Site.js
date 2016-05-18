@@ -7,6 +7,7 @@ export default function Site({meta, bundle, content, style}) {
     <html {...meta.htmlAttributes.toComponent()}>
       <head>
         <meta charSet="utf8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         {style && <style dangerouslySetInnerHTML={{__html: style}} />}
         {bundle.css && <link rel="stylesheet" href={bundle.css} />}
         {meta.title.toComponent()}
