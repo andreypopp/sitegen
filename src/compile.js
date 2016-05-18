@@ -98,6 +98,7 @@ export function configureCompiler({entry, output, env, dev, inlineCSS}) {
     devtool: env === 'development' ? 'cheap-module-source-map' : undefined,
     env: env,
     target: env === 'content' ? 'node' : 'web',
+    bail: env === 'content',
     output: {
       path: output || '/build',
       filename: 'bundle.js',
