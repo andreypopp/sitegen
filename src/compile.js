@@ -17,6 +17,7 @@ const BABEL_LOADER = require.resolve('babel-loader');
 const CSS_LOADER = require.resolve('css-loader');
 const STYLE_LOADER = require.resolve('style-loader');
 const REACTDOWN_LOADER = require.resolve('reactdown/webpack');
+const CSS_COMPONENT_LOADER = require.resolve('react-css-components/webpack');
 
 const ES2015_BABEL_PRESET = require.resolve('babel-preset-es2015');
 const STAGE_1_BABEL_PRESET = require.resolve('babel-preset-stage-1');
@@ -42,11 +43,45 @@ export function configureCompiler({entry, output, env, dev, inlineCSS}) {
   let CSS_LOADER_CONFIG = env === 'development'
     ? {
       test: /\.css$/,
+      exclude: /\.(module|component)\.css$/,
       loaders: [STYLE_LOADER, CSS_LOADER],
     }
     : {
       test: /\.css$/,
+      exclude: /\.(module|component)\.css$/,
       loader: ExtractTextPlugin.extract(STYLE_LOADER, CSS_LOADER),
+    };
+
+  let CSS_MODULE_LOADER_CONFIG = env === 'development'
+    ? {
+      test: /\.module\.css$/,
+      loaders: [STYLE_LOADER, CSS_LOADER + '?modules'],
+    }
+    : {
+      test: /\.module\.css$/,
+      loader: ExtractTextPlugin.extract(STYLE_LOADER, CSS_LOADER + '?modules'),
+    };
+
+  let CSS_COMPONENT_LOADER_CONFIG = env === 'development'
+    ? {
+      test: /\.component\.css$/,
+      loader: configureLoader([
+        BABEL_LOADER,
+        {
+          loader: CSS_COMPONENT_LOADER,
+          query: {loadCSS: configureLoader([STYLE_LOADER, CSS_LOADER + '?modules']).split('!')},
+        }
+      ]),
+    }
+    : {
+      test: /\.component\.css$/,
+      loader: configureLoader([
+        BABEL_LOADER,
+        {
+          loader: CSS_COMPONENT_LOADER,
+          query: {loadCSS: ExtractTextPlugin.extract(STYLE_LOADER, CSS_LOADER + '?modules').split('!')}
+        }
+      ])
     };
 
   let REACTDOWN_LOADER_CONFIG = {
@@ -73,6 +108,8 @@ export function configureCompiler({entry, output, env, dev, inlineCSS}) {
       loaders: [
         BABEL_LOADER_CONFIG,
         CSS_LOADER_CONFIG,
+        CSS_MODULE_LOADER_CONFIG,
+        CSS_COMPONENT_LOADER_CONFIG,
         REACTDOWN_LOADER_CONFIG,
       ],
     },
@@ -106,6 +143,20 @@ export function configureCompiler({entry, output, env, dev, inlineCSS}) {
       env === 'production' && new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}}),
     ].filter(Boolean)
   };
+}
+
+function configureLoader(element) {
+  if (Array.isArray(element)) {
+    return element.map(configureLoader).join('!');
+  } else if (typeof element === 'string') {
+    return element;
+  } else {
+    if (element.query) {
+      return element.loader + '?' + JSON.stringify(element.query);
+    } else {
+      return element.loader;
+    }
+  }
 }
 
 function evalBundle(assets) {
