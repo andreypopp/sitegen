@@ -6,7 +6,7 @@ import {
   NavLink as NavLinkBase,
   NavBarWrapper
 } from './NavBar.component.css';
-import {Section, SubHeadingLine} from './index.component.css';
+import {Section, SubHeadingLine} from './Site.component.css';
 
 export function NavBar({children}) {
   return (

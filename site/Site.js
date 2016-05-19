@@ -3,15 +3,15 @@ import './index.css';
 import React from 'react';
 import {Meta} from '../';
 import GitHubCorner from './GitHubCorner';
-import Favicon from './favicon.ico';
-import TouchIcon from './sitegen-icon.png';
+import Favicon from './img/favicon.ico';
+import TouchIcon from './img/sitegen-icon.png';
 import {
   Root, ContentWrapper,
   HeadingLine, SubHeadingLine,
   Section, SectionHeader,
   Par, CodeBlock, UIText,
   Heart
-} from './index.component.css';
+} from './Site.component.css';
 import {NavBar, NavLink} from './NavBar';
 import {StickyRoot, StickyDest} from './Sticky';
 

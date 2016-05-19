@@ -1,12 +1,12 @@
 import React from 'react';
-import {Meta} from '../';
+import {Meta} from '../../';
 import {
   Root, ContentWrapper,
   HeadingLine, SubHeadingLine,
   NavBar, NavLink,
   Section, SectionHeader,
   Par, CodeBlock
-} from './index.component.css';
+} from '../Site.component.css';
 
 export default function Tutorial() {
   return (
