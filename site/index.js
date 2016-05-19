@@ -11,7 +11,8 @@ import {
   HeadingLine, SubHeadingLine,
   NavBar, NavLink as NavLinkBase,
   Section, SectionHeader,
-  Par, CodeBlock
+  Par, CodeBlock, UIText,
+  Heart 
 } from './index.component.css';
 
 class NavLink extends React.Component {
@@ -139,10 +140,10 @@ export default function Site({children}) {
 
       {children}
 
-      <Section decorated noWrap>
-        <div style={{fontSize: '8pt', textAlign: 'center'}}>
-          Made with <span style={{color: 'red'}}>❤</span> in St. Petersburg, Russia
-        </div>
+      <Section decorated noWrap center>
+        <UIText small uppercase>
+          Made with <Heart>❤</Heart> in Saint&ndash;Petersburg
+        </UIText>
       </Section>
     </Root>
   );

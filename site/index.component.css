@@ -76,6 +76,10 @@ Section:prop(decorated) {
   color: #000;
 }
 
+Section:prop(center) {
+  text-align: center;
+}
+
 Section:prop(noWrap) {
   margin-bottom: 0;
 }
@@ -117,4 +121,24 @@ Par {
   font-weight: 400;
   line-height: 1.2em;
   margin-bottom: 1em;
+}
+
+UIText {
+  base: span;
+  font-size: 10pt;
+  font-weight: 700;
+}
+
+UIText:prop(small) {
+  font-size: 8pt;
+}
+
+UIText:prop(uppercase) {
+  text-transform: uppercase;
+}
+
+Heart {
+  base: span;
+  color: red;
+  font-size: 110%;
 }
