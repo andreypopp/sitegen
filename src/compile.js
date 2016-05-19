@@ -15,6 +15,8 @@ import {forEachPath} from './route';
 const BOOT_LOADER = require.resolve('./loader/boot');
 const BABEL_LOADER = require.resolve('babel-loader');
 const CSS_LOADER = require.resolve('css-loader');
+const FILE_LOADER = require.resolve('file-loader');
+const URL_LOADER = require.resolve('url-loader');
 const STYLE_LOADER = require.resolve('style-loader');
 const REACTDOWN_LOADER = require.resolve('reactdown/webpack');
 const CSS_COMPONENT_LOADER = require.resolve('react-css-components/webpack');
@@ -38,6 +40,12 @@ export function configureCompiler({entry, output, env, dev, inlineCSS}) {
     test: /\.js$/,
     exclude: /node_modules/,
     loader: BABEL_LOADER,
+  };
+
+  let IMG_LOADER_CONFIG = {
+    test: /\.(png|jpg|jpeg|gif|ico)$/,
+    exclude: /node_modules/,
+    loader: configureLoader({loader: URL_LOADER, query: {limit: 10000}}),
   };
 
   let CSS_LOADER_CONFIG = env === 'development'
@@ -109,6 +117,7 @@ export function configureCompiler({entry, output, env, dev, inlineCSS}) {
       loaders: [
         BABEL_LOADER_CONFIG,
         CSS_LOADER_CONFIG,
+        IMG_LOADER_CONFIG,
         CSS_MODULE_LOADER_CONFIG,
         CSS_COMPONENT_LOADER_CONFIG,
         REACTDOWN_LOADER_CONFIG,
