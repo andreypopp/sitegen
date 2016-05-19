@@ -45,54 +45,70 @@ const APPLE_TOUCH_ICON = {
   href: TouchIcon,
 };
 
+function FixedTop() {
+  return (
+    <GatewayDest
+      style={{width: '100%', position: 'fixed', top: 0}}
+      name="fixedTop"
+      />
+  );
+}
+
+function Footer() {
+  return (
+    <Section decorated noMargin center>
+      <UIText small uppercase>
+        Made with <Heart>❤</Heart> in Saint&ndash;Petersburg
+      </UIText>
+    </Section>
+  );
+}
+
 export default function Site({children}) {
   return (
     <GatewayProvider>
-    <Root>
-      <Meta
-        titleTemplate="%s | Sitegen"
-        title="Main"
-        link={[
-          FAVICON,
-          APPLE_TOUCH_ICON,
-        ]}
-        meta={[
-          VIEWPORT,
-          APPLE_MOBILE_WEB_APP_CAPABLE,
-          APPLE_MOBILE_WEB_APP_TITLE,
-          APPLE_MOBILE_WEB_APP_STATUS_BAR_STYLE,
-        ]}
-        />
+      <Root>
+        <Meta
+          titleTemplate="%s | Sitegen"
+          title="Main"
+          link={[
+            FAVICON,
+            APPLE_TOUCH_ICON,
+          ]}
+          meta={[
+            VIEWPORT,
+            APPLE_MOBILE_WEB_APP_CAPABLE,
+            APPLE_MOBILE_WEB_APP_TITLE,
+            APPLE_MOBILE_WEB_APP_STATUS_BAR_STYLE,
+          ]}
+          />
 
-      <Section decorated noMargin>
-        <GitHubCorner project="andreypopp/sitegen" />
-        <ContentWrapper>
-          <HeadingLine>Sitegen</HeadingLine>
-          <SubHeadingLine>
-            Static site generator
-          </SubHeadingLine>
-          <SubHeadingLine>
-            based on React and Webpack
-          </SubHeadingLine>
-        </ContentWrapper>
-      </Section>
+        <Section decorated noMargin>
+          <GitHubCorner project="andreypopp/sitegen" />
+          <ContentWrapper>
+            <HeadingLine>Sitegen</HeadingLine>
+            <SubHeadingLine>
+              Static site generator
+            </SubHeadingLine>
+            <SubHeadingLine>
+              based on React and Webpack
+            </SubHeadingLine>
+          </ContentWrapper>
+        </Section>
 
-      <StickyNavBar>
-        <NavLink href="/">Overview</NavLink>
-        <NavLink href="/tutorial">Tutorial</NavLink>
-        <NavLink href="/docs">Docs</NavLink>
-        <NavLink href="/community">Community</NavLink>
-      </StickyNavBar>
+        <StickyNavBar>
+          <NavLink href="/">Overview</NavLink>
+          <NavLink href="/tutorial">Tutorial</NavLink>
+          <NavLink href="/docs">Docs</NavLink>
+          <NavLink href="/community">Community</NavLink>
+        </StickyNavBar>
 
-      {children}
+        {children}
 
-      <Section decorated noMargin center>
-        <UIText small uppercase>
-          Made with <Heart>❤</Heart> in Saint&ndash;Petersburg
-        </UIText>
-      </Section>
-      <GatewayDest style={{width: '100%', position: 'fixed', top: 0}} name="fixedTop" />
-    </Root>
+        <Footer />
+
+        <FixedTop />
+      </Root>
     </GatewayProvider>
   );
 }
