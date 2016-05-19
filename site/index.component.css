@@ -142,3 +142,19 @@ Heart {
   color: red;
   font-size: 110%;
 }
+
+@media only screen and (min-width: 600px) {
+
+  ContentWrapper {
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  NavBarWrapper {
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+}

@@ -22,10 +22,10 @@ export default function Overview() {
             Design your site as a collection of React components.
             Use any npm package you found on the web.
           </Par>
-        </ContentWrapper>
         <CodeBlock>{`export default Site() {
 return <div>Hello, world!</div>
 }`}</CodeBlock>
+        </ContentWrapper>
       </Section>
 
       <Section noWrap>
@@ -34,7 +34,6 @@ return <div>Hello, world!</div>
           <Par>
             Define your site content structure.
           </Par>
-        </ContentWrapper>
         <CodeBlock>{`export let route = {
   page: './index',
   route: {
@@ -42,12 +41,13 @@ return <div>Hello, world!</div>
     about: './about',
   }
 }`}</CodeBlock>
+        </ContentWrapper>
       </Section>
       <Section noWrap>
         <ContentWrapper>
           <SectionHeader>Serve & build</SectionHeader>
-        </ContentWrapper>
         <CodeBlock>{`% sitegen-serve .\n% sitegen-build .`}</CodeBlock>
+        </ContentWrapper>
       </Section>
 
     </div>

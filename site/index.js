@@ -9,7 +9,7 @@ import TouchIcon from './sitegen-icon.png';
 import {
   Root, ContentWrapper,
   HeadingLine, SubHeadingLine,
-  NavBar, NavLink as NavLinkBase,
+  NavBar, NavBarWrapper, NavLink as NavLinkBase,
   Section, SectionHeader,
   Par, CodeBlock, UIText,
   Heart 
@@ -128,20 +128,24 @@ export default function Site({children}) {
 
       <Section decorated noWrap>
         <GitHubCorner project="andreypopp/sitegen" />
-        <HeadingLine>Sitegen</HeadingLine>
-        <SubHeadingLine>
-          Static site generator
-        </SubHeadingLine>
-        <SubHeadingLine>
-          based on React and Webpack
-        </SubHeadingLine>
+        <ContentWrapper>
+          <HeadingLine>Sitegen</HeadingLine>
+          <SubHeadingLine>
+            Static site generator
+          </SubHeadingLine>
+          <SubHeadingLine>
+            based on React and Webpack
+          </SubHeadingLine>
+        </ContentWrapper>
       </Section>
 
       <NavBar>
-        <NavLink href="/">Overview</NavLink>
-        <NavLink href="/tutorial">Tutorial</NavLink>
-        <NavLink href="/docs">Docs</NavLink>
-        <NavLink href="/community">Community</NavLink>
+        <NavBarWrapper>
+          <NavLink href="/">Overview</NavLink>
+          <NavLink href="/tutorial">Tutorial</NavLink>
+          <NavLink href="/docs">Docs</NavLink>
+          <NavLink href="/community">Community</NavLink>
+        </NavBarWrapper>
       </NavBar>
 
       {children}
