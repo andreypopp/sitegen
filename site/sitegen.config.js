@@ -1,3 +1,9 @@
 export let route = {
-  page: './index.js'
+  page: './index',
+  route: {
+    index: './overview',
+    tutorial: './tutorial',
+    docs: './docs',
+    community: './community',
+  }
 };

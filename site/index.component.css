@@ -26,8 +26,8 @@ SubHeadingLine {
   base: h2;
   margin: 0;
   padding: 0;
-  font-size: 18px;
-  height: 18px;
+  font-size: 20px;
+  height: 20px;
   letter-spacing: -1px;
   font-weight: 800;
   font-style: italic;
@@ -35,9 +35,39 @@ SubHeadingLine {
   overflow: hidden;
 }
 
+NavBar {
+  background: #CCC;
+  padding: 10px;
+}
+
+NavLink {
+  base: a;
+  padding: 10px 8px;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  font-size: 11pt;
+  font-weight: 800;
+  color: #000;
+  text-decoration: none;
+}
+
+NavLink:hover,
+NavLink:active {
+  background: #BBB;
+}
+
+NavLink:prop(selected),
+NavLink:prop(selected):hover,
+NavLink:prop(selected):active {
+  background: #EEE;
+}
+
 Section {
   position: relative;
-  margin-bottom: 30px;
+  margin-bottom: 50px;
   padding: 20px 10px;
 }
 
@@ -47,7 +77,11 @@ Section:prop(decorated) {
 }
 
 Section:prop(noWrap) {
-  padding: 0;
+  margin-bottom: 0;
+}
+
+Footer {
+
 }
 
 SectionHeader {
