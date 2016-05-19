@@ -68,13 +68,13 @@ const BODY_PATH = [
   '141.8,141.8 Z',
 ].join(' ');
 
-export default function GitHubCorner({project}) {
+export default function GitHubCorner({project, size = 80}) {
   let href = `https://github.com/${project}`;
   return (
     <a href={href} className={style.root}>
       <svg
-        width="80"
-        height="80"
+        width={size}
+        height={size}
         viewBox="0 0 250 250"
         class={style.figure}>
           <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" />

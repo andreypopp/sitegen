@@ -1,12 +1,11 @@
-Root {
+body {
   font-family: 'Open Sans', sans-serif;
-
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-
-  color: #222;
   background: #EEE;
+  color: #222;
+}
+
+Root {
+  position: relative;
 }
 
 HeadingLine {
@@ -35,36 +34,6 @@ SubHeadingLine {
   overflow: hidden;
 }
 
-NavBar {
-  background: #CCC;
-  padding: 10px;
-}
-
-NavLink {
-  base: a;
-  padding: 10px 8px;
-  cursor: default;
-  user-select: none;
-  -webkit-user-select: none;
-  letter-spacing: -1px;
-  text-transform: uppercase;
-  font-size: 11pt;
-  font-weight: 800;
-  color: #000;
-  text-decoration: none;
-}
-
-NavLink:hover,
-NavLink:active {
-  background: #BBB;
-}
-
-NavLink:prop(selected),
-NavLink:prop(selected):hover,
-NavLink:prop(selected):active {
-  background: #EEE;
-}
-
 Section {
   position: relative;
   margin-bottom: 50px;
@@ -80,8 +49,12 @@ Section:prop(center) {
   text-align: center;
 }
 
-Section:prop(noWrap) {
+Section:prop(noMargin) {
   margin-bottom: 0;
+}
+
+Section:prop(noPadding) {
+  padding: 0;
 }
 
 Footer {
@@ -146,12 +119,6 @@ Heart {
 @media only screen and (min-width: 600px) {
 
   ContentWrapper {
-    width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  NavBarWrapper {
     width: 600px;
     margin-left: auto;
     margin-right: auto;

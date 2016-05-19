@@ -1,0 +1,43 @@
+NavBar {
+  background: #CCC;
+  padding: 10px;
+}
+
+NavBar:prop(sticky) {
+  box-shadow: 0px 1px 3px 0px #888;
+}
+
+NavLink {
+  base: a;
+  padding: 10px 8px;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  font-size: 11pt;
+  font-weight: 800;
+  color: #000;
+  text-decoration: none;
+}
+
+NavLink:hover,
+NavLink:active {
+  background: #BBB;
+}
+
+NavLink:prop(selected),
+NavLink:prop(selected):hover,
+NavLink:prop(selected):active {
+  background: #EEE;
+}
+
+@media only screen and (min-width: 600px) {
+
+  NavBarWrapper {
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+}
