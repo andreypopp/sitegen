@@ -12,12 +12,13 @@ html, body {
 
 body {
   font-family: 'Open Sans', sans-serif;
-  background: #EEE;
+  background: #F5DE1B;
   color: #222;
 }
 
 Root {
   position: relative;
+  background: #EEE;
 }
 
 HeadingLine {
