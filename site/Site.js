@@ -1,5 +1,3 @@
-import './index.css';
-
 import React from 'react';
 import {Meta} from '../';
 import GitHubCorner from './GitHubCorner';
