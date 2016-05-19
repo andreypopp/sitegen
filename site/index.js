@@ -93,6 +93,11 @@ const APPLE_MOBILE_WEB_APP_CAPABLE = {
   content: 'yes',
 };
 
+const VIEWPORT = {
+  name: 'viewport',
+  content: 'width=device-width, initial-scale=1, user-scalable=no',
+};
+
 const FAVICON = {
   rel: 'shortcut icon',
   href: Favicon,
@@ -114,6 +119,7 @@ export default function Site({children}) {
           APPLE_TOUCH_ICON,
         ]}
         meta={[
+          VIEWPORT,
           APPLE_MOBILE_WEB_APP_CAPABLE,
           APPLE_MOBILE_WEB_APP_TITLE,
           APPLE_MOBILE_WEB_APP_STATUS_BAR_STYLE,
