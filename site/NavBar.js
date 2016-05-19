@@ -1,9 +1,6 @@
 import React from 'react';
-import {Gateway} from 'react-gateway';
 import {routerShape} from 'react-router/lib/PropTypes';
-import {topTop, calculateScrollY} from 'react-track/lib/tracking-formulas';
-import {TrackDocument, TrackedDiv} from 'react-track';
-
+import {Sticky} from './Sticky';
 import {
   NavBar as NavBarBase,
   NavLink as NavLinkBase,
@@ -11,39 +8,15 @@ import {
 } from './NavBar.component.css';
 import {Section, SubHeadingLine} from './index.component.css';
 
-export function StickyNavBar({children}) {
+export function NavBar({children}) {
   return (
-    <TrackDocument formulas={[topTop]}>
-      {topTop =>
-        <TrackedDiv formulas={[calculateScrollY, topTop]}>
-          {(scrollY, top) => (
-            <NavBar sticky={top > 0 && scrollY >= 0}>
-              {children}
-            </NavBar>
-          )}
-        </TrackedDiv>}
-    </TrackDocument>
-  );
-}
-
-export function NavBar({sticky, children}) {
-  let nav = (
-    <NavBarWrapper>
-      {children}
-    </NavBarWrapper>
-  );
-  return (
-    <div>
-      {sticky &&
-        <Gateway into="fixedTop">
-          <NavBarBase sticky>
-            {nav}
-          </NavBarBase>
-        </Gateway>}
+    <Sticky to="fixedTop">
       <NavBarBase>
-        {nav}
+        <NavBarWrapper>
+          {children}
+        </NavBarWrapper>
       </NavBarBase>
-    </div>
+    </Sticky>
   );
 }
 

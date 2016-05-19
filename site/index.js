@@ -1,7 +1,6 @@
 import './index.css';
 
 import React from 'react';
-import {GatewayDest, GatewayProvider} from 'react-gateway';
 import {Meta} from '../';
 import GitHubCorner from './GitHubCorner';
 import Favicon from './favicon.ico';
@@ -13,7 +12,8 @@ import {
   Par, CodeBlock, UIText,
   Heart
 } from './index.component.css';
-import {StickyNavBar, NavLink} from './NavBar';
+import {NavBar, NavLink} from './NavBar';
+import {StickyRoot, StickyDest} from './Sticky';
 
 const APPLE_MOBILE_WEB_APP_STATUS_BAR_STYLE = {
   name: 'apple-mobile-web-app-status-bar-style',
@@ -45,15 +45,6 @@ const APPLE_TOUCH_ICON = {
   href: TouchIcon,
 };
 
-function FixedTop() {
-  return (
-    <GatewayDest
-      style={{width: '100%', position: 'fixed', top: 0}}
-      name="fixedTop"
-      />
-  );
-}
-
 function Footer() {
   return (
     <Section decorated noMargin center>
@@ -66,7 +57,7 @@ function Footer() {
 
 export default function Site({children}) {
   return (
-    <GatewayProvider>
+    <StickyRoot>
       <Root>
         <Meta
           titleTemplate="%s | Sitegen"
@@ -96,19 +87,19 @@ export default function Site({children}) {
           </ContentWrapper>
         </Section>
 
-        <StickyNavBar>
+        <NavBar>
           <NavLink href="/">Overview</NavLink>
           <NavLink href="/tutorial">Tutorial</NavLink>
           <NavLink href="/docs">Docs</NavLink>
           <NavLink href="/community">Community</NavLink>
-        </StickyNavBar>
+        </NavBar>
 
         {children}
 
         <Footer />
 
-        <FixedTop />
+        <StickyDest />
       </Root>
-    </GatewayProvider>
+    </StickyRoot>
   );
 }
