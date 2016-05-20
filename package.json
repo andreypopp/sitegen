@@ -10,6 +10,14 @@
   "scripts": {
     "test": "make test"
   },
+  "eslintConfig": {
+    "extends": "prometheusresearch",
+    "globals": {
+      "expr": true,
+      "stmt": true,
+      "__DEBUG__": true
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/andreypopp/sitegen.git"
