@@ -47,7 +47,7 @@ function Footer() {
   return (
     <Section decorated noMargin center>
       <UIText small uppercase>
-        Made with <Heart>❤</Heart> in Saint&ndash;Petersburg
+        Made with <Heart>❤</Heart> in Saint Petersburg
       </UIText>
     </Section>
   );
@@ -92,7 +92,9 @@ export default function Site({children}) {
           <NavLink href="/community">Community</NavLink>
         </NavBar>
 
-        {children}
+        <ContentWrapper style={{marginTop: 20, marginBottom: 20}}>
+          {children}
+        </ContentWrapper>
 
         <Footer />
 

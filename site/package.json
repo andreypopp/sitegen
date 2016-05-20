@@ -1,6 +1,9 @@
 {
   "name": "sitegen-site",
   "version": "1.0.0",
+  "reactdown": {
+    "components": "./components.js"
+  },
   "devDependencies": {
     "normalize.css": "^4.1.1"
   },

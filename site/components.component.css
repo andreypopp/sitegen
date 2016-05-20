@@ -1,0 +1,117 @@
+Root {
+  base: div;
+}
+
+Paragraph, OrderedList, UnorderedList, Code, NoteRoot, TKRoot {
+  margin-top: 0em;
+  margin-bottom: 1.7em;
+}
+
+Emphasis {
+  base: em;
+  font-style: italic;
+}
+
+Strong {
+  base: strong;
+  font-weight: 400;
+}
+
+Link {
+  base: ./Link;
+  background: #F9F1B3;
+  color: #555;
+  text-decoration: none;
+  font-weight: 400;
+  padding: 1px 3px;
+  margin: 0 -3px;
+}
+Link:hover {
+  background: #F5DE1B;
+  color: #000;
+}
+
+Paragraph {
+  base: p;
+
+  line-height: 1.6em;
+}
+
+OrderedList {
+  base: ol;
+  padding-left: 1.5em;
+}
+
+UnorderedList {
+  base: ul;
+  padding-left: 1.5em;
+}
+
+UnorderedList > ListItem {
+  list-style-type: square;
+}
+
+ListItem {
+  base: li;
+}
+
+ListItem > Paragraph {
+  margin-bottom: 0.5em;
+}
+
+InlineCode {
+  base: code;
+  font-family: Menlo, Monaco, monospace;
+  font-size: 9pt;
+  padding: 2px 2px;
+  margin: 0 -2px;
+  padding-bottom: 0px;
+  background: #F9F9F9;
+}
+
+Code {
+  base: pre;
+
+  background: #F9F9F9;
+  color: #555;
+  border-bottom: 1px solid #C7C7C7;
+  font-family: Menlo, Monaco, monospace;
+  font-size: 9pt;
+  padding: 1.5em 0;
+  padding-left: 20px;
+}
+
+Heading {
+  base: reactdown/components?Heading;
+
+  position: relative;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+Heading:prop(level == 1) {
+  letter-spacing: -1px;
+  font-size: 2rem;
+}
+
+Heading:prop(level == 2) {
+  letter-spacing: -1px;
+  font-size: 1.75rem;
+}
+
+Heading:prop(level == 3) {
+  letter-spacing: -1px;
+  font-size: 1.3rem;
+}
+
+Heading:prop(level >= 4) {
+  letter-spacing: -0.5px;
+  font-size: 1rem;
+  color: #666;
+}
+
+Heading:prop(level >= 5) {
+  font-size: 0.8rem;
+}

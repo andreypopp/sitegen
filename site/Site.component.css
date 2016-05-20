@@ -12,13 +12,16 @@ html, body {
 
 body {
   font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
   background: #F5DE1B;
-  color: #222;
+  color: #000;
 }
 
 Root {
   position: relative;
   background: #EEE;
+  color: #000;
+  font-size: 12pt;
 }
 
 HeadingLine {
@@ -145,6 +148,10 @@ Heart {
 }
 
 @media only screen and (min-width: 600px) {
+
+  Root {
+    font-size: 10.5pt;
+  }
 
   ContentWrapper {
     width: 600px;
