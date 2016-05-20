@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "devDependencies": {
     "normalize.css": "^4.1.1"
+  },
+  "dependencies": {
+    "react-track": "^0.3.2"
   }
 }
