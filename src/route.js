@@ -11,10 +11,12 @@ import {flatten, chunk} from 'lodash';
 import {string, number, ref, maybe, object, mapping, oneOf, boolean} from 'validated/schema';
 import {validate as validateObject} from 'validated/object';
 
-import generate from 'babel-generator';
 import * as types from 'babel-types';
+import {createRequest} from './config';
 
 const META_LOADER = require.resolve('./loader/meta');
+const CHUNK_LOADER = require.resolve('./loader/chunk');
+const REACT_HOT_LOADER = require.resolve('react-hot-loader/webpack');
 const COLLECTION_CTX = require.resolve('./CollectionContext');
 
 export function forEach(route, func) {
@@ -67,7 +69,7 @@ export function validate(route, {basedir}) {
 export async function renderRoute(route, options) {
   promisifyAll(options.fs);
   let node = await renderRoutePage(route, '/', [''], options);
-  return generate(node).code;
+  return node;
 }
 
 async function renderRoutePage(route, path, trace, options) {
@@ -127,6 +129,9 @@ async function renderRouteCollection(route, path, trace, options) {
   }
 
   chunks = chunks.map((chunk, idx) => renderGetCollectionChunk(chunk, {
+    page: route.page,
+    chunkNumber: idx,
+    chunkCount: chunks.length,
     loader: META_LOADER,
     chunkName: trace.concat('@page', idx + 1).join('/'),
     split: options.split !== undefined ? options.split : true,
@@ -140,36 +145,11 @@ async function renderRouteCollection(route, path, trace, options) {
     }),
   }));
 
-  let getComponentInner = renderGetComponent(route.page, {
-    split: options.split !== undefined ? options.split : route.split,
-    chunkName,
-  });
-
-  let getComponent = expr`function getComponentAsync(nextState, cb) {
-    var getComponentInner = ${getComponentInner};
+  let getComponent = expr`function getComponent(nextState, cb) {
     var pageNumber = parseInt(nextState.params.page || 1, 10);
     var chunkList = ${types.arrayExpression(chunks)};
     var getCollectionChunk = chunkList[pageNumber - 1];
-    getComponentInner(nextState, function(_err, InnerComponent) {
-      var lastRoute = nextState.routes[nextState.routes.length - 1];
-      if (lastRoute.name !== ${types.stringLiteral(name)} || !getCollectionChunk) {
-        cb(null, InnerComponent);
-      } else {
-        getCollectionChunk(function(page) {
-          function Component(props) {
-            var ComponentWrapper = ${renderRequire(COLLECTION_CTX)};
-            return  React.createElement(ComponentWrapper, {
-              Component: InnerComponent,
-              pageNumber: pageNumber,
-              pageCount: chunkList.length,
-              page: page,
-              props: props
-            });
-          }
-          cb(null, Component);
-        });
-      }
-    });
+    getCollectionChunk(nextState, cb);
   }`;
 
   let pageParam = types.arrayExpression(chunks.map((_, idx) => types.numericLiteral(idx + 1)));
@@ -190,7 +170,7 @@ async function renderRouteCollection(route, path, trace, options) {
 /**
  * Render a fetcher for a collection chunk.
  */
-function renderGetCollectionChunk(page, options) {
+function renderGetCollectionChunk(chunk, options) {
   options = {
     loader: META_LOADER,
     chunkName: 'collectionPage',
@@ -198,40 +178,24 @@ function renderGetCollectionChunk(page, options) {
     ...options,
   };
 
-  let requireList = page.map(item => {
-    let req = options.loader + '!' + item.filename;
-    return renderRequire(req);
-  });
+  let query = {
+    chunk,
+    loader: options.loader,
+    chunkNumber: options.chunkNumber,
+    chunkCount: options.chunkCount,
+  };
 
-  let pathList = page.map(item => {
-    return types.stringLiteral(item.path);
+  let req = createRequest(
+    options.page,
+    {loader: CHUNK_LOADER, query},
+    // TODO: we don't really want to leak configuration here, think of a better
+    // way to inject this
+    REACT_HOT_LOADER
+  );
+  return renderGetComponent(req, {
+    split: options.split,
+    chunkName: options.chunkName,
   });
-
-  if (options.split) {
-    return expr`
-      function getCollectionPage(cb) {
-        require.ensure([], function(require) {
-          var page = ${types.arrayExpression(requireList)};
-          var path = ${types.arrayExpression(pathList)};
-          page = page.map(function(item, idx) {
-            return {item: item, path: path[idx]};
-          });
-          cb(page);
-        }, ${types.stringLiteral(options.chunkName)});
-      }
-    `;
-  } else {
-    return expr`
-      function getCollectionPage(cb) {
-        var page = ${types.arrayExpression(requireList)};
-        var path = ${types.arrayExpression(pathList)};
-        page = page.map(function(item, idx) {
-          return {item: item, path: path[idx]};
-        });
-        cb(page);
-      }
-    `;
-  }
 }
 
 /**

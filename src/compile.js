@@ -11,6 +11,7 @@ import {match, RouterContext} from 'react-router';
 import evaluate from 'eval';
 import Promise from 'bluebird';
 import {forEachPath} from './route';
+import {configureLoader} from './config';
 
 const BOOT_LOADER = require.resolve('./loader/boot');
 const BABEL_LOADER = require.resolve('babel-loader');
@@ -153,20 +154,6 @@ export function configureCompiler({entry, output, env, dev, inlineCSS}) {
       env === 'production' && new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}}),
     ].filter(Boolean)
   };
-}
-
-function configureLoader(element) {
-  if (Array.isArray(element)) {
-    return element.map(configureLoader).join('!');
-  } else if (typeof element === 'string') {
-    return element;
-  } else {
-    if (element.query) {
-      return element.loader + '?' + JSON.stringify(element.query);
-    } else {
-      return element.loader;
-    }
-  }
 }
 
 function evalBundle(assets) {
