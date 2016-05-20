@@ -9,7 +9,7 @@ import WebpackDevMiddleware from 'webpack-dev-middleware';
 import WebpackHotMiddleware from 'webpack-hot-middleware';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
-import {parse, error, log} from './utils';
+import {parse} from './utils';
 import {createCompiler} from '../compile';
 
 let debug = makeDebug('sitegen:cmd:serve');
@@ -42,7 +42,7 @@ function render(req, res, next) {
   );
 }
 
-let app = express()
+express()
   .use(compileDevMiddleware)
   .use(compileHotMiddleware)
   .use(render)

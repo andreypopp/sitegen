@@ -16,7 +16,6 @@ import {configureLoader} from './config';
 const BOOT_LOADER = require.resolve('./loader/boot');
 const BABEL_LOADER = require.resolve('babel-loader');
 const CSS_LOADER = require.resolve('css-loader');
-const FILE_LOADER = require.resolve('file-loader');
 const URL_LOADER = require.resolve('url-loader');
 const STYLE_LOADER = require.resolve('style-loader');
 const REACTDOWN_LOADER = require.resolve('reactdown/webpack');
@@ -32,7 +31,7 @@ export function createCompiler(config) {
   return webpack(config);
 }
 
-export function configureCompiler({entry, output, env, dev, inlineCSS}) {
+export function configureCompiler({entry, output, env, inlineCSS}) {
   let __DEBUG__ = env === 'production'
     ? undefined
     : JSON.stringify(process.env.DEBUG);
@@ -215,7 +214,7 @@ class RenderStaticPlugin {
           this.renderPath(route, path, css, Site, Meta).then(
             markup => {
               if (markup) {
-                addToAssets(path, markup)
+                addToAssets(path, markup);
               }
             },
             error => {

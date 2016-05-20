@@ -3,7 +3,6 @@
  */
 
 import {join, extname, relative} from 'path';
-import invariant from 'invariant';
 import {promisifyAll} from 'bluebird';
 import minimatch from 'minimatch';
 import {flatten, chunk} from 'lodash';
@@ -17,7 +16,6 @@ import {createRequest} from './config';
 const META_LOADER = require.resolve('./loader/meta');
 const CHUNK_LOADER = require.resolve('./loader/chunk');
 const REACT_HOT_LOADER = require.resolve('react-hot-loader/webpack');
-const COLLECTION_CTX = require.resolve('./CollectionContext');
 
 export function forEach(route, func) {
   func(route);
@@ -245,10 +243,6 @@ function renderGetComponent(id, options) {
       }
     `;
   }
-}
-
-function renderRequire(id) {
-  return expr`require(${types.stringLiteral(id)}).default`;
 }
 
 function parsePattern(pattern, {basedir}) {

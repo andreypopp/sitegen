@@ -8,7 +8,7 @@ import generate from 'babel-generator';
 
 const COLLECTION_CTX = require.resolve('../CollectionContext');
 
-module.exports = function loadChunk(source) {
+module.exports = function chunkLoader(_source) {
   this.cacheable();
 
   let query = parseQuery(this.query);
@@ -38,4 +38,4 @@ module.exports = function loadChunk(source) {
       });
     };
   `)).code;
-}
+};

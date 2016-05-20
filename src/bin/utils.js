@@ -30,12 +30,12 @@ export function parse(configure = p => p, args = process.argv) {
 
 export function error(error, code = 1) {
   let message = error.details || error.stack || error;
-  console.error('Error:', message);
+  console.error('Error:', message); // eslint-disable-line no-console
   if (code != null) {
     process.exit(code);
   }
 }
 
 export function log(message) {
-  console.log(message);
+  console.log(message); // eslint-disable-line no-console
 }

@@ -5,7 +5,7 @@
 
 import makeDebug from 'debug';
 import path from 'path';
-import {parse, error, log} from './utils';
+import {parse, error} from './utils';
 import {createCompiler} from '../compile';
 
 let args = parse(p => p

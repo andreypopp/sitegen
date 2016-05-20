@@ -3,7 +3,7 @@ import traverse from 'babel-traverse';
 import generate from 'babel-generator';
 import * as types from 'babel-types';
 
-module.exports = function meta(source) {
+module.exports = function metaLoader(source) {
   this.cacheable();
 
   let found = null;
@@ -19,9 +19,9 @@ module.exports = function meta(source) {
   if (found) {
     return `exports.default = ${generate(found).code};`;
   } else {
-    return `exports.default = {}`;
+    return `exports.default = {}`; // eslint-disable-line quotes
   }
-}
+};
 
 function isExportsMeta(node) {
   return (

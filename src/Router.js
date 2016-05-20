@@ -7,8 +7,8 @@
  * @copyright 2016-present, Sitegen team
  */
 
-import React from 'react'
-import {RouterContext} from 'react-router'
+import React from 'react';
+import {RouterContext} from 'react-router';
 
 const INITIAL_STATE = {
   location: null,
@@ -25,8 +25,8 @@ export default class Router extends React.Component {
   }
 
   render() {
-    let {location, routes, params, components} = this.state
-    let {matchContext: {history, router}, ...props} = this.props
+    let {location, routes, params, components} = this.state;
+    let {matchContext: {history, router}, ...props} = this.props;
 
     if (location == null) {
       // Async match
@@ -77,7 +77,7 @@ export default class Router extends React.Component {
   }
 
   initializeRouter() {
-    let {history, transitionManager, router} = this.props.matchContext;
+    let {transitionManager} = this.props.matchContext;
 
     if (this._unlisten) {
       this._unlisten();
@@ -85,11 +85,11 @@ export default class Router extends React.Component {
 
     this._unlisten = transitionManager.listen((error, state) => {
       if (error) {
-        this.handleError(error)
+        this.handleError(error);
       } else {
-        this.setState(state, this.props.onUpdate)
+        this.setState(state, this.props.onUpdate);
       }
-    })
+    });
   }
 
 }

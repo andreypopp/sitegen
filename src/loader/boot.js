@@ -11,7 +11,7 @@ const BOOT_MODULE = require.resolve('../boot');
 const META_MODULE = require.resolve('../meta');
 const SITE_MODULE = require.resolve('../Site');
 
-module.exports = function loadBoot(source) {
+module.exports = function bootLoader(source) {
   this.cacheable();
 
   let compiler = this._compiler;
@@ -52,4 +52,4 @@ module.exports = function loadBoot(source) {
       }
     `)).code
   ).then(code => cb(null, code), err => cb(err));
-}
+};
