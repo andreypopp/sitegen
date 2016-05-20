@@ -1,11 +1,17 @@
-import {renderRoute, validate, forEach} from '../route';
+/**
+ * @copyright 2016-present, Sitegen team
+ */
+
 import evalAsModule from 'eval-as-module';
+import {program, stringLiteral} from 'babel-types';
+import generate from 'babel-generator';
+import {renderRoute, validate, forEach} from '../route';
 
 const BOOT_MODULE = require.resolve('../boot');
 const META_MODULE = require.resolve('../meta');
 const SITE_MODULE = require.resolve('../Site');
 
-module.exports = function(source) {
+module.exports = function loadBoot(source) {
   this.cacheable();
 
   let compiler = this._compiler;
@@ -23,20 +29,19 @@ module.exports = function(source) {
     }
   });
 
-  renderRoute(route, {
-    fs,
-    split: compiler.options.env === 'production' ? undefined : false,
-  }).then(
-    route => cb(null, `
+  let split = compiler.options.env === 'production' ? undefined : false;
+
+  renderRoute(route, {fs, split}).then(route =>
+    generate(program(stmt`
       var makeDebug = require('debug');
       var React = require('react');
-      var boot = require("${BOOT_MODULE}").boot;
+      var boot = require("${stringLiteral(BOOT_MODULE)}").boot;
 
       var debug = makeDebug('sitegen:runtime:route');
 
       exports.route = ${route};
-      exports.Meta = require("${META_MODULE}").default;
-      exports.Site = require("${SITE_MODULE}").default;
+      exports.Meta = require("${stringLiteral(META_MODULE)}").default;
+      exports.Site = require("${stringLiteral(SITE_MODULE)}").default;
       exports.React = React;
 
       if (typeof window !== 'undefined') {
@@ -45,8 +50,6 @@ module.exports = function(source) {
         }
         boot(exports.route);
       }
-
-    `),
-    err => cb(err)
-  );
+    `)).code
+  ).then(code => cb(null, code), err => cb(err));
 }

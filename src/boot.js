@@ -1,44 +1,31 @@
+/**
+ * @copyright 2016-present, Sitegen team
+ */
+
+import debug from 'debug';
+debug.enable(__DEBUG__);
+
+import invariant from 'invariant';
 import React from 'react'
-import makeDebug from 'debug';
 import {render} from 'react-dom'
-import {browserHistory, Router as RouterBase, match} from 'react-router'
+import {browserHistory as history, match} from 'react-router'
 import {AppContainer} from 'react-hot-loader';
+import Router from './Router';
 
-makeDebug.enable(__DEBUG__);
-
-let debug = makeDebug('sitegen:runtime:boot');
-
-class Router extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {key: 0};
-  }
-
-  render() {
-    return <RouterBase key={this.state.key} {...this.props} />;
-  }
-
-  componentWillReceiveProps({routes}) {
-    if (this.props.routes !== routes) {
-      this.setState({key: this.state.key + 1});
-    }
-  }
-}
+const HOST_ELEMENT = 'main';
 
 export function boot(routes) {
-  debug('matching');
-  match({routes, history: browserHistory}, (err, redirectLocation, props) => {
+  match({routes, history}, (err, redirect, props) => {
     if (err) {
       throw err;
+    } else if (redirect) {
+      invariant(false, 'Redirects are not supported');
     } else {
-      debug('mounting');
       render(
         <AppContainer>
           <Router {...props} />
         </AppContainer>,
-        document.getElementById('main'),
-        () => debug('finishing'),
+        document.getElementById(HOST_ELEMENT)
       );
     }
   });
