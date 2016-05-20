@@ -41,7 +41,6 @@ export class NavLink extends React.Component {
   render() {
     let {href, ...props} = this.props;
     let {router} = this.context;
-    console.log(router, href);
     let selected = href && router.isActive({pathname: href}, true);
     return (
       <NavLinkBase
