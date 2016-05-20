@@ -1,6 +1,7 @@
 NavBar {
   background: #CCC;
   height: 40px;
+  overflow: hidden;
 }
 
 NavBar:prop(sticky) {
