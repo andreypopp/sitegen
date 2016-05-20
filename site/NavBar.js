@@ -6,17 +6,31 @@ import {
   NavLink as NavLinkBase,
   NavBarWrapper
 } from './NavBar.component.css';
-import {Section, SubHeadingLine} from './Site.component.css';
+import {HeadingLine} from './Site.component.css';
 
-export function NavBar({children}) {
+export function NavBar({children, ...props}) {
   return (
     <Sticky to="fixedTop">
-      <NavBarBase>
-        <NavBarWrapper>
-          {children}
-        </NavBarWrapper>
-      </NavBarBase>
+      <NavBarRegular {...props}>
+        {children}
+      </NavBarRegular>
     </Sticky>
+  );
+}
+
+function NavBarRegular({children, ...props}) {
+  return (
+    <NavBarBase {...props}>
+      <NavBarWrapper>
+        {props.sticky &&
+          <HeadingLine
+            inline small decorated
+            style={{marginLeft: 10, marginRight: 10}}>
+            SG
+          </HeadingLine>}
+        {children}
+      </NavBarWrapper>
+    </NavBarBase>
   );
 }
 
@@ -27,6 +41,7 @@ export class NavLink extends React.Component {
   render() {
     let {href, ...props} = this.props;
     let {router} = this.context;
+    console.log(router, href);
     let selected = href && router.isActive({pathname: href}, true);
     return (
       <NavLinkBase

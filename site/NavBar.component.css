@@ -1,15 +1,17 @@
 NavBar {
   background: #CCC;
-  padding: 10px;
+  height: 40px;
 }
 
 NavBar:prop(sticky) {
   box-shadow: 0px 1px 3px 0px #888;
+  background: #F5DE1B;
 }
 
 NavLink {
   base: a;
-  padding: 10px 8px;
+  display: inline-block;
+  padding: 10px 10px;
   cursor: default;
   user-select: none;
   -webkit-user-select: none;
@@ -26,11 +28,24 @@ NavLink:active {
   background: #BBB;
 }
 
+
+NavBar:prop(sticky) NavLink:hover,
+NavBar:prop(sticky) NavLink:active {
+  background: #CEBB19;
+}
+
 NavLink:prop(selected),
 NavLink:prop(selected):hover,
 NavLink:prop(selected):active {
   background: #EEE;
 }
+
+NavBar:prop(sticky) NavLink:prop(selected),
+NavBar:prop(sticky) NavLink:prop(selected):hover,
+NavBar:prop(sticky) NavLink:prop(selected):active {
+  background: #FFF177;
+}
+
 
 @media only screen and (min-width: 600px) {
 

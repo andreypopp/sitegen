@@ -24,7 +24,7 @@ Root {
 HeadingLine {
   base: h1;
   margin: 0;
-  padding: 0;
+  padding: 0 5px;
   font-size: 50px;
   height: 50px;
   letter-spacing: -3px;
@@ -34,10 +34,25 @@ HeadingLine {
   overflow: hidden;
 }
 
+HeadingLine:prop(small) {
+  font-size: 40px;
+  background: #F5DE1B;
+  height: 40px;
+}
+
+HeadingLine:prop(inline) {
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+HeadingLine:prop(decorated) {
+  background: #F5DE1B;
+}
+
 SubHeadingLine {
   base: h2;
   margin: 0;
-  padding: 0;
+  padding: 0 5px;
   font-size: 20px;
   height: 20px;
   letter-spacing: -1px;
