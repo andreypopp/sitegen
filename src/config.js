@@ -14,87 +14,13 @@ const BABEL_PRESET_ES2015 = require.resolve('babel-preset-es2015');
 const BABEL_PRESET_STAGE_1 = require.resolve('babel-preset-stage-1');
 const BABEL_PRESET_REACT = require.resolve('babel-preset-react');
 
-function configureLoader(element) {
-  if (Array.isArray(element)) {
-    return element.map(configureLoader).join('!');
-  } else if (typeof element === 'string') {
-    return element;
-  } else if (element.toLoaderString) {
-    return element.toLoaderString();
-  } else {
-    if (element.query) {
-      return element.loader + '?' + JSON.stringify(element.query);
-    } else {
-      return element.loader;
-    }
-  }
-}
-
-export function moduleRequest(id, ...loader) {
-  loader.reverse();
-  return `${configureLoader(loader)}!${id}`;
-}
-
-export function loaderConfigurator(config) {
-  let mergeQuery = config.mergeQuery || ((a, b) => ({...a, ...b}));
-  let configurator = function configurator(query) {
-    return loaderConfigurator({
-      ...config,
-      query: mergeQuery(config.query, query),
-    });
-  };
-  configurator.config = config;
-  configurator.toLoaderString = function toLoaderString() {
-    return configureLoader(config);
-  };
-  configurator.toString = configurator.toLoaderString;
-  return configurator;
-}
-
-export let extractCSSPlugin = new ExtractTextPlugin('bundle.css');
-
-export let JS = loaderConfigurator({
-  loader: require.resolve('babel-loader')
-});
-
-export let markdown = require.resolve('reactdown/webpack');
-
-export let url = loaderConfigurator({
-  loader: require.resolve('url-loader')
-});
-
-export let img = url({limit: 10000});
-
-export let CSS = loaderConfigurator({
-  loader: require.resolve('css-loader'),
-});
-
-export let CSSModule = CSS({modules: true});
-
-export let ReactCSSComponent = loaderConfigurator({
-  loader: require.resolve('react-css-components/webpack')
-});
-
-export let injectStyleLoader = require.resolve('style-loader');
-
-export let injectCSS = (...loader) =>
-  [injectStyleLoader].concat(configureLoader(loader));
-
-export let extractCSS = (...loader) =>
-  extractCSSPlugin.extract(injectStyleLoader, configureLoader(loader)).split('!');
-
-
 export function defaultConfig({env}) {
 
-  let development = env === 'development';
-  let production = env === 'production';
-  let content = env === 'content';
-
-  let deployCSS = development ? injectCSS : extractCSS;
+  let deployCSS = env.development ? injectCSS : extractCSS;
 
   return {
 
-    devtool: development ? 'cheap-module-source-map' : undefined,
+    devtool: env.development ? 'cheap-module-source-map' : undefined,
 
     babel: {
       presets: [
@@ -112,7 +38,7 @@ export function defaultConfig({env}) {
     globalLoaders: {
       '**/*.css': deployCSS(CSS),
       '**/*.mcss': deployCSS(CSSModule),
-      '**/*.rcss': [JS, ReactCSSComponent({loadCSS: deployCSS(CSSModule)})],
+      '**/*.rcss': [JS, CSSComponent({loadCSS: deployCSS(CSSModule)})],
       '**/*.png': img,
       '**/*.jpg': img,
       '**/*.jpeg': img,
@@ -121,7 +47,7 @@ export function defaultConfig({env}) {
     },
 
     plugins: [
-      (content || production) && new ExtractTextPlugin('bundle.css'),
+      (env.content || env.production) && extractCSSPlugin,
     ],
   };
 }
@@ -170,6 +96,47 @@ function mergeConfigImpl(a, b) {
   };
 }
 
+export function moduleRequest(id, ...loader) {
+  loader.reverse();
+  return `${normalizeLoader(loader)}!${id}`;
+}
+
+export function loader(loader) {
+  return loaderImpl({loader});
+}
+
+function loaderImpl(config) {
+  let mergeQuery = config.mergeQuery || ((a, b) => ({...a, ...b}));
+  let configurator = function configurator(query) {
+    return loaderImpl({
+      ...config,
+      query: mergeQuery(config.query, query),
+    });
+  };
+  configurator.config = config;
+  configurator.toLoaderString = function toLoaderString() {
+    return normalizeLoader(config);
+  };
+  configurator.toString = configurator.toLoaderString;
+  return configurator;
+}
+
+function normalizeLoader(element) {
+  if (Array.isArray(element)) {
+    return element.map(normalizeLoader).join('!');
+  } else if (typeof element === 'string') {
+    return element;
+  } else if (element.toLoaderString) {
+    return element.toLoaderString();
+  } else {
+    if (element.query) {
+      return element.loader + '?' + JSON.stringify(element.query);
+    } else {
+      return element.loader;
+    }
+  }
+}
+
 function makePatterMatcher(pattern) {
   let patterMatcher = new Minimatch(pattern);
 
@@ -186,7 +153,7 @@ function configureWebpackLoader(context, pattern, loader, global) {
   }
   let test = makePatterMatcher(pattern);
   return {
-    loader: configureLoader(loader),
+    loader: normalizeLoader(loader),
     test,
   };
 }
@@ -202,7 +169,7 @@ function configureWebpackLoaderList(context, loaders, global) {
 
 export function configureWebpack({context, loaders, globalLoaders, ...config}) {
   loaders = configureWebpackLoaderList(context, loaders);
-  globalLoaders = configureWebpackLoaderList(context, globalLoaders, {global: true});
+  globalLoaders = configureWebpackLoaderList(context, globalLoaders, true);
   return {
     ...config,
     context,
@@ -224,3 +191,30 @@ export function readConfigSync(filename) {
   }).code;
   return evalAsModule(source, filename);
 }
+
+export let extractCSSPlugin = new ExtractTextPlugin('bundle.css');
+
+export let JS = loader(require.resolve('babel-loader'));
+
+export let markdown = loader(require.resolve('reactdown/webpack'));
+
+export let url = loader(require.resolve('url-loader'));
+
+export let img = url({limit: 10000});
+
+export let CSS = loader(require.resolve('css-loader'));
+
+export let CSSModule = CSS({modules: true});
+
+export let CSSComponent = loader(require.resolve('react-css-components/webpack'));
+
+export let injectStyleLoader = loader(require.resolve('style-loader'));
+
+export let injectCSS = (...loader) =>
+  normalizeLoader([injectStyleLoader].concat(loader)).split('!');
+
+export let extractCSS = (...loader) =>
+  extractCSSPlugin.extract(
+    normalizeLoader(injectStyleLoader),
+    normalizeLoader(loader)
+  ).split('!');

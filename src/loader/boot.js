@@ -2,10 +2,9 @@
  * @copyright 2016-present, Sitegen team
  */
 
-import evalAsModule from 'eval-as-module';
 import {program, stringLiteral} from 'babel-types';
 import generate from 'babel-generator';
-import {renderRoute, validate, forEach} from '../route';
+import {renderRoute, forEach} from '../route';
 
 const BOOT_MODULE = require.resolve('../boot');
 const META_MODULE = require.resolve('../meta');
@@ -19,8 +18,7 @@ module.exports = function bootLoader(source) {
   let cb = this.async();
   let fs = compiler.inputFileSystem;
 
-  let {route} = evalAsModule(source, this.resource).exports;
-  route = validate(route, {basedir: this.context});
+  let {route} = compiler.options.site;
 
   // traverse route tree and set watchers on collections
   // TODO: make sure we stay consistent with what renderRoute(..) does

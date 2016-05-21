@@ -5,9 +5,10 @@
 import path from 'path';
 import webpack from 'webpack';
 
+import {validate as validateRoute} from '../route';
 import {
   mergeConfig, defaultConfig, configureWebpack,
-  moduleRequest
+  readConfigSync, moduleRequest
 } from '../config';
 
 import RenderPagePlugin from './RenderPagePlugin';
@@ -23,27 +24,39 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
     ? undefined
     : JSON.stringify(process.env.DEBUG);
 
-  let basedir = path.dirname(entry);
+  let ctx = {
+    basedir: path.dirname(entry),
+    env: {
+      development: env === 'development',
+      production: env === 'production',
+      content: env === 'content',
+    }
+  };
 
-  let development = env === 'development';
-  let production = env === 'production';
-  let content = env === 'content';
+  let siteModule = readConfigSync(entry);
 
-  let config = mergeConfig(defaultConfig({basedir, env}), {
+  let site = {
+    route: validateRoute(siteModule.route, {basedir: ctx.basedir}),
+    configure: siteModule.configure || (() => null),
+  };
 
-    context: path.dirname(entry),
+  let sitegenConfig = {
+
+    site: site,
+
+    context: ctx.basedir,
 
     entry: [
-      development && 'react-hot-loader/patch',
-      development && 'webpack-hot-middleware/client',
+      ctx.env.development && 'react-hot-loader/patch',
+      ctx.env.development && 'webpack-hot-middleware/client',
       moduleRequest(entry, BOOT_LOADER),
     ],
 
     env: env,
 
-    target: content ? 'node' : 'web',
+    target: ctx.env.content ? 'node' : 'web',
 
-    bail: content,
+    bail: ctx.env.content,
 
     output: {
       path: output || '/build',
@@ -54,7 +67,7 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
 
     babel: {
       plugins: [
-        development && BABEL_PLUGIN_REACT_HMR,
+        ctx.env.development && BABEL_PLUGIN_REACT_HMR,
       ]
     },
 
@@ -64,21 +77,27 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
         '__DEBUG__': __DEBUG__,
         'process.env.NODE_ENV': JSON.stringify(env),
       }),
-      development && new webpack.optimize.OccurenceOrderPlugin(),
-      development && new webpack.HotModuleReplacementPlugin(),
-      development && new webpack.NoErrorsPlugin(),
-      development && new PromiseAssetsPlugin({
+      ctx.env.development && new webpack.optimize.OccurenceOrderPlugin(),
+      ctx.env.development && new webpack.HotModuleReplacementPlugin(),
+      ctx.env.development && new webpack.NoErrorsPlugin(),
+      ctx.env.development && new PromiseAssetsPlugin({
         name: 'promiseBundle',
         then: evalBundle
       }),
-      content && new RenderPagePlugin({
+      ctx.env.content && new RenderPagePlugin({
         inlineCSS: inlineCSS
       }),
-      production && new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}}),
+      ctx.env.production && new webpack.optimize.UglifyJsPlugin({
+        compress: {warnings: false}
+      }),
     ]
-  });
+  };
 
-  let webpackConfig = configureWebpack(config);
+  let config = configureWebpack(mergeConfig(
+    defaultConfig(ctx),
+    site.configure(ctx),
+    sitegenConfig
+  ));
 
-  return webpack(webpackConfig);
+  return webpack(config);
 }
