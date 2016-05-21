@@ -38,7 +38,7 @@ ci-unit::
 sloc::
 	@$(BIN)/sloc -e __tests__ src
 
-version-major version-minor version-patch:: lint check test
+version-major version-minor version-patch:: lint
 	@npm version $(@:version-%=%)
 
 publish:: build
