@@ -3,7 +3,6 @@
  */
 
 import React from 'react';
-import path from 'path';
 import {routerShape} from 'react-router/lib/PropTypes';
 
 export default class Link extends React.Component {
@@ -93,11 +92,11 @@ export default class Link extends React.Component {
 }
 
 function isLeftClickEvent(event) {
-  return event.button === 0
+  return event.button === 0;
 }
 
 function isModifiedEvent(event) {
-  return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey)
+  return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 }
 
 function isExternal(href) {

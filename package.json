@@ -15,7 +15,8 @@
     "globals": {
       "expr": true,
       "stmt": true,
-      "__DEBUG__": true
+      "__DEBUG__": true,
+      "__webpack_public_path__": true
     }
   },
   "repository": {
