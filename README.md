@@ -1,35 +1,16 @@
-# sitegen
+# Sitegen
 
-## Installation & Usage
+Sitegen is a static site generator based on [Webpack][] and [React][].
 
-```
-% npm install sitegen
-```
+Sitegen's motivation is to provide a framework for content based sites with
+**simple API** to take the advantage of React **component model** and rich
+Webpack ecosystem.
 
-Create `sitegen.config.js` with the following contents:
+The usage scenarious for Sitegen are **static sites**, **blogs**, **project
+documentation**, presentation **slide decks**, live **styleguides** and other
+similar content based sites.
 
-```
-export let route = './site'
-```
+More info at [Sitegen homepage](https://andreypopp.github.io/sitegen).
 
-Create `site.js` with the following content:
-
-```
-import React from 'react'
-
-export default function Site() {
-  return <div>Hello, world!</div>
-}
-```
-
-Serve site:
-
-```
-% sitegen serve
-```
-
-Build site:
-
-```
-% sitegen build
-```
+[React]: https://reactjs.org
+[Webpack]: https://webpack.github.io
