@@ -9,7 +9,7 @@ import {
   Section, SectionHeader,
   Par, CodeBlock, UIText,
   Heart
-} from './Site.component.css';
+} from './Site.rcss';
 import {NavBar, NavLink} from './NavBar';
 import {StickyRoot, StickyDest} from './Sticky';
 

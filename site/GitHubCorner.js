@@ -1,5 +1,5 @@
 import React from 'react';
-import * as style from './GitHubCorner.module.css';
+import * as style from './GitHubCorner.mcss';
 
 const ARM_PATH = [
   'M128.3,109.0',

@@ -6,8 +6,8 @@ import {
   NavBar as NavBarBase,
   NavLink as NavLinkBase,
   NavBarWrapper
-} from './NavBar.component.css';
-import {HeadingLine} from './Site.component.css';
+} from './NavBar.rcss';
+import {HeadingLine} from './Site.rcss';
 
 export function NavBar({children, ...props}) {
   return (

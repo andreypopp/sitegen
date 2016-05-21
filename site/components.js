@@ -20,7 +20,7 @@ import {
 
   TKRoot,
   TKTitle
-} from './components.component.css';
+} from './components.rcss';
 
 export function Root({children, ...props}, {reactdown: {model, metadata}}) {
   return (
@@ -43,4 +43,4 @@ export {
   Link,
   ListItem,
   Heading
-} from './components.component.css';
+} from './components.rcss';
