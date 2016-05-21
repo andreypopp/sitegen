@@ -231,6 +231,7 @@ class RenderStaticPlugin {
           done();
         },
         err => {
+          this.compiler.debug('error', err);
           compilation.errors.push(err);
           done(err);
         });
@@ -239,7 +240,7 @@ class RenderStaticPlugin {
 
   renderPath(route, path, css, Site, Meta) {
     return new Promise((resolve, reject) => {
-      let location = path;
+      let location = joinPath(this.compiler.options.output.publicPath, path);
       match({routes: route, location}, (error, redirectLocation, routeProps) => {
         if (error) {
           reject(error);
@@ -330,4 +331,14 @@ class LogProgressPlugin {
   _onInvalid() {
     this.debug('bundled invalidated, recompiling...');
   }
+}
+
+
+function normalizePath(href) {
+  return href.replace(new RegExp('/+', 'g'),  '/');
+}
+
+
+function joinPath(...segments) {
+  return normalizePath(segments.join('/'));
 }
