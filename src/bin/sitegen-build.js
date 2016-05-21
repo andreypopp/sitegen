@@ -6,7 +6,7 @@
 import makeDebug from 'debug';
 import path from 'path';
 import {parse, error} from './utils';
-import {createCompiler} from '../compile';
+import {createCompiler} from '../compiler';
 
 let cwd = process.cwd();
 

@@ -10,7 +10,7 @@ import WebpackHotMiddleware from 'webpack-hot-middleware';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {parse} from './utils';
-import {createCompiler} from '../compile';
+import {createCompiler} from '../compiler';
 
 let debug = makeDebug('sitegen:cmd:serve');
 
