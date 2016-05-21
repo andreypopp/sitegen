@@ -1,3 +1,7 @@
+/**
+ * @copyright 2016-present, Sitegen team
+ */
+
 import React from 'react';
 import {routerShape} from 'react-router/lib/PropTypes';
 
@@ -10,15 +14,28 @@ export default class Link extends React.Component {
   };
 
   render() {
-    let {href, Component, ...props} = this.props;
+    let {
+      href, Component,
+      className, activeClassName,
+      style, activeStyle,
+      ...props
+    } = this.props;
     let {router} = this.context;
     let external = isExternal(href);
     let active = !external && href && router.isActive({pathname: href}, true);
+    if (active && activeClassName) {
+      className = (className || '') + ' ' + activeClassName;
+    }
+    if (active && activeStyle) {
+      style = {...style, activeStyle};
+    }
     return (
       <Component
         {...props}
         href={href}
         active={active}
+        style={style}
+        className={className}
         onClick={!external && this.onClick}
         />
     );
@@ -60,7 +77,6 @@ export default class Link extends React.Component {
     }
   };
 }
-
 
 function isLeftClickEvent(event) {
   return event.button === 0

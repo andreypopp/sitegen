@@ -1,6 +1,6 @@
 import React from 'react';
 import {routerShape} from 'react-router/lib/PropTypes';
-import Link from './Link';
+import {Link} from '../lib';
 import {Sticky} from './Sticky';
 import {
   NavBar as NavBarBase,

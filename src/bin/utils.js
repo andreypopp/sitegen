@@ -6,25 +6,34 @@ import fs from 'fs';
 import path from 'path';
 import commander from 'commander';
 
+let cwd = process.cwd();
+
 export function parse(configure = p => p, args = process.argv) {
   args = configure(commander)
     .parse(args);
 
-  let [entry] = args.args;
+  let [entry = './'] = args.args;
 
   if (!fs.existsSync(entry)) {
     error('site entry does not exist');
   }
 
   if (fs.statSync(entry)) {
-    entry = path.join(process.cwd(), entry, 'sitegen.config.js');
+    entry = path.join(cwd, entry, 'sitegen.config.js');
   }
 
   if (!fs.existsSync(entry)) {
     error('site entry does not exist');
   }
 
+  if (args.output) {
+    args.output = path.join(cwd, output);
+  } else {
+    args.output = path.join(path.dirname(entry), 'output');
+  }
+
   args.args = [entry];
+
   return args;
 }
 

@@ -3,3 +3,4 @@
  */
 
 export Meta from 'react-helmet';
+export Link from './Link';

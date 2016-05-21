@@ -9,8 +9,11 @@ import {parse, error} from './utils';
 import {createCompiler} from '../compile';
 
 let args = parse(p => p
-    .option('--inline-css', 'Inline CSS bundle into HTML page'));
+  .option('--inline-css', 'Inline CSS bundle into HTML page')
+  .option('--output, -o', 'Output directory relative to entry [default: output]')
+);
 
+console.log(args);
 let [entry] = args.args;
 
 let debug = makeDebug('sitegen:cmd:build');
@@ -24,7 +27,7 @@ let compileContent = createCompiler({
 
 let compileAssets = createCompiler({
   entry,
-  output: path.join(path.dirname(entry), 'build'),
+  output: path.join(path.dirname(entry), args.output),
   env: 'production',
   inlineCSS: args.inlineCss,
 });

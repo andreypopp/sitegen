@@ -11,7 +11,7 @@ NavBar:prop(sticky) {
 }
 
 NavLink {
-  base: ./Link;
+  base: ../lib?Link;
   display: inline-block;
   padding: 10px 10px;
   cursor: default;
