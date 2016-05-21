@@ -66,7 +66,8 @@ export function validate(route, {basedir}) {
  */
 export async function renderRoute(route, options) {
   promisifyAll(options.fs);
-  let node = await renderRoutePage(route, '/', [''], options);
+  let {publicPath = '/'} = options;
+  let node = await renderRoutePage(route, publicPath, [''], options);
   return node;
 }
 

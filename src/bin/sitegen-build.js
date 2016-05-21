@@ -30,6 +30,7 @@ let compileContent = createCompiler({
   output: args.output,
   env: 'content',
   inlineCSS: args.inlineCss,
+  publicPath: args.publicPath,
 });
 
 let compileAssets = createCompiler({
@@ -37,6 +38,7 @@ let compileAssets = createCompiler({
   output: args.output,
   env: 'production',
   inlineCSS: args.inlineCss,
+  publicPath: args.publicPath,
 });
 
 function onFinish(message, err, stats) {

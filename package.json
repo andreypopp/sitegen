@@ -36,8 +36,10 @@
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-cli": "^6.8.0",
+    "babel-core": "^6.9.0",
     "babel-plugin-ast-literal": "^0.4.1",
     "babel-plugin-transform-runtime": "^6.8.0",
+    "distfs": "^0.1.2",
     "eslint": "^2.10.1",
     "eslint-config-prometheusresearch": "^0.2.0",
     "flow-bin": "^0.24.2",

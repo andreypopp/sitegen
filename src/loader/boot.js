@@ -15,6 +15,7 @@ module.exports = function bootLoader(source) {
   this.cacheable();
 
   let compiler = this._compiler;
+  let publicPath = compiler.options.output.publicPath;
   let cb = this.async();
   let fs = compiler.inputFileSystem;
 
@@ -31,7 +32,7 @@ module.exports = function bootLoader(source) {
 
   let split = compiler.options.env === 'production' ? undefined : false;
 
-  renderRoute(route, {fs, split}).then(route =>
+  renderRoute(route, {fs, split, publicPath}).then(route =>
     generate(program(stmt`
       var makeDebug = require('debug');
       var React = require('react');

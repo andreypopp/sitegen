@@ -10,6 +10,7 @@ let cwd = process.cwd();
 
 export function parse(configure = p => p, args = process.argv) {
   args = configure(commander)
+    .option('-p, --public-path [path]', 'Set public path [default: /]', '/')
     .parse(args);
 
   let [entry = './'] = args.args;

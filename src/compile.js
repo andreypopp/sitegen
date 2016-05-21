@@ -31,7 +31,7 @@ export function createCompiler(config) {
   return webpack(config);
 }
 
-export function configureCompiler({entry, output, env, inlineCSS}) {
+export function configureCompiler({entry, output, publicPath, env, inlineCSS}) {
   let __DEBUG__ = env === 'production'
     ? undefined
     : JSON.stringify(process.env.DEBUG);
@@ -111,7 +111,7 @@ export function configureCompiler({entry, output, env, inlineCSS}) {
       path: output || '/build',
       filename: 'bundle.js',
       chunkFilename: 'bundle[name].js',
-      publicPath: '/',
+      publicPath: publicPath,
     },
     module: {
       loaders: [
@@ -194,10 +194,12 @@ class RenderStaticPlugin {
 
   constructor({inlineCSS}) {
     this.inlineCSS = inlineCSS;
+    this.compiler = null;
   }
 
   apply(compiler) {
-    compiler.plugin('emit', (compilation, done) => {
+    this.compiler = compiler;
+    this.compiler.plugin('emit', (compilation, done) => {
       let {route, Meta, Site} = evalBundle(compilation.assets);
       let css = compilation.assets['bundle.css'];
 
@@ -209,7 +211,7 @@ class RenderStaticPlugin {
 
       let tasks = [];
       forEachPath(route, path => {
-        compiler.debug('rendering path', path);
+        this.compiler.debug('rendering path', path);
         tasks.push(
           this.renderPath(route, path, css, Site, Meta).then(
             markup => {
@@ -218,7 +220,7 @@ class RenderStaticPlugin {
               }
             },
             error => {
-              compiler.debug('error while rendering path', path);
+              this.compiler.debug('error while rendering path', path);
               throw error;
             })
         );
@@ -249,7 +251,10 @@ class RenderStaticPlugin {
           let markup = renderToStaticMarkup(
             <Site
               meta={meta}
-              bundle={{js: '/bundle.js', css: !this.inlineCSS && '/bundle.css'}}
+              bundle={{
+                js: `${this.compiler.options.output.publicPath}bundle.js`,
+                css: !this.inlineCSS && `${this.compiler.options.output.publicPath}bundle.css`,
+              }}
               style={this.inlineCSS && assetSource(css)}
               content={innerMarkup}
               />

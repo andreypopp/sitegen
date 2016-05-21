@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import path from 'path';
 import {routerShape} from 'react-router/lib/PropTypes';
 
 export default class Link extends React.Component {
@@ -15,11 +16,12 @@ export default class Link extends React.Component {
 
   render() {
     let {
-      href, Component,
+      Component,
       className, activeClassName,
       style, activeStyle,
       ...props
     } = this.props;
+    let href = this.href;
     let {router} = this.context;
     let external = isExternal(href);
     let active = !external && href && router.isActive({pathname: href}, true);
@@ -39,6 +41,18 @@ export default class Link extends React.Component {
         onClick={!external && this.onClick}
         />
     );
+  }
+
+  get href() {
+    let {href} = this.props;
+    if (
+        href &&
+        (typeof __webpack_public_path__ !== 'undefined') &&
+        !isExternal(href)
+    ) {
+      href = join(__webpack_public_path__, href);
+    }
+    return href;
   }
 
   onClick = (event) => {
@@ -69,7 +83,7 @@ export default class Link extends React.Component {
     event.preventDefault();
 
     if (allowTransition) {
-      const {href} = this.props;
+      let href = this.href;
 
       if (href) {
         this.context.router.push({pathname: href});
@@ -88,4 +102,12 @@ function isModifiedEvent(event) {
 
 function isExternal(href) {
   return /^(https?|mailto):/.exec(href);
+}
+
+function join(...segments) {
+  return normalize(segments.join('/'));
+}
+
+function normalize(href) {
+  return href.replace(new RegExp('/+', 'g'),  '/');
 }

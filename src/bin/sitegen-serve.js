@@ -20,6 +20,7 @@ let [entry] = args.args;
 let compiler = createCompiler({
   entry,
   env: 'development',
+  publicPath: args.publicPath,
 });
 
 let compileDevMiddleware = WebpackDevMiddleware(compiler, {
