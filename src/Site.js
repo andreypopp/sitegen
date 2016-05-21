@@ -15,7 +15,7 @@ export default function Site({meta, bundle, content, style}) {
       </head>
       <body>
         <div id="main" dangerouslySetInnerHTML={{__html: content}} />
-        <script src={bundle.js} />
+        <script async src={bundle.js} />
       </body>
     </html>
   );
