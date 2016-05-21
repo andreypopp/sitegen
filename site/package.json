@@ -8,7 +8,8 @@
     "normalize.css": "^4.1.1"
   },
   "dependencies": {
-    "react-track": "^0.3.2",
-    "react-gateway": "npbee/react-gateway#react-15-prep"
+    "gh-pages": "^0.11.0",
+    "react-gateway": "npbee/react-gateway#react-15-prep",
+    "react-track": "^0.3.2"
   }
 }

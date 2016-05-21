@@ -1,5 +1,5 @@
 node_modules/
-build/
+output/
 lib/
 examples/webpack/bundle
 site/bundle
