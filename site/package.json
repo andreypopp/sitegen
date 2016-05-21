@@ -8,6 +8,7 @@
     "normalize.css": "^4.1.1"
   },
   "dependencies": {
-    "react-track": "^0.3.2"
+    "react-track": "^0.3.2",
+    "react-gateway": "npbee/react-gateway#react-15-prep"
   }
 }
