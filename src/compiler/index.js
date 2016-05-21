@@ -5,7 +5,10 @@
 import path from 'path';
 import webpack from 'webpack';
 
-import {mergeConfig, configureWebpack, defaultConfig} from '../config';
+import {
+  mergeConfig, defaultConfig, configureWebpack,
+  moduleRequest
+} from '../config';
 
 import RenderPagePlugin from './RenderPagePlugin';
 import LogProgressPlugin from './LogProgressPlugin';
@@ -33,10 +36,8 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
     entry: [
       development && 'react-hot-loader/patch',
       development && 'webpack-hot-middleware/client',
-      [BOOT_LOADER, entry].join('!'),
+      moduleRequest(entry, BOOT_LOADER),
     ],
-
-    devtool: development ? 'cheap-module-source-map' : undefined,
 
     env: env,
 
@@ -81,4 +82,3 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
 
   return webpack(webpackConfig);
 }
-

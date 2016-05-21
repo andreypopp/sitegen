@@ -2,6 +2,7 @@
  * @copyright 2016-present, Sitegen team
  */
 
+import invariant from 'invariant';
 import fs from 'fs';
 import path from 'path';
 import {transform} from 'babel-core';
@@ -13,7 +14,7 @@ const BABEL_PRESET_ES2015 = require.resolve('babel-preset-es2015');
 const BABEL_PRESET_STAGE_1 = require.resolve('babel-preset-stage-1');
 const BABEL_PRESET_REACT = require.resolve('babel-preset-react');
 
-export function configureLoader(element) {
+function configureLoader(element) {
   if (Array.isArray(element)) {
     return element.map(configureLoader).join('!');
   } else if (typeof element === 'string') {
@@ -29,7 +30,7 @@ export function configureLoader(element) {
   }
 }
 
-export function createRequest(id, ...loader) {
+export function moduleRequest(id, ...loader) {
   loader.reverse();
   return `${configureLoader(loader)}!${id}`;
 }
@@ -93,6 +94,8 @@ export function defaultConfig({env}) {
 
   return {
 
+    devtool: development ? 'cheap-module-source-map' : undefined,
+
     babel: {
       presets: [
         BABEL_PRESET_ES2015,
@@ -123,11 +126,24 @@ export function defaultConfig({env}) {
   };
 }
 
+export function mergeConfig(...config) {
+  config = config.filter(Boolean);
+  invariant(
+    config.length > 0,
+    'Trying to merge empty list of configurations'
+  );
+  if (config.length === 1) {
+    return config[0];
+  } else {
+    return config.reduce(mergeConfigImpl);
+  }
+}
+
 function mergeArray(a, b) {
   return [].concat(a).concat(b).filter(Boolean);
 }
 
-export function mergeConfig(a, b) {
+function mergeConfigImpl(a, b) {
   return {
     ...a,
     ...b,

@@ -11,7 +11,7 @@ import {string, number, ref, maybe, object, mapping, oneOf, boolean} from 'valid
 import {validate as validateObject} from 'validated/object';
 
 import * as types from 'babel-types';
-import {createRequest} from './config';
+import {moduleRequest} from './config';
 
 const META_LOADER = require.resolve('./loader/meta');
 const CHUNK_LOADER = require.resolve('./loader/chunk');
@@ -184,7 +184,7 @@ function renderGetCollectionChunk(chunk, options) {
     chunkCount: options.chunkCount,
   };
 
-  let req = createRequest(
+  let req = moduleRequest(
     options.page,
     {loader: CHUNK_LOADER, query},
     // TODO: we don't really want to leak configuration here, think of a better
