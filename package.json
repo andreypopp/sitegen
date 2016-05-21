@@ -79,6 +79,7 @@
     "url-loader": "^0.5.7",
     "validated": "^0.7.1",
     "webpack": "^1.13.0",
-    "webpack-dev-middleware": "^1.6.1"
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-hot-middleware": "^2.10.0"
   }
 }

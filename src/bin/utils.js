@@ -26,12 +26,6 @@ export function parse(configure = p => p, args = process.argv) {
     error('site entry does not exist');
   }
 
-  if (args.output) {
-    args.output = path.join(cwd, output);
-  } else {
-    args.output = path.join(path.dirname(entry), 'output');
-  }
-
   args.args = [entry];
 
   return args;

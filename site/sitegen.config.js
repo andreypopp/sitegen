@@ -17,9 +17,5 @@ export let route = {
       page: './content/community.md',
       split: true,
     },
-    blog: {
-      page: './content/blog',
-      collection: './content/posts/*',
-    },
   }
 };

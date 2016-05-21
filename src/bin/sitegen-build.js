@@ -8,26 +8,33 @@ import path from 'path';
 import {parse, error} from './utils';
 import {createCompiler} from '../compile';
 
+let cwd = process.cwd();
+
 let args = parse(p => p
   .option('--inline-css', 'Inline CSS bundle into HTML page')
-  .option('--output, -o', 'Output directory relative to entry [default: output]')
+  .option('-o, --output [output]', 'Output directory relative to entry [default: output]')
 );
 
-console.log(args);
 let [entry] = args.args;
+
+if (args.output) {
+  args.output = path.join(cwd, args.output);
+} else {
+  args.output = path.join(path.dirname(entry), 'output');
+}
 
 let debug = makeDebug('sitegen:cmd:build');
 
 let compileContent = createCompiler({
   entry,
-  output: path.join(path.dirname(entry), 'build'),
+  output: args.output,
   env: 'content',
   inlineCSS: args.inlineCss,
 });
 
 let compileAssets = createCompiler({
   entry,
-  output: path.join(path.dirname(entry), args.output),
+  output: args.output,
   env: 'production',
   inlineCSS: args.inlineCss,
 });
