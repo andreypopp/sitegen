@@ -7,7 +7,14 @@ NavBar {
 NavBar:prop(sticky) {
   box-shadow: 0px 1px 3px 0px #888;
   background: #F5DE1B;
-  -webkit-backdrop-filter: blur(10px);
+  transition: all .2s ease-in-out;
+  transform: translateY(-100%);
+}
+
+NavBar:prop(sticky && stickyActive) {
+  box-shadow: 0px 1px 3px 0px #888;
+  background: #F5DE1B;
+  transform: translateY(0%);
 }
 
 NavLink {
