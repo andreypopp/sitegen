@@ -5,6 +5,7 @@
 import invariant from 'invariant';
 import fs from 'fs';
 import path from 'path';
+import webpack from 'webpack';
 import {transform} from 'babel-core';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import {Minimatch} from 'minimatch';
@@ -36,7 +37,7 @@ export function defaultConfig({env}) {
     },
 
     globalLoaders: {
-      '**/*.css': deployCSS(CSS),
+      '**/*.css': deployCSS(CSS({minimize: env.production})),
       '**/*.png': img,
       '**/*.jpg': img,
       '**/*.jpeg': img,
@@ -46,6 +47,9 @@ export function defaultConfig({env}) {
 
     plugins: [
       (env.content || env.production) && extractCSSPlugin,
+      env.production && new webpack.optimize.UglifyJsPlugin({
+        compress: {warnings: false}
+      }),
     ],
   };
 }

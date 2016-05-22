@@ -87,9 +87,6 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
       ctx.env.content && new RenderPagePlugin({
         inlineCSS: inlineCSS
       }),
-      ctx.env.production && new webpack.optimize.UglifyJsPlugin({
-        compress: {warnings: false}
-      }),
     ]
   };
 

@@ -25,7 +25,7 @@ export let route = {
 export function configure({env}) {
   let deployCSS = env.development ? injectCSS : extractCSS;
   let CSSComponent = loader('react-css-components/webpack');
-  let CSSModule = CSS({modules: true});
+  let CSSModule = CSS({modules: true, minimize: env.production || env.content});
   return {
     globalLoaders: {
       '**/*.mcss': deployCSS(CSSModule),
