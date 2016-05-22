@@ -69,7 +69,6 @@
     "memory-fs": "^0.3.0",
     "minimatch": "^3.0.0",
     "react": "^15.0.2",
-    "react-css-components": "^0.6.4",
     "react-dom": "^15.0.2",
     "react-helmet": "^3.1.0",
     "react-hot-loader": "^3.0.0-beta.2",

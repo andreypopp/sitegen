@@ -37,8 +37,6 @@ export function defaultConfig({env}) {
 
     globalLoaders: {
       '**/*.css': deployCSS(CSS),
-      '**/*.mcss': deployCSS(CSSModule),
-      '**/*.rcss': [JS, CSSComponent({loadCSS: deployCSS(CSSModule)})],
       '**/*.png': img,
       '**/*.jpg': img,
       '**/*.jpeg': img,
@@ -204,9 +202,6 @@ export let img = url({limit: 10000});
 
 export let CSS = loader(require.resolve('css-loader'));
 
-export let CSSModule = CSS({modules: true});
-
-export let CSSComponent = loader(require.resolve('react-css-components/webpack'));
 
 export let injectStyleLoader = loader(require.resolve('style-loader'));
 
