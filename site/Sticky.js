@@ -12,7 +12,7 @@ export function Sticky({children}) {
         <TrackedDiv formulas={[calculateScrollY, topTop]}>
           {(scrollY, top) =>
             <div>
-              {top > 0 && scrollY >= 0 &&
+              {top > 0 && scrollY > 0 &&
                 <Gateway into={GATEWAY_NAME}>
                   {React.cloneElement(children, {sticky: true})}
                 </Gateway>}
