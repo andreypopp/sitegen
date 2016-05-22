@@ -19,3 +19,14 @@ export let route = {
     },
   }
 };
+
+import {CSS, extractCSS, injectCSS} from '../lib/config';
+
+export function configure({env}) {
+  let deployCSS = env.development ? injectCSS : extractCSS;
+  return {
+    globalLoaders: {
+      '**/*.scss': deployCSS([CSS, 'sass-loader']),
+    },
+  };
+}

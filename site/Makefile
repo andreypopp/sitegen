@@ -11,8 +11,7 @@ build::
 		--public-path /sitegen/
 
 serve::
-	@DEBUG='sitegen:*' node ../lib/bin/sitegen-$@.js \
-		--public-path /sitegen/
+	@DEBUG='sitegen:*' node ../lib/bin/sitegen-$@.js
 
 publish::
 	@./node_modules/.bin/gh-pages -d $(OUTPUT)
