@@ -1,8 +1,8 @@
 import React from 'react';
-import {Meta} from '../';
+import {Meta} from '../../';
 import GitHubCorner from './GitHubCorner';
-import Favicon from './img/favicon.ico';
-import TouchIcon from './img/sitegen-icon.png';
+import Favicon from '../img/favicon.ico';
+import TouchIcon from '../img/sitegen-icon.png';
 import {
   Root, ContentWrapper,
   HeadingLine, SubHeadingLine,

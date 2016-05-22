@@ -1,5 +1,5 @@
 export let route = {
-  page: './Site',
+  page: './components/Site',
   route: {
     index: {
       page: './content/overview.md',
