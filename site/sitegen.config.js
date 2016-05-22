@@ -1,3 +1,5 @@
+import {loader, JS, CSS, extractCSS, injectCSS} from '../lib/config';
+
 export let route = {
   page: './components/Site',
   route: {
@@ -20,13 +22,14 @@ export let route = {
   }
 };
 
-import {CSS, extractCSS, injectCSS} from '../lib/config';
-
 export function configure({env}) {
   let deployCSS = env.development ? injectCSS : extractCSS;
+  let CSSComponent = loader('react-css-components/webpack');
+  let CSSModule = CSS({modules: true});
   return {
     globalLoaders: {
-      '**/*.scss': deployCSS([CSS, 'sass-loader']),
+      '**/*.mcss': deployCSS(CSSModule),
+      '**/*.rcss': [JS, CSSComponent({loadCSS: deployCSS(CSSModule)})],
     },
   };
 }
