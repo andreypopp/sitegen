@@ -23,7 +23,6 @@ let compiler = createCompiler({
   publicPath: args.publicPath,
 });
 
-console.log(compiler.options.output.publicPath);
 let compileDevMiddleware = WebpackDevMiddleware(compiler, {
   noInfo: false,
   quiet: true,
