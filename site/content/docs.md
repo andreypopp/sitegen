@@ -22,13 +22,12 @@ true`. This is useful if a page contains a lot of custom JS code which specific
 for the page.
 
 ```
-type Page = {
-  page: string,
-  route?: {
-    [pathSegment: string]: ContentTree
-  },
-  split?: boolean
-}
+import {page} from 'sitegen/routing'
+
+let about = page('./About', {split: true})
+let site = page('./Site', undefined, {
+  about: about
+})
 ```
 
 #### Collections
@@ -41,14 +40,9 @@ strategy. By default all the pages in the collections are split from the main
 bundle.
 
 ```
-type Collection = {
-  page: string,
-  collection: {
-    pattern: string
-    paginate?: {size: number}
-  },
-  split?: boolean
-}
+import {collection} from 'sitegen/routing'
+
+let blog = collection('./Blog', 'posts/*.md')
 ```
 
 #### Examples
@@ -56,37 +50,32 @@ type Collection = {
 The simplest example for a site consisting of a single page:
 
 ```
-export let route = {page: './Site.js'}
+import {page} from 'sitegen/routing'
+
+export let route = page('./Site.js')
 ```
 
 Site with a single chrome component and multiple pages:
 
 ```
-export let route = {
-  page: './Site.js',
-  route: {
-    index: './Main.js',
-    docs: './Docs.md',
-    about: './About.md',
-  }
-}
+import {page} from 'sitegen/routing'
+
+export let route = page('./Site', undefined, {
+  index: page('./Main.js'),
+  docs: page('./Docs.md'),
+  about: page('./About.md'),
+})
 ```
 
 Site with a collection of blog posts:
 
 ```
-export let route = {
-  page: './Site.js',
-  route: {
-    index: {
-      page: './Blog.js',
-      collection: {
-        pattern: './posts/*.md'
-      }
-    },
-    about: './About.js',
-  }
-}
+import {page, collection} from 'sitegen/routing'
+
+export let route = page('./Site', undefined, {
+  index: collection('./Blog', './posts/*.md'),
+  about: page('./About'),
+})
 ```
 
 ### Components
