@@ -14,9 +14,11 @@ import {
 import RenderPagePlugin from './RenderPagePlugin';
 import LogProgressPlugin from './LogProgressPlugin';
 import PromiseAssetsPlugin from './PromiseAssetsPlugin';
+import MetaRegistryPlugin from './MetaRegistryPlugin';
 import {evalBundle} from './utils';
 
 const BOOT_LOADER = require.resolve('../loader/boot');
+const META_LOADER = require.resolve('../loader/meta');
 const BABEL_PLUGIN_REACT_HMR = require.resolve('react-hot-loader/babel');
 
 export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
@@ -87,6 +89,7 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
       ctx.env.content && new RenderPagePlugin({
         inlineCSS: inlineCSS
       }),
+      new MetaRegistryPlugin({loader: META_LOADER}),
     ]
   };
 
