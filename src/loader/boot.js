@@ -4,7 +4,8 @@
 
 import {program, stringLiteral} from 'babel-types';
 import generate from 'babel-generator';
-import {renderRoute, forEach} from '../route';
+import RouteCompiler from '../routing/RouteCompiler';
+import {forEach} from '../routing/Route';
 
 const BOOT_MODULE = require.resolve('../boot');
 const META_MODULE = require.resolve('../meta');
@@ -29,8 +30,8 @@ module.exports = function bootLoader(_source) {
   });
 
   let split = compiler.options.env === 'production' ? undefined : false;
-
-  renderRoute(route, {fs, split, publicPath}).then(route =>
+  let routeCompiler = new RouteCompiler({fs, split, publicPath});
+  routeCompiler.render(route).then(route =>
     generate(program(stmt`
       var makeDebug = require('debug');
       var React = require('react');

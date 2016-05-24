@@ -6,7 +6,6 @@ import React from 'react';
 import {renderToStaticMarkup, renderToString} from 'react-dom/server';
 import {match, RouterContext} from 'react-router';
 import Promise from 'bluebird';
-import {forEachPath} from '../route';
 import {evalBundle, assetSource} from './utils';
 
 export default class RenderPagePlugin {
@@ -112,4 +111,25 @@ function normalizePath(href) {
 
 function joinPath(...segments) {
   return normalizePath(segments.join('/'));
+}
+
+export function forEachPath(route, func, trace = ['']) {
+  let path = '/' + trace.filter(Boolean).join('/');
+  if (route.params) {
+    Object.keys(route.params).forEach(key => {
+      route.params[key].forEach(value => {
+        func(interpolateParams(path, {[key]: value}));
+      });
+    });
+  } else {
+    func(path);
+  }
+  if (route.childRoutes) {
+    route.childRoutes.forEach(route =>
+      forEachPath(route, func, trace.concat(route.path)));
+  }
+}
+
+function interpolateParams(path, params) {
+  return path.replace(/:([a-zA-Z_\-]+)/g, (_, key) => params[key]);
 }

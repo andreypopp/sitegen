@@ -42,7 +42,7 @@
     "babel-plugin-transform-runtime": "^6.8.0",
     "eslint": "^2.10.1",
     "eslint-config-prometheusresearch": "^0.2.0",
-    "flow-bin": "^0.24.2",
+    "flow-bin": "^0.25.0",
     "sloc": "^0.1.10"
   },
   "peerDependencies": {

@@ -5,7 +5,6 @@
 import path from 'path';
 import webpack from 'webpack';
 
-import {validate as validateRoute} from '../route';
 import {
   mergeConfig, defaultConfig, configureWebpack,
   readConfigSync, moduleRequest
@@ -38,7 +37,7 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
   let siteModule = readConfigSync(entry);
 
   let site = {
-    route: validateRoute(siteModule.route, {basedir: ctx.basedir}),
+    route: siteModule.route,
     configure: siteModule.configure || (() => null),
   };
 
