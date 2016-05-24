@@ -8,7 +8,7 @@
     "sitegen-build": "./lib/bin/sitegen-build.js"
   },
   "scripts": {
-    "test": "make lint"
+    "test": "make lint check"
   },
   "eslintConfig": {
     "extends": "prometheusresearch",
