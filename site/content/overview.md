@@ -52,9 +52,9 @@ take.
 Content tree describes the structure of your site:
 
 ```
-export let route = {
-  page: './Site'
-}
+import {page} from 'sitegen/routing'
+
+export let route = page('./Site')
 ```
 
 
