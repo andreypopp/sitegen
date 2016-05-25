@@ -116,7 +116,10 @@ export function mergeConfig(...config: Array<CompilerConfigSubset>): CompilerCon
   }
 }
 
-function mergeConfigImpl(a: CompilerConfigSubset, b: CompilerConfigSubset): CompilerConfigSubset {
+function mergeConfigImpl(
+  a: CompilerConfigSubset,
+  b: CompilerConfigSubset): CompilerConfigSubset {
+
   return {
     ...a,
     ...b,
