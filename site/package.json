@@ -7,8 +7,10 @@
   "dependencies": {
     "gh-pages": "^0.11.0",
     "normalize.css": "^4.1.1",
-    "react-css-components": "^0.6.4",
     "react-gateway": "npbee/react-gateway#react-15-prep",
-    "react-track": "^0.3.2"
+    "react-track": "^0.3.2",
+    "sitegen": "^0.23.1",
+    "sitegen-plugin-css-modules": "^0.1.0",
+    "sitegen-plugin-react-css-components": "^0.1.0"
   }
 }

@@ -1,8 +1,8 @@
-import {loader, JS, CSS, extractCSS, injectCSS} from 'sitegen/config';
 import {page} from 'sitegen/routing';
 
 export let plugins = [
-  'sitegen-plugin-css-modules'
+  'sitegen-plugin-css-modules',
+  'sitegen-plugin-react-css-components'
 ];
 
 export let route = page('./components/Site', undefined, {
@@ -11,14 +11,3 @@ export let route = page('./components/Site', undefined, {
   docs: page('./content/docs.md', {split: true}),
   community: page('./content/community.md', {split: true}),
 });
-
-export function configure({env}) {
-  let deployCSS = env.development ? injectCSS : extractCSS;
-  let CSSComponent = loader('react-css-components/webpack');
-  let CSSModule = CSS({modules: true, minimize: env.production || env.content});
-  return {
-    globalLoaders: {
-      '**/*.rcss': [JS, CSSComponent({loadCSS: deployCSS(CSSModule)})],
-    },
-  };
-}
