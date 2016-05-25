@@ -1,6 +1,6 @@
-declare module "webpack" {
+declare module 'webpack' {
   declare type Stats = {
-    compilation: WebpackCompilation;
+    compilation: Compilation;
   };
 
   declare type Compilation = {
