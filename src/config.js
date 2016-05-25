@@ -275,7 +275,6 @@ export let img = url({limit: 10000});
 
 export let CSS = loader(require.resolve('css-loader'));
 
-
 export let injectStyleLoader = loader(require.resolve('style-loader'));
 
 export function injectCSS(...loaders: Array<Loader>): Loader {
