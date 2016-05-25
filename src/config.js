@@ -22,9 +22,14 @@ const BABEL_PRESET_REACT = require.resolve('babel-preset-react');
 type WebpackConfig = mixed;
 type WebpackLoaderConfig = mixed;
 
+type Plugin = {
+  configure: (context: CompilerConfigContext) => CompilerConfigSubset;
+};
+
 type SiteConfig = {
-  route?: Route;
-  configure?: (context: CompilerConfigContext) => CompilerConfig;
+  route: Route;
+  configure: (context: CompilerConfigContext) => CompilerConfigSubset;
+  plugins: Array<Plugin>;
 };
 
 type LoaderConfig = {
@@ -257,15 +262,32 @@ export function configureWebpack({context, loaders, globalLoaders, ...config}: C
   };
 }
 
+function noopConfigure(_ctx): CompilerConfigSubset {
+  return {};
+}
+
 export function readConfigSync(filename: string): SiteConfig {
+  let basedir = path.dirname(filename);
+  // $FlowIssue: ...
+  let siteConfig = requireFile(filename);
+  siteConfig.plugins = siteConfig.plugins || [];
+  siteConfig.configure = siteConfig.configure || noopConfigure;
+  siteConfig.plugins.map(plugin => requireModule(plugin, {basedir}));
+  return siteConfig;
+}
+
+function requireModule(module, {basedir}): mixed {
+  let filename = require.resolve(module, {basedir});
+  return requireFile(filename);
+}
+
+function requireFile(filename: string): mixed {
   let source = fs.readFileSync(filename, 'utf8');
   source = transform(source, {
     filename,
     presets: [BABEL_PRESET_ES2015, BABEL_PRESET_STAGE_1]
   }).code;
-  // $FlowIssue: how to type that?
-  let siteConfig: SiteConfig = evalAsModule(source, filename);
-  return siteConfig;
+  return evalAsModule(source, filename);
 }
 
 export let extractCSSPlugin = new ExtractTextPlugin('bundle.css');

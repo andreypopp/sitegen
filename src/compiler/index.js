@@ -34,12 +34,7 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
     }
   };
 
-  let siteModule = readConfigSync(entry);
-
-  let site = {
-    route: siteModule.route,
-    configure: siteModule.configure || (() => null),
-  };
+  let site = readConfigSync(entry);
 
   let sitegenConfig = {
 
@@ -92,11 +87,12 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
     ]
   };
 
-  let config = configureWebpack(mergeConfig(
-    defaultConfig(ctx),
-    site.configure(ctx),
-    sitegenConfig
-  ));
+  let configPipeline = [];
+  configPipeline = configPipeline.concat(defaultConfig(ctx));
+  configPipeline = configPipeline.concat(site.plugins.map(p => p.configure(ctx)));
+  configPipeline = configPipeline.concat(site.configure(ctx), sitegenConfig);
+
+  let config = configureWebpack(mergeConfig(...configPipeline));
 
   return webpack(config);
 }
