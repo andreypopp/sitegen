@@ -114,9 +114,9 @@ export function asset(req: string): AssetRoute {
 
 export function forEach(route: Route, func: (route: Route) => void): void {
   func(route);
-  if (route.route) {
-    for (let k in route.route) {
-      forEach(route.route[k], func);
+  if (route instanceof PageRoute)  {
+    for (let k in route.routes) {
+      forEach(route.routes[k], func);
     }
   }
 }
