@@ -9,6 +9,7 @@ import invariant from 'invariant';
 import fs from 'fs';
 import path from 'path';
 import webpack from 'webpack';
+import {sync as resolve} from 'resolve';
 import {transform} from 'babel-core';
 import {flatten} from 'lodash';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
@@ -277,7 +278,7 @@ export function readConfigSync(filename: string): SiteConfig {
 }
 
 function requireModule(module, {basedir}): mixed {
-  let filename = require.resolve(module, {basedir});
+  let filename = resolve(module, {basedir});
   return requireFile(filename);
 }
 

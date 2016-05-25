@@ -1,6 +1,6 @@
 {
   "name": "sitegen-plugin-css-modules",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "CSS Modules plugin for Sitegen",
   "main": "./lib/index.js",
   "scripts": {
