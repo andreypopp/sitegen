@@ -23,8 +23,8 @@ type WebpackConfig = mixed;
 type WebpackLoaderConfig = mixed;
 
 type SiteConfig = {
-  route: Route;
-  configure: (context: CompilerConfigContext) => CompilerConfig;
+  route?: Route;
+  configure?: (context: CompilerConfigContext) => CompilerConfig;
 };
 
 type LoaderConfig = {
@@ -263,7 +263,9 @@ export function readConfigSync(filename: string): SiteConfig {
     filename,
     presets: [BABEL_PRESET_ES2015, BABEL_PRESET_STAGE_1]
   }).code;
-  return evalAsModule(source, filename);
+  // $FlowIssue: how to type that?
+  let siteConfig: SiteConfig = evalAsModule(source, filename);
+  return siteConfig;
 }
 
 export let extractCSSPlugin = new ExtractTextPlugin('bundle.css');

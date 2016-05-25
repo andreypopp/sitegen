@@ -1,17 +1,23 @@
 /**
  * @copyright 2016-present, Sitegen team
+ * @flow
  */
+
+import type {Compiler, AssetCollection} from 'webpack';
 
 import Promise from 'bluebird';
 
-export default class PromiseAssetsPlugin {
+export default class PromiseAssetsPlugin<T> {
 
-  constructor({name, then}) {
+  name: string;
+  then: (assets: AssetCollection) => T;
+
+  constructor({name, then}: {name: string; then: (assets: AssetCollection) => T}) {
     this.name = name || 'promiseAssets';
     this.then = then || (assets => assets);
   }
 
-  apply(compiler) {
+  apply(compiler: Compiler) {
     let pending;
 
     let init = () => {

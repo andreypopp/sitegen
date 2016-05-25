@@ -1,25 +1,33 @@
 /**
  * @copyright 2016-present, Sitegen team
+ * @flow
  */
+
+import type {Logger} from 'debug';
+import type {Compiler, Stats} from 'webpack';
 
 import createLogger from 'debug';
 
 export default class LogProgressPlugin {
 
-  constructor(name = 'webpack') {
+  name: string;
+  debug: Logger;
+  _notifyOnCompile: boolean;
+
+  constructor(name: string = 'webpack') {
     this.name = name;
     this.debug = createLogger(`sitegen:compile:${name}`);
     this._notifyOnCompile = true;
   }
 
-  apply(compiler) {
+  apply(compiler: Compiler) {
     compiler.debug = this.debug;
     compiler.plugin('compile', this._onCompile.bind(this));
     compiler.plugin('invalid', this._onInvalid.bind(this));
     compiler.plugin('done', this._onDone.bind(this));
   }
 
-  _onDone(stats) {
+  _onDone(stats: Stats) {
     if (stats.compilation.errors.length > 0) {
       this.debug('compilation failed');
       stats.compilation.errors.forEach(error => this.debug(error.message));
@@ -39,4 +47,3 @@ export default class LogProgressPlugin {
     this.debug('bundled invalidated, recompiling...');
   }
 }
-
