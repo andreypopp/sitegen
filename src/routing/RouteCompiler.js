@@ -3,7 +3,6 @@
  * @flow
  */
 
-
 type JSAST = mixed;
 
 type PromisidiedFS = {

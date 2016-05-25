@@ -5,18 +5,30 @@
 
 import {Minimatch} from 'minimatch';
 
+/**
+ * Marker class for site routes.
+ */
 export class Route {
 
 }
 
+/**
+ * Mapping from path segments to routes.
+ */
 type RouteMap = {
   [path: string]: Route;
 };
 
 type PageRouteOptions = {
+  /**
+   * If route should be split into a separate bundle.
+   */
   split?: boolean;
 };
 
+/**
+ * Route which represents a regular page.
+ */
 export class PageRoute extends Route {
 
   component: string;
@@ -44,6 +56,11 @@ type CollectionSpec = {
   match: (filename: string) => boolean;
 };
 
+/**
+ * Route which represents a page which manages a collection of pages.
+ *
+ * Example blog post index which manages a collection of blog posts.
+ */
 export class CollectionRoute extends Route {
 
   component: string;
@@ -62,6 +79,9 @@ export class CollectionRoute extends Route {
   }
 }
 
+/**
+ * Route which references some asset.
+ */
 export class AssetRoute extends Route {
 
   req: string;

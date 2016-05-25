@@ -14,6 +14,9 @@ import Router from './Router';
 
 const HOST_ELEMENT = 'main';
 
+/**
+ * Boot sitegen application.
+ */
 export function boot(routes) {
   match({routes, history}, (err, redirect, props) => {
     if (err) {
