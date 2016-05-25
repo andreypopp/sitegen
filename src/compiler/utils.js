@@ -7,7 +7,7 @@ import type {AssetCollection, Asset} from 'webpack';
 
 import path from 'path';
 import evaluate from 'eval';
-import resolve from 'resolve';
+import {sync as resolve} from 'resolve';
 
 export function evalBundle(assets: AssetCollection): ?mixed {
   let source = assetSource(assets['bundle.js']);
@@ -20,13 +20,18 @@ export function evalBundle(assets: AssetCollection): ?mixed {
 
 export function evalAsModule(source: string, filename: string, scope?: Object): mixed {
   let dirname = path.dirname(filename);
+  function localResolve(module) {
+    return resolve(module, {basedir: dirname});
+  }
+  function localRequire(module) {
+    // $FlowIssue: ...
+    return require(localResolve(module));
+  }
+  localRequire.resolve = localResolve;
   scope = {
     console,
     process,
-    require(module) {
-      // $FlowIssue: this is ok
-      return require(resolve.sync(module, {basedir: dirname}));
-    },
+    require: localRequire,
     setTimeout,
     __filename: filename,
     __dirname: dirname,
