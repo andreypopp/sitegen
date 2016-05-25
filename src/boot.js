@@ -15,7 +15,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import {browserHistory as history, match} from 'react-router';
 import {AppContainer} from 'react-hot-loader';
-import Router from './Router';
+import Router from './routing/Router';
 
 const HOST_ELEMENT = 'main';
 
