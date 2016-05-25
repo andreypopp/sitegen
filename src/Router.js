@@ -5,12 +5,27 @@
  * and strip away unneeded functionality.
  *
  * @copyright 2016-present, Sitegen team
+ * @flow
  */
+
+import type {
+  MatchContext,
+  CancelSubscription,
+  RouterState
+} from 'react-router';
 
 import React from 'react';
 import {RouterContext} from 'react-router';
 
-const INITIAL_STATE = {
+type Props = {
+  onUpdate: () => void;
+  onError: (error: Error) => void;
+  history: mixed;
+  routes: mixed;
+  matchContext: MatchContext;
+};
+
+const INITIAL_STATE: RouterState = {
   location: null,
   routes: null,
   params: null,
@@ -19,7 +34,12 @@ const INITIAL_STATE = {
 
 export default class Router extends React.Component {
 
-  constructor(props) {
+  state: RouterState;
+  props: Props;
+
+  _unlisten: ?CancelSubscription;
+
+  constructor(props: Props) {
     super(props);
     this.state = INITIAL_STATE;
   }
@@ -50,7 +70,7 @@ export default class Router extends React.Component {
     this.initializeRouter();
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Props) {
     if (
       nextProps.history !== this.props.history ||
       nextProps.routes !== this.props.routes
@@ -66,7 +86,7 @@ export default class Router extends React.Component {
     }
   }
 
-  handleError(error) {
+  handleError(error: Error) {
     if (this.props.onError) {
       this.props.onError.call(this, error);
     } else {
