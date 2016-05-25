@@ -146,7 +146,7 @@ function mergeConfigImpl(a: CompilerConfigSubset, b: CompilerConfigSubset): Comp
 function mergeArray<T, S: T | Array<T>>(a?: ?S = null, b?: ?S = null): Array<T> {
   let _a = a || [];
   let _b = b || [];
-  return [].concat(_a).concat(_b);
+  return [].concat(_a).concat(_b).filter(item => item);
 }
 
 type SingleLoader
