@@ -18,8 +18,8 @@ import React from 'react';
 import {RouterContext} from 'react-router';
 
 type Props = {
-  onUpdate: () => void;
-  onError: (error: Error) => void;
+  onUpdate?: () => void;
+  onError?: (error: Error) => void;
   history: mixed;
   routes: mixed;
   matchContext: MatchContext;
