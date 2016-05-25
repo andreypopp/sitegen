@@ -1,5 +1,5 @@
-import {loader, JS, CSS, extractCSS, injectCSS} from '../lib/config';
-import {page} from '../lib/routing';
+import {loader, JS, CSS, extractCSS, injectCSS} from 'sitegen/config';
+import {page} from 'sitegen/routing';
 
 export let plugins = [
   'sitegen-plugin-css-modules'
