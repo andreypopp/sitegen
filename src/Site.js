@@ -1,7 +1,28 @@
+/**
+ * @copyright 2016-present, Sitegen team
+ * @flow
+ */
+
 import React from 'react';
 import Meta from './meta';
 
-export default function Site({meta, bundle, content, style}) {
+type MetaItem = {
+  toComponent: () => mixed;
+};
+
+type SiteProps = {
+  meta: {
+    htmlAttributes: MetaItem;
+    meta: MetaItem;
+    link: MetaItem;
+    title: MetaItem;
+  };
+  bundle: {js?: string, css?: string};
+  content: mixed;
+  style: string;
+};
+
+export default function Site({meta, bundle, content, style}: SiteProps) {
   meta = meta || Meta.rewind();
   return (
     <html {...meta.htmlAttributes.toComponent()}>
