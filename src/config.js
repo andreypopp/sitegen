@@ -270,11 +270,13 @@ function noopConfigure(_ctx): CompilerConfigSubset {
 export function readConfigSync(filename: string): SiteConfig {
   let basedir = path.dirname(filename);
   // $FlowIssue: ...
-  let siteConfig = requireFile(filename);
-  siteConfig.plugins = siteConfig.plugins || [];
-  siteConfig.configure = siteConfig.configure || noopConfigure;
-  siteConfig.plugins.map(plugin => requireModule(plugin, {basedir}));
-  return siteConfig;
+  let {plugins = [], configure = noopConfigure, route} = requireFile(filename);
+  return {
+    route,
+    configure,
+    // $FlowIssue: ...
+    plugins: plugins.map(p => requireModule(p, {basedir})),
+  };
 }
 
 function requireModule(module, {basedir}): mixed {
