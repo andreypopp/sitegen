@@ -1,6 +1,11 @@
 /**
  * @copyright 2016-present, Sitegen team
+ * @flow
  */
+
+declare var __DEBUG__: string;
+
+type ReactRouterRoute = mixed;
 
 import debug from 'debug';
 debug.enable(__DEBUG__);
@@ -17,7 +22,7 @@ const HOST_ELEMENT = 'main';
 /**
  * Boot sitegen application.
  */
-export function boot(routes) {
+export function boot(routes: ReactRouterRoute): void {
   match({routes, history}, (err, redirect, props) => {
     if (err) {
       throw err;
