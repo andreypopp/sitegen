@@ -18,7 +18,11 @@ import {evalBundle} from './utils';
 
 const BOOT_LOADER = require.resolve('../loader/boot');
 const META_LOADER = require.resolve('../loader/meta');
-const BABEL_PLUGIN_REACT_HMR = require.resolve('react-hot-loader/babel');
+
+const REACT_HOT_LOADER_PATCH = require.resolve('react-hot-loader/patch');
+const REACT_HOT_LOADER_PLUGIN = require.resolve('react-hot-loader/babel');
+
+const WEBPACK_HOT_CLIENT = require.resolve('webpack-hot-middleware/client');
 
 export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
   let __DEBUG__ = env === 'production'
@@ -43,8 +47,8 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
     context: ctx.basedir,
 
     entry: [
-      ctx.env.development && 'react-hot-loader/patch',
-      ctx.env.development && 'webpack-hot-middleware/client',
+      ctx.env.development && REACT_HOT_LOADER_PATCH,
+      ctx.env.development && WEBPACK_HOT_CLIENT,
       moduleRequest(entry, BOOT_LOADER),
     ],
 
@@ -63,7 +67,7 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
 
     babel: {
       plugins: [
-        ctx.env.development && BABEL_PLUGIN_REACT_HMR,
+        ctx.env.development && REACT_HOT_LOADER_PLUGIN,
       ]
     },
 
