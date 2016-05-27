@@ -71,6 +71,12 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
       ]
     },
 
+    resolve: {
+      alias: {
+        'debug': require.resolve('debug/browser'),
+      }
+    },
+
     plugins: [
       new LogProgressPlugin(env),
       new webpack.DefinePlugin({
@@ -88,7 +94,7 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
         inlineCSS: inlineCSS
       }),
       new MetaRegistryPlugin({loader: META_LOADER}),
-    ]
+    ],
   };
 
   let configPipeline = [];
