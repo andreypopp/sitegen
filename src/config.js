@@ -215,7 +215,7 @@ function normalizeLoader(element: Loader): string {
 }
 
 function makePatterMatcher(pattern) {
-  let patterMatcher = new Minimatch(pattern);
+  let patterMatcher = new Minimatch(pattern, {dot: true});
 
   let matcher = filename => patterMatcher.match(filename);
   matcher.toString = () => `[PatternMatcher ${pattern}]`;
