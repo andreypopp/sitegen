@@ -223,7 +223,10 @@ function makePatterMatcher(context, pattern, global) {
   let patterMatcher = new Minimatch(pattern, {dot: true});
 
   let matcher = filename =>
-    (global || !NODE_MODULES_RE.exec(filename)) && patterMatcher.match(filename);
+    global
+      ? patterMatcher.match(filename)
+      : !NODE_MODULES_RE.exec(filename) && patterMatcher.match(filename);
+
   matcher.toString = () => `[PatternMatcher ${pattern}]`;
   matcher.inspect = matcher.toString;
 
@@ -239,7 +242,7 @@ function configureWebpackLoaderList(
     let loader = loaders[pattern];
     result.push({
       loader: normalizeLoader(loader),
-      text: makePatterMatcher(context, pattern, global),
+      test: makePatterMatcher(context, pattern, global),
     });
   }
   return result;
