@@ -223,7 +223,7 @@ function makePatterMatcher(context, pattern, global) {
   let patterMatcher = new Minimatch(pattern, {dot: true});
 
   let matcher = filename =>
-    (global || NODE_MODULES_RE.exec(filename)) && patterMatcher.match(filename);
+    (global || !NODE_MODULES_RE.exec(filename)) && patterMatcher.match(filename);
   matcher.toString = () => `[PatternMatcher ${pattern}]`;
   matcher.inspect = matcher.toString;
 
