@@ -16,6 +16,8 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import {Minimatch} from 'minimatch';
 import {evalAsModule} from './compiler/utils';
 
+const NODE_MODULES_RE = /node_modules/;
+
 const BABEL_PRESET_ES2015 = require.resolve('babel-preset-es2015');
 const BABEL_PRESET_STAGE_1 = require.resolve('babel-preset-stage-1');
 const BABEL_PRESET_REACT = require.resolve('babel-preset-react');
@@ -214,25 +216,18 @@ function normalizeLoader(element: Loader): string {
   }
 }
 
-function makePatterMatcher(pattern) {
+function makePatterMatcher(context, pattern, global) {
+  if (!global) {
+    pattern = path.join(context, pattern);
+  }
   let patterMatcher = new Minimatch(pattern, {dot: true});
 
-  let matcher = filename => patterMatcher.match(filename);
+  let matcher = filename =>
+    (global || NODE_MODULES_RE.exec(filename)) && patterMatcher.match(filename);
   matcher.toString = () => `[PatternMatcher ${pattern}]`;
   matcher.inspect = matcher.toString;
 
   return matcher;
-}
-
-function configureWebpackLoader(context, pattern, loader, global) {
-  if (!global) {
-    pattern = path.join(context, pattern);
-  }
-  let test = makePatterMatcher(pattern);
-  return {
-    loader: normalizeLoader(loader),
-    test,
-  };
 }
 
 function configureWebpackLoaderList(
@@ -242,7 +237,10 @@ function configureWebpackLoaderList(
   let result = [];
   for (let pattern in loaders) {
     let loader = loaders[pattern];
-    result.push(configureWebpackLoader(context, pattern, loader, global));
+    result.push({
+      loader: normalizeLoader(loader),
+      text: makePatterMatcher(context, pattern, global),
+    });
   }
   return result;
 }
