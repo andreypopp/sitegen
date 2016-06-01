@@ -6,8 +6,7 @@ import TouchIcon from '../img/sitegen-icon.png';
 import {
   Root, ContentWrapper,
   HeadingLine, SubHeadingLine,
-  Section, SectionHeader,
-  Par, CodeBlock, UIText,
+  Section, UIText,
   Heart
 } from './Site.rcss';
 import {NavBar, NavLink} from './NavBar';
