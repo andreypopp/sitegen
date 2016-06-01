@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import Meta from './meta';
+import Meta from 'react-helmet';
 
 type MetaItem = {
   toComponent: () => mixed;

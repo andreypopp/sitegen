@@ -1,9 +1,12 @@
 /**
  * @copyright 2016-present, Sitegen team
+ * @flow
  */
 
 import React from 'react';
 import {routerShape} from 'react-router/lib/PropTypes';
+
+declare var __webpack_public_path__: string;
 
 export default class Link extends React.Component {
 
@@ -42,7 +45,7 @@ export default class Link extends React.Component {
     );
   }
 
-  get href() {
+  get href(): string {
     let {href} = this.props;
     if (
         href &&
@@ -54,7 +57,7 @@ export default class Link extends React.Component {
     return href;
   }
 
-  onClick = (event) => {
+  onClick: (event: MouseEvent) => void = (event) => {
     let allowTransition = true;
 
     if (this.props.onClick) {

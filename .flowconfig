@@ -14,5 +14,6 @@ declarations/
 
 [options]
 esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable
 unsafe.enable_getters_and_setters=true
 suppress_comment=\\(.\\|\n\\)*\\$FlowIssue
