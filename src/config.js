@@ -22,6 +22,8 @@ const BABEL_PRESET_ES2015 = require.resolve('babel-preset-es2015');
 const BABEL_PRESET_STAGE_1 = require.resolve('babel-preset-stage-1');
 const BABEL_PRESET_REACT = require.resolve('babel-preset-react');
 
+const SITEGEN_COMPONENTS = require.resolve('./components');
+
 type WebpackConfig = mixed;
 type WebpackLoaderConfig = mixed;
 
@@ -90,7 +92,7 @@ export function defaultConfig({env}: CompilerConfigContext): CompilerConfigSubse
 
     loaders: {
       '**/*.js': JS,
-      '**/*.md': [JS, markdown],
+      '**/*.md': [JS, markdown({components: SITEGEN_COMPONENTS})],
     },
 
     globalLoaders: {

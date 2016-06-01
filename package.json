@@ -16,6 +16,7 @@
     "globals": {
       "expr": true,
       "stmt": true,
+      "ReactClass": true,
       "__DEBUG__": true,
       "__webpack_public_path__": true
     }
@@ -76,7 +77,7 @@
     "react-helmet": "^3.1.0",
     "react-hot-loader": "^3.0.0-beta.2",
     "react-router": "^2.4.0",
-    "reactdown": "^1.0.0-alpha9",
+    "reactdown": "^1.0.0-alpha10",
     "resolve": "^1.1.7",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",

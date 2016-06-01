@@ -3,34 +3,28 @@
  */
 
 import React from 'react';
-
-import {contextTypes} from 'reactdown/lib/DocumentContext';
 import Helmet from 'react-helmet';
+import {contextTypes} from 'reactdown/lib/DocumentContext';
+import {Heading as BaseHeading} from '../../components';
 
 import {
-  Root as BaseRoot,
-  Link,
-  Sidebar,
-
-  ToCItem,
-
-  NoteRoot,
-  NoteTitle,
-  NoteContent,
-
-  TKRoot,
-  TKTitle
+  Root as ThemedRoot,
+  Heading as ThemedHeading
 } from './Theme.rcss';
 
 export function Root({children, ...props}, {reactdown: {model, metadata}}) {
   return (
-    <BaseRoot>
+    <ThemedRoot>
       <Helmet title={metadata.title || model.title} />
       {children}
-    </BaseRoot>
+    </ThemedRoot>
   );
 }
 Root.contextTypes = contextTypes;
+
+export function Heading(props) {
+  return <BaseHeading {...props} Component={ThemedHeading} />;
+}
 
 export {
   Paragraph,
@@ -42,5 +36,4 @@ export {
   Code,
   Link,
   ListItem,
-  Heading
 } from './Theme.rcss';
