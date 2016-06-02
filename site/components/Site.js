@@ -74,6 +74,7 @@ function ToCItem({name, title, depth}) {
 
 export default function Site({children, routes}) {
   let {model} = routes[routes.length - 1].meta;
+  let toc = <ToC toc={model.toc} />;
   return (
     <StickyRoot>
       <Root>
@@ -105,7 +106,7 @@ export default function Site({children, routes}) {
           </ContentWrapper>
         </Section>
 
-        <NavBar>
+        <NavBar toc={toc}>
           <NavLink href="/">Overview</NavLink>
           <NavLink href="/tutorial">Tutorial</NavLink>
           <NavLink href="/docs">Docs</NavLink>
@@ -113,7 +114,7 @@ export default function Site({children, routes}) {
         </NavBar>
 
         <ContentWrapper style={{marginTop: 20, marginBottom: 20}}>
-          <ToC toc={model.toc} />
+          {toc}
           {children}
         </ContentWrapper>
 

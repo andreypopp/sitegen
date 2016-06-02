@@ -2,6 +2,7 @@ NavBar {
   background: #CCC;
   height: 40px;
   overflow: hidden;
+  position: relative;
 }
 
 NavBar:prop(sticky) {
@@ -15,6 +16,14 @@ NavBar:prop(sticky && stickyActive) {
   box-shadow: 0px 1px 3px 0px #888;
   background: #F5DE1B;
   transform: translateY(0%);
+}
+
+NavBar:prop(sticky && stickyActive && tocActive) {
+  height: auto;
+}
+
+NavBarToC {
+  padding: 15px;
 }
 
 NavLink {
@@ -55,6 +64,21 @@ NavBar:prop(sticky) NavLink:prop(active):active {
   background: #FFF177;
 }
 
+NavBarWrapper {
+  position: relative;
+}
+
+TocToggle {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  padding: 10px;
+  top: 2px;
+  right: 10px;
+}
 
 @media only screen and (min-width: 600px) {
 
