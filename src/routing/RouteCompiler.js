@@ -26,6 +26,10 @@ const META_LOADER = require.resolve('../loader/meta');
 const CHUNK_LOADER = require.resolve('../loader/chunk');
 const REACT_HOT_LOADER = require.resolve('react-hot-loader/webpack');
 
+function requireMeta(component) {
+  return expr`require("${moduleRequest(component, META_LOADER)}").default`;
+}
+
 type Options = {
   fs: PromisidiedFS;
   split: boolean;
@@ -94,7 +98,8 @@ export default class RouteCompiler {
       path,
       getComponent,
       indexRoute,
-      childRoutes
+      childRoutes,
+      meta: requireMeta(route.component),
     });
   }
 
@@ -175,21 +180,21 @@ type RouteSpec = {
   childRoutes?: Array<JSAST>;
   name?: string;
   params?: JSAST;
+  meta?: JSAST;
 };
 
 /**
  * Render React Router route spec.
  */
 function renderRouteSpec(spec: RouteSpec): JSAST {
-  let {path, getComponent, indexRoute, childRoutes, name, params} = spec;
-
   return expr`{
-    path: ${path},
-    getComponent: ${getComponent},
-    indexRoute: ${indexRoute},
-    childRoutes: ${childRoutes || []},
-    name: ${name},
-    params: ${params},
+    path: ${spec.path},
+    getComponent: ${spec.getComponent},
+    indexRoute: ${spec.indexRoute},
+    childRoutes: ${spec.childRoutes || []},
+    name: ${spec.name},
+    params: ${spec.params},
+    meta: ${spec.meta},
   }`;
 }
 
