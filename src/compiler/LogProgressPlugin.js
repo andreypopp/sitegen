@@ -30,8 +30,19 @@ export default class LogProgressPlugin {
   _onDone(stats: Stats) {
     if (stats.compilation.errors.length > 0) {
       this.debug('compilation failed');
-      stats.compilation.errors.forEach(error => this.debug(error.message));
+      stats.compilation.errors.forEach(error => {
+			  if(error.details) {
+          this.debug(error.details);
+        }
+        this.debug(error.message)
+      });
     } else {
+      if(stats.compilation.warnings.length > 0) {
+        stats.compilation.warnings.forEach(error => this.debug(error.message));
+      }
+
+      process.stdout.write(stats.toString({colors:true}) + "\n");
+      
       this.debug('compilation finished');
     }
   }
