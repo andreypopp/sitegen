@@ -12,10 +12,10 @@ import {
   Heading as ThemedHeading
 } from './Theme.rcss';
 
-export function Root({children, ...props}, {reactdown: {model, metadata}}) {
+export function Root({children, ...props}, {reactdown: {meta}}) {
   return (
     <ThemedRoot>
-      <Helmet title={metadata.title || model.title} />
+      <Helmet title={meta.data.title || meta.model.title} />
       {children}
     </ThemedRoot>
   );
