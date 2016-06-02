@@ -92,7 +92,7 @@ export function defaultConfig({env}: CompilerConfigContext): CompilerConfigSubse
 
     loaders: {
       '**/*.js': JS,
-      '**/*.md': [JS, markdown({components: SITEGEN_COMPONENTS})],
+      '**/*.md': [JS, markdown({defaultComponents: SITEGEN_COMPONENTS})],
     },
 
     globalLoaders: {

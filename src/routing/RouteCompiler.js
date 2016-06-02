@@ -12,13 +12,11 @@ type PromisidiedFS = {
   };
 };
 
-declare function expr(...args: Array<any>): JSAST;
-
 import type {Route} from './Route';
 import {relative, join, extname} from 'path';
 import invariant from 'invariant';
 import {promisifyAll} from 'bluebird';
-import * as types from 'babel-types';
+import {expr} from 'babel-plugin-ast-literal/api';
 import {chunk, flatten} from 'lodash';
 
 import {moduleRequest} from '../config';
@@ -142,16 +140,15 @@ export default class RouteCompiler {
 
     let getComponent = expr`function getComponent(nextState, cb) {
       var pageNumber = parseInt(nextState.params.page || 1, 10);
-      var chunkList = ${types.arrayExpression(chunks)};
+      var chunkList = ${chunks};
       var getCollectionChunk = chunkList[pageNumber - 1];
       getCollectionChunk(nextState, cb);
     }`;
 
-    let pageParam = types.arrayExpression(chunks.map((_, idx) => types.numericLiteral(idx + 1)));
     childRoutes = childRoutes.concat(renderRouteSpec({
       path: '@page/:page',
       name,
-      params: expr`{page: ${pageParam}}`,
+      params: expr`{page: ${chunks.map((_, idx) => idx + 1)}}`,
     }));
 
     return renderRouteSpec({
@@ -186,18 +183,11 @@ type RouteSpec = {
 function renderRouteSpec(spec: RouteSpec): JSAST {
   let {path, getComponent, indexRoute, childRoutes, name, params} = spec;
 
-  path = path == null ? expr`undefined` : types.stringLiteral(path);
-  getComponent = getComponent == null ? expr`undefined` : getComponent;
-  indexRoute = indexRoute == null ? expr`undefined` : indexRoute;
-  childRoutes = types.arrayExpression(childRoutes || []);
-  name = name == null ? expr`undefined` : types.stringLiteral(name);
-  params = params == null ? expr`undefined` : params;
-
   return expr`{
     path: ${path},
     getComponent: ${getComponent},
     indexRoute: ${indexRoute},
-    childRoutes: ${childRoutes},
+    childRoutes: ${childRoutes || []},
     name: ${name},
     params: ${params},
   }`;
@@ -216,14 +206,12 @@ function renderGetComponent(
     ...options,
   };
 
-  req = types.stringLiteral(req);
-
   if (options.split) {
     return expr`
       function getComponentAsync(_nextState, cb) {
         require.ensure([], function(require) {
           cb(null, require(${req}).default);
-        }, ${types.stringLiteral(options.chunkName)});
+        }, ${options.chunkName});
       }
     `;
   } else {

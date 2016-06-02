@@ -3,7 +3,8 @@
  */
 
 import {parseQuery} from 'loader-utils';
-import {program, arrayExpression, stringLiteral, numericLiteral} from 'babel-types';
+import {program} from 'babel-types';
+import {expr} from 'babel-plugin-ast-literal/api';
 import generate from 'babel-generator';
 
 const COLLECTION_CTX = require.resolve('../CollectionContext');
@@ -12,13 +13,12 @@ module.exports = function chunkLoader(_source) {
   this.cacheable();
 
   let query = parseQuery(this.query);
-  let page = arrayExpression(query.chunk.map(renderItem));
 
   function renderItem(item) {
     let req = `${query.loader}!${item.filename}`;
     return expr`{
-      item: require(${stringLiteral(req)}).default,
-      path: ${stringLiteral(item.path)},
+      item: require(${req}).default,
+      path: ${item.path},
     }`;
   }
 
@@ -26,13 +26,13 @@ module.exports = function chunkLoader(_source) {
     var React = require('react');
 
     exports.default = function PageWithChunk(props) {
-      var page = ${page};
-      var Context = require(${stringLiteral(COLLECTION_CTX)}).default;
-      var Component = require(${stringLiteral(this.resource)}).default;
+      var page = ${query.chunk.map(renderItem)};
+      var Context = require(${COLLECTION_CTX}).default;
+      var Component = require(${this.resource}).default;
       return React.createElement(Context, {
         Component: Component,
-        pageNumber: ${numericLiteral(query.chunkNumber)},
-        pageCount: ${numericLiteral(query.chunkCount)},
+        pageNumber: ${query.chunkNumber},
+        pageCount: ${query.chunkCount},
         page: page,
         props: props
       });
