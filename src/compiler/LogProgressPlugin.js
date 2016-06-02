@@ -31,7 +31,7 @@ export default class LogProgressPlugin {
     if (stats.compilation.errors.length > 0) {
       this.debug('compilation failed');
       stats.compilation.errors.forEach(error => {
-			  if(error.details) {
+	if(error.details) {
           this.debug(error.details);
         }
         this.debug(error.message)
