@@ -8,7 +8,7 @@ import RouteCompiler from '../routing/RouteCompiler';
 import {forEach} from '../routing/Route';
 
 const BOOT_MODULE = require.resolve('../boot');
-const META_MODULE = require.resolve('../meta');
+const META_MODULE = require.resolve('react-helmet');
 const SITE_MODULE = require.resolve('../Site');
 
 module.exports = function bootLoader(_source) {
@@ -40,7 +40,7 @@ module.exports = function bootLoader(_source) {
       var debug = makeDebug('sitegen:runtime:route');
 
       exports.route = ${route};
-      exports.Meta = require("${stringLiteral(META_MODULE)}").default;
+      exports.Meta = require("${stringLiteral(META_MODULE)}");
       exports.Site = require("${stringLiteral(SITE_MODULE)}").default;
       exports.React = React;
 
