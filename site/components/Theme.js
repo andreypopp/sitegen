@@ -5,11 +5,13 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import {contextTypes} from 'reactdown/lib/DocumentContext';
-import {Heading as BaseHeading} from '../../components';
+import {Heading as HeadingBase} from '../../components';
+import {Link as LinkBase} from '../../';
 
 import {
   Root as ThemedRoot,
-  Heading as ThemedHeading
+  Heading as ThemedHeading,
+  Link as ThemedLink
 } from './Theme.rcss';
 
 export function Root({children, ...props}, {reactdown: {meta}}) {
@@ -23,7 +25,11 @@ export function Root({children, ...props}, {reactdown: {meta}}) {
 Root.contextTypes = contextTypes;
 
 export function Heading(props) {
-  return <BaseHeading {...props} Component={ThemedHeading} />;
+  return <HeadingBase {...props} Component={ThemedHeading} refStyle={{top: '-3em'}} />;
+}
+
+export function Link(props) {
+  return <LinkBase {...props} Component={ThemedLink} />;
 }
 
 export {
@@ -34,6 +40,5 @@ export {
   Emphasis,
   Strong,
   Code,
-  Link,
   ListItem,
 } from './Theme.rcss';

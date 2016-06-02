@@ -9,6 +9,7 @@ import {
   Section, UIText,
   Heart
 } from './Site.rcss';
+import {Link} from './Theme.rcss';
 import {NavBar, NavLink} from './NavBar';
 import {StickyRoot, StickyDest} from './Sticky';
 
@@ -52,7 +53,27 @@ function Footer() {
   );
 }
 
-export default function Site({children}) {
+function ToC({toc}) {
+  let minDepth = Math.min.apply(Math, toc.map(item => item.depth));
+  toc = toc.map(item => ({...item, depth: item.depth - minDepth}));
+  return (
+    <div>
+      {toc.map(item => <ToCItem key={item.name} {...item} />)}
+    </div>
+  );
+}
+
+function ToCItem({name, title, depth}) {
+  let href = '#' + name;
+  return (
+    <div style={{paddingLeft: depth * 10}}>
+      <Link href={href}>{title}</Link>
+    </div>
+  );
+}
+
+export default function Site({children, routes}) {
+  let {model} = routes[routes.length - 1].meta;
   return (
     <StickyRoot>
       <Root>
@@ -92,6 +113,7 @@ export default function Site({children}) {
         </NavBar>
 
         <ContentWrapper style={{marginTop: 20, marginBottom: 20}}>
+          <ToC toc={model.toc} />
           {children}
         </ContentWrapper>
 

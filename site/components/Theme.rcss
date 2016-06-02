@@ -18,7 +18,7 @@ Strong {
 }
 
 Link {
-  base: ../../lib?Link;
+  base: a;
   background: #F9F1B3;
   color: #555;
   text-decoration: none;
