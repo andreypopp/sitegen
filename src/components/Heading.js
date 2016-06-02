@@ -9,14 +9,15 @@ import Ref from 'reactdown/lib/directives/ref';
 
 type Props = {
   children: React.Element;
-  name: string;
-  Component: ReactClass<{}>;
+  name?: string;
+  Component?: ReactClass<{}>;
+  refStyle?: Object;
 };
 
-export default function Heading({children, name, Component = BaseHeading, ...props}: Props) {
+export default function Heading({children, name, Component = BaseHeading, refStyle, ...props}: Props) {
   return (
     <Component {...props}>
-      <Ref name={name} />
+      <Ref name={name} style={refStyle} />
       {children}
     </Component>
   );
