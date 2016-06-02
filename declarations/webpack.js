@@ -11,6 +11,10 @@ declare module 'webpack' {
 
   declare type Stats = {
     compilation: Compilation;
+    toJson: () => {
+      errors: Array<string>;
+      warnings: Array<string>;
+    };
     [key: string]: mixed;
   };
 

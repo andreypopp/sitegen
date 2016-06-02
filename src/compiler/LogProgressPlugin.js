@@ -28,23 +28,17 @@ export default class LogProgressPlugin {
   }
 
   _onDone(stats: Stats) {
-    if (stats.compilation.errors.length > 0) {
+    let info = stats.toJson();
+    if (info.errors.length > 0) {
       this.debug('compilation failed');
-      stats.compilation.errors.forEach(error => {
-	if(error.details) {
-          this.debug(error.details);
-        }
-        this.debug(error.message)
-      });
-    } else {
-      if(stats.compilation.warnings.length > 0) {
-        stats.compilation.warnings.forEach(error => this.debug(error.message));
-      }
-
-      process.stdout.write(stats.toString({colors:true}) + "\n");
-      
-      this.debug('compilation finished');
+      info.errors.forEach(this._logError, this);
     }
+
+    if (info.warnings.length > 0) {
+      info.warnings.forEach(this._logError, this);
+    }
+
+    this.debug('compilation finished');
   }
 
   _onCompile() {
@@ -56,5 +50,9 @@ export default class LogProgressPlugin {
 
   _onInvalid() {
     this.debug('bundled invalidated, recompiling...');
+  }
+
+  _logError(error: string) {
+    this.debug('ERROR in ' + error);
   }
 }
