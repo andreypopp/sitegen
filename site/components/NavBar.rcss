@@ -1,6 +1,6 @@
 NavBar {
   background: #CCC;
-  height: 40px;
+  height: 50px;
   overflow: hidden;
   position: relative;
 }
@@ -40,7 +40,7 @@ NavBarToC:prop(active) {
 
 
 NavBarToCShim {
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   right: 0;
@@ -50,7 +50,7 @@ NavBarToCShim {
 NavLink {
   base: a;
   display: inline-block;
-  padding: 10px 10px;
+  padding: 15px 10px;
   cursor: default;
   user-select: none;
   -webkit-user-select: none;
@@ -94,14 +94,27 @@ TocToggle {
   user-select: none;
   -webkit-user-select: none;
   position: absolute;
-  height: 40px;
+  height: 50px;
   width: 40px;
-  padding: 10px;
+  padding: 15px;
   top: 2px;
-  right: 10px;
+  right: 7px;
 }
 
 @media only screen and (min-width: 600px) {
+
+  NavBar {
+    height: 40px;
+  }
+
+  NavLink {
+    padding: 10px;
+  }
+
+  TocToggle {
+    height: 40px;
+    padding: 10px;
+  }
 
   NavBarWrapper {
     width: 600px;
