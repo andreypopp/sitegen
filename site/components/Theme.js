@@ -25,7 +25,7 @@ export function Root({children, ...props}, {reactdown: {meta}}) {
 Root.contextTypes = contextTypes;
 
 export function Heading(props) {
-  return <HeadingBase {...props} Component={ThemedHeading} refStyle={{top: '-3em'}} />;
+  return <HeadingBase {...props} Component={ThemedHeading} refStyle={{top: '-5em'}} />;
 }
 
 export function Link(props) {
