@@ -8,6 +8,7 @@ import {
   NavLink as NavLinkBase,
   NavBarWrapper,
   NavBarToC,
+  NavBarToCShim,
   TocToggle
 } from './NavBar.rcss';
 import {HeadingLine} from './Site.rcss';
@@ -35,22 +36,31 @@ class NavBarRegular extends React.Component {
     let {tocActive} = this.state;
     let {children, toc, ...props} = this.props;
     return (
-      <NavBarBase {...props} tocActive={tocActive}>
-        <NavBarWrapper>
-          {props.sticky &&
-            <HeadingLine
-              inline small decorated
-              style={{marginLeft: 10, marginRight: 10}}>
-              SG
-            </HeadingLine>}
-          {children}
-          {props.stickyActive &&
-            <TocToggle onClick={this.tocToggle}>
-              {tocActive ? <CloseIcon /> : <MenuIcon />}
-            </TocToggle>}
-          <NavBarToC onClick={this.tocToggle}>{toc}</NavBarToC>
-        </NavBarWrapper>
-      </NavBarBase>
+      <div>
+        <NavBarBase {...props} tocActive={tocActive}>
+          <NavBarWrapper>
+            {props.sticky &&
+              <HeadingLine
+                inline small decorated
+                style={{marginLeft: 10, marginRight: 10}}>
+                SG
+              </HeadingLine>}
+            {children}
+            {props.stickyActive &&
+              <TocToggle onClick={this.tocToggle}>
+                {tocActive ? <CloseIcon /> : <MenuIcon />}
+              </TocToggle>}
+          </NavBarWrapper>
+        </NavBarBase>
+        {props.stickyActive && tocActive &&
+          <NavBarToCShim onClick={this.tocToggle} />}
+        {props.stickyActive &&
+          <NavBarToC onClick={this.tocToggle} active={tocActive}>
+            <NavBarWrapper>
+              {toc}
+            </NavBarWrapper>
+          </NavBarToC>}
+      </div>
     );
   }
 

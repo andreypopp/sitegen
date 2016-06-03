@@ -35,7 +35,7 @@ export function Sticky({children}) {
 export function StickyDest({name}) {
   return (
     <GatewayDest
-      style={{width: '100%', position: 'fixed', top: 0}}
+      style={{width: '100%', height: '100%', position: 'fixed', top: 0}}
       name={GATEWAY_NAME}
       />
   );

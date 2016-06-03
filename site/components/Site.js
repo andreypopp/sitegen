@@ -107,7 +107,7 @@ export default function Site({children, routes}) {
         </Section>
 
         <NavBar toc={toc}>
-          <NavLink href="/">Overview</NavLink>
+          <NavLink href="/">Main</NavLink>
           <NavLink href="/tutorial">Tutorial</NavLink>
           <NavLink href="/docs">Docs</NavLink>
           <NavLink href="/community">Community</NavLink>
