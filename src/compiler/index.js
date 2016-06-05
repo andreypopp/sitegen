@@ -24,7 +24,7 @@ const REACT_HOT_LOADER_PLUGIN = require.resolve('react-hot-loader/babel');
 
 const WEBPACK_HOT_CLIENT = require.resolve('webpack-hot-middleware/client');
 
-export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
+export function createCompiler({entry, output, publicPath, env, inlineCSS, progress}) {
   let __DEBUG__ = env === 'production'
     ? undefined
     : JSON.stringify(process.env.DEBUG);
@@ -78,6 +78,7 @@ export function createCompiler({entry, output, publicPath, env, inlineCSS}) {
     },
 
     plugins: [
+      progress && new webpack.ProgressPlugin(progress),
       new LogProgressPlugin(env),
       new webpack.DefinePlugin({
         '__DEBUG__': __DEBUG__,
