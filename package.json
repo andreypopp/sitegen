@@ -1,6 +1,6 @@
 {
   "name": "sitegen",
-  "version": "0.27.1",
+  "version": "0.27.2",
   "description": "Static site generator",
   "main": "./lib/index.js",
   "bin": {
