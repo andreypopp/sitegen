@@ -44,6 +44,7 @@ function onProgress(bar, percent, msg) {
 }
 
 function onFinish(message, err, stats) {
+  OutputRenderer.done();
   if (err) {
     error(err);
   } else if (stats.compilation.errors.length > 0) {

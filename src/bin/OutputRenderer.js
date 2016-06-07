@@ -4,8 +4,13 @@
 
 import fs from 'fs';
 import logUpdate from 'log-update';
+import onetime from 'onetime';
+import exitHook from 'exit-hook';
 
 const NEWLINE = '\n';
+
+let installExitHook = onetime(() =>
+  exitHook(() => OutputRenderer.done()));
 
 let OutputRenderer = {
 
@@ -30,6 +35,7 @@ let OutputRenderer = {
     console.warning = msg => this.stderr.push(msg + NEWLINE); // eslint-disable-line no-console
     console.error = msg => this.stderr.push(msg + NEWLINE); // eslint-disable-line no-console
     console.debug = msg => this.stderr.push(msg + NEWLINE); // eslint-disable-line no-console
+    installExitHook();
   },
 
   release() {
