@@ -6,7 +6,6 @@
  * @flow
  */
 
-import characterSet from 'cli-character-set';
 import padLeft from 'lodash/padStart';
 import padRight from 'lodash/padEnd';
 import util from 'util';

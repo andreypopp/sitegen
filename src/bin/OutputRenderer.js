@@ -5,6 +5,8 @@
 import fs from 'fs';
 import logUpdate from 'log-update';
 
+const NEWLINE = '\n';
+
 let OutputRenderer = {
 
   stdout: [],
@@ -12,10 +14,10 @@ let OutputRenderer = {
 
   _stdoutWrite: process.stdout.write,
   _stderrWrite: process.stderr.write,
-  _consoleLog: console.log,
-  _consoleWarning: console.warning,
-  _consoleError: console.error,
-  _consoleDebug: console.debug,
+  _consoleLog: console.log, // eslint-disable-line no-console
+  _consoleWarning: console.warning, // eslint-disable-line no-console
+  _consoleError: console.error, // eslint-disable-line no-console
+  _consoleDebug: console.debug, // eslint-disable-line no-console
 
   get hasBuffer() {
     return this.stdout.length || this.stderr.length;
@@ -24,19 +26,19 @@ let OutputRenderer = {
   manage() {
     process.stdout.write = msg => this.stdout.push(msg);
     process.stderr.write = msg => this.stderr.push(msg);
-    console.log = msg => this.stdout.push(msg + NEWLINE);
-    console.warning = msg => this.stderr.push(msg + NEWLINE);
-    console.error = msg => this.stderr.push(msg + NEWLINE);
-    console.debug = msg => this.stderr.push(msg + NEWLINE);
+    console.log = msg => this.stdout.push(msg + NEWLINE); // eslint-disable-line no-console
+    console.warning = msg => this.stderr.push(msg + NEWLINE); // eslint-disable-line no-console
+    console.error = msg => this.stderr.push(msg + NEWLINE); // eslint-disable-line no-console
+    console.debug = msg => this.stderr.push(msg + NEWLINE); // eslint-disable-line no-console
   },
 
   release() {
     process.stdout.write = this._stdoutWrite;
     process.stderr.write = this._stderrWrite;
-    console.log = this._consoleLog;
-    console.warning = this._consoleWarning;
-    console.error = this._consoleError;
-    console.debug = this._consoleDebug;
+    console.log = this._consoleLog; // eslint-disable-line no-console
+    console.warning = this._consoleWarning; // eslint-disable-line no-console
+    console.error = this._consoleError; // eslint-disable-line no-console
+    console.debug = this._consoleDebug; // eslint-disable-line no-console
   },
 
   flush() {

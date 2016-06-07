@@ -4,9 +4,7 @@
  */
 
 import makeDebug from 'debug';
-import fs from 'fs';
 import path from 'path';
-import logUpdate from 'log-update';
 
 import {parse, error} from './utils';
 import {createCompiler} from '../compiler';
