@@ -12,7 +12,7 @@ build::
 		--public-path /sitegen/
 
 serve::
-	@DEBUG='sitegen:*' $(BIN)/sitegen-serve
+	@$(BIN)/sitegen-serve
 
 publish::
 	@./node_modules/.bin/gh-pages -d $(OUTPUT)
