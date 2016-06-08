@@ -4,7 +4,7 @@
  */
 
 import {program, stringLiteral} from 'babel-types';
-import {expr, stmt} from 'babel-plugin-ast-literal/api';
+import {stmt} from 'babel-plugin-ast-literal/api';
 import generate from 'babel-generator';
 import RouteCompiler from '../routing/RouteCompiler';
 import {CollectionRoute, forEach} from '../routing/Route';

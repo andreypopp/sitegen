@@ -4,7 +4,6 @@
 
 import assert from 'assert';
 import MemoryFS from 'memory-fs';
-import generate from 'babel-generator';
 import {page, collection} from '../Route';
 import RouteCompiler from '../RouteCompiler';
 
