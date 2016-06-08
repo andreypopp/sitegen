@@ -33,7 +33,7 @@ function requireMeta(component) {
 type Options = {
   fs: PromisidiedFS;
   split?: boolean;
-  publicPath: string;
+  publicPath?: string;
 };
 
 export default class RouteCompiler {
@@ -46,7 +46,7 @@ export default class RouteCompiler {
     promisifyAll(fs);
     this.fs = fs;
     this.split = split;
-    this.publicPath = publicPath;
+    this.publicPath = publicPath || '/';
   }
 
   render(route: Route): Promise<JSAST> {

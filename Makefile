@@ -21,18 +21,10 @@ lint::
 check::
 	@$(BIN)/flow --show-all-errors src
 
-test:: test-unit test-doc
-
-test-unit::
+test::
 	@$(BIN)/mocha $(MOCHA_OPTS) $(TESTS)
 
-test-doc:: build-silent
-	@$(BIN)/mocha $(MOCHA_OPTS) --compilers md:mocha-doctest ./README.md
-
-ci-doc::
-	@$(BIN)/mocha $(MOCHA_OPTS) --compilers md:mocha-doctest --watch ./README.md
-
-ci-unit::
+ci::
 	@$(BIN)/mocha $(MOCHA_OPTS) --watch --watch-extensions json,md $(TESTS)
 
 sloc::
