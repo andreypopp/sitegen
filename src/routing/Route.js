@@ -103,7 +103,7 @@ export function page(
 export function collection(
   component: string,
   pattern: string,
-  options: CollectionRouteOptions): CollectionRoute {
+  options?: CollectionRouteOptions = {}): CollectionRoute {
   let spec = parsePattern(pattern);
   return new CollectionRoute(component, spec, options);
 }
