@@ -32,14 +32,14 @@ function requireMeta(component) {
 
 type Options = {
   fs: PromisidiedFS;
-  split: boolean;
+  split?: boolean;
   publicPath: string;
 };
 
 export default class RouteCompiler {
 
   fs: PromisidiedFS;
-  split: boolean;
+  split: ?boolean;
   publicPath: string;
 
   constructor({fs, split, publicPath}: Options) {
@@ -49,14 +49,14 @@ export default class RouteCompiler {
     this.publicPath = publicPath;
   }
 
-  render(route: Route): JSAST {
+  render(route: Route): Promise<JSAST> {
     return this._render(route, this.publicPath, ['']);
   }
 
   _render(
     route: Route,
     path: ?string,
-    trace: Array<string>): Promise<mixed> {
+    trace: Array<string>): Promise<JSAST> {
 
     if (route instanceof PageRoute) {
       return this._renderPageRoute(route, path, trace);
@@ -90,7 +90,7 @@ export default class RouteCompiler {
     }
 
     let getComponent = renderGetComponent(route.component, {
-      split: this.split !== undefined ? this.split : route.options.split,
+      split: this.split != undefined ? this.split : route.options.split,
       chunkName: trace.join('/'),
     });
 
@@ -132,13 +132,13 @@ export default class RouteCompiler {
       chunkCount: chunks.length,
       loader: META_LOADER,
       chunkName: trace.concat('@page', idx + 1).join('/'),
-      split: this.split !== undefined ? this.split : true,
+      split: this.split != undefined ? this.split : true,
     }));
 
     let childRoutes = items.map(item => renderRouteSpec({
       path: item.path,
       getComponent: renderGetComponent(item.filename, {
-        split: this.split !== undefined ? this.split : true,
+        split: this.split != undefined ? this.split : true,
         chunkName: trace.concat(item.path).join('/'),
       }),
     }));

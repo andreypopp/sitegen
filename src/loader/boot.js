@@ -1,17 +1,19 @@
 /**
  * @copyright 2016-present, Sitegen team
+ * @flow
  */
 
 import {program, stringLiteral} from 'babel-types';
+import {expr, stmt} from 'babel-plugin-ast-literal/api';
 import generate from 'babel-generator';
 import RouteCompiler from '../routing/RouteCompiler';
-import {forEach} from '../routing/Route';
+import {CollectionRoute, forEach} from '../routing/Route';
 
 const BOOT_MODULE = require.resolve('../boot');
 const META_MODULE = require.resolve('react-helmet');
 const SITE_MODULE = require.resolve('../Site');
 
-module.exports = function bootLoader(_source) {
+module.exports = function bootLoader(_source: string) {
   this.cacheable();
 
   let compiler = this._compiler;
@@ -24,8 +26,8 @@ module.exports = function bootLoader(_source) {
   // traverse route tree and set watchers on collections
   // TODO: make sure we stay consistent with what renderRoute(..) does
   forEach(route, route => {
-    if (route.collection) {
-      this.addContextDependency(route.collection.page.directory);
+    if (route instanceof CollectionRoute) {
+      this.addContextDependency(route.collection.context);
     }
   });
 
