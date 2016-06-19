@@ -80,7 +80,7 @@ export function defaultConfig({env}: CompilerConfigContext): CompilerConfigSubse
 
   return {
 
-    devtool: env.development ? 'cheap-module-source-map' : undefined,
+    devtool: env.development ? 'cheap-module-eval-source-map' : undefined,
 
     babel: {
       presets: [
