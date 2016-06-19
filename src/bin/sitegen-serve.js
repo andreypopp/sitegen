@@ -28,6 +28,7 @@ let compileDevMiddleware = WebpackDevMiddleware(compiler, {
   stats: {
     chunks: false,
     modules: false,
+    colors: true,
   },
 });
 
