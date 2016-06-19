@@ -25,6 +25,6 @@
   },
   "homepage": "https://github.com/andreypopp/sitegen#readme",
   "dependencies": {
-    "react-css-components": "^0.6.4"
+    "react-css-components": "^1.0.0"
   }
 }

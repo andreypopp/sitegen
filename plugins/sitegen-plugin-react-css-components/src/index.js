@@ -9,14 +9,11 @@ export function configure({env}) {
   // We need to minimize both for production and content because of inlineCSS
   // option and content uses its own build to inline bundle.css.
   let minimize = env.production || env.content;
-  let CSSModule = CSS({
-    modules: true,
-    minimize
-  });
-  let CSSComponent = loader(require.resolve('react-css-components/webpack'));
+  let CSSModule = CSS({modules: true, minimize});
+  let CSSComponent = loader(require.resolve('react-css-components'));
   return {
     globalLoaders: {
-      '**/*.rcss': [JS, CSSComponent({loadCSS: deployCSS(CSSModule)})],
+      '**/*.rcss': CSSComponent({loadCSS: deployCSS(CSSModule)}),
     },
   };
 }
