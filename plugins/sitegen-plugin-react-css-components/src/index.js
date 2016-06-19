@@ -10,7 +10,7 @@ export function configure({env}) {
   // option and content uses its own build to inline bundle.css.
   let minimize = env.production || env.content;
   let CSSModule = CSS({modules: true, minimize});
-  let CSSComponent = loader(require.resolve('react-css-components'));
+  let CSSComponent = loader(require.resolve('react-css-components/webpack'));
   return {
     globalLoaders: {
       '**/*.rcss': CSSComponent({loadCSS: deployCSS(CSSModule)}),
