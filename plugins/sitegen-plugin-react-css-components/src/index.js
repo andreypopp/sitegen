@@ -2,7 +2,7 @@
  * @copyright 2016-present, Sitegen team
  */
 
-import {loader, JS, CSS, extractCSS, injectCSS} from 'sitegen/config';
+import {loader, CSS, extractCSS, injectCSS} from 'sitegen/config';
 
 export function configure({env}) {
   let deployCSS = env.development ? injectCSS : extractCSS;
